@@ -5,6 +5,7 @@ pom.xml.asc
 /lib/
 /classes/
 /target/
+/resources/public/js
 /checkouts/
 .lein-deps-sum
 .lein-repl-history
@@ -12,3 +13,4 @@ pom.xml.asc
 .lein-failures
 .nrepl-port
 .DS_Store
+figwheel_server.log
