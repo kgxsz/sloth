@@ -3,15 +3,23 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.908"]
                  [org.omcljs/om "1.0.0-beta1"]
-                 [fulcrologic/fulcro "1.0.0-beta10"]]
+                 [fulcrologic/fulcro "1.0.0-beta10"]
+                 [garden "1.3.3"]]
 
   :source-paths ["src/main"]
   :resource-paths ["resources"]
-  :clean-targets ^{:protect false} ["resources/public/js" "target" "out"]
+  :clean-targets ^{:protect false} ["resources/public/js"
+                                    "resources/public/css"
+                                    "target"
+                                    "out"
+                                    ".nrepl-port"
+                                    "figwheel_server.log"]
 
-  :plugins [[lein-cljsbuild "1.1.6"]]
+  :plugins [[lein-cljsbuild "1.1.6"]
+            [lein-garden "0.3.0"]]
 
-  :aliases {"build" ["do" "clean"
+  :aliases {"build" ["do"
+                     "clean"
                      ["cljsbuild" "once" "min"]]}
 
   :cljsbuild {:builds
@@ -31,6 +39,11 @@
                                :output-to       "resources/public/js/app.js"
                                :optimizations   :advanced
                                :pretty-print    false}}]}
+
+  :garden {:builds [{:source-paths ["src/main"]
+                     :stylesheet styles.core/app
+                     :compiler {:output-to "resources/css/app.css"
+                                :pretty-print? false}}]}
 
   :profiles {:dev {:source-paths ["src/dev" "src/main"]
                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
