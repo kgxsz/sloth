@@ -3,6 +3,6 @@
 ##### The repository backing habitrack.keigo.io
 
 ## Local development setup
-- For local development, from a cljs file, via Cider `cider-jack-in-clojurescript`.
+- To get a clj/cljs repl running, from `dev/user.clj`, do `cider-jack-in-clojurescript` via Cider.
 - Run `lein garden auto` to update styles automatically.
 - To build, run `lein build`.
