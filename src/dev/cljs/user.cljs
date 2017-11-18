@@ -4,7 +4,7 @@
             [fulcro.client.core :as fc]))
 
 (defn dump
-  "Convenience function for printing the client db via the cljs repl."
+  "A function for printing the client db via the cljs repl."
   [& keys]
   (let [state-map @(om.next/app-state (-> core/app deref :reconciler))
         data-of-interest (if (seq keys)
@@ -13,7 +13,7 @@
     data-of-interest))
 
 (defn refresh
-  "Convenience function for Figwheel to remount the app when files are edited."
+  "A function for Figwheel to refresh the app when files are edited."
   []
   (swap! core/app fc/mount ui/App "app"))
 
