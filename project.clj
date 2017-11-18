@@ -23,6 +23,8 @@
                      "clean"
                      ["cljsbuild" "once" "min"]]}
 
+  :prep-tasks [["garden" "once"]]
+
   :cljsbuild {:builds
               [{:id           "dev"
                 :source-paths ["src/main" "src/dev"]
