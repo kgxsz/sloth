@@ -12,9 +12,7 @@
   :clean-targets ^{:protect false} ["resources/public/js"
                                     "resources/public/css"
                                     "target"
-                                    "out"
-                                    ".nrepl-port"
-                                    "figwheel_server.log"]
+                                    ".nrepl-port"]
 
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-garden "0.3.0"]]
@@ -42,6 +40,9 @@
                                :output-to       "resources/public/js/app.js"
                                :optimizations   :advanced
                                :pretty-print    false}}]}
+
+  :figwheel {:css-dirs ["resources/public/css"]
+             :server-logfile "target/figwheel_temp/logs/figwheel_server.log"}
 
   :garden {:builds [{:source-paths ["src/main"]
                      :stylesheet styles.core/app
