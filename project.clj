@@ -43,7 +43,7 @@
 
   :garden {:builds [{:source-paths ["src/main"]
                      :stylesheet styles.core/app
-                     :compiler {:output-to "resources/css/app.css"
+                     :compiler {:output-to "resources/public/css/app.css"
                                 :pretty-print? false}}]}
 
   :profiles {:dev {:source-paths ["src/dev" "src/main"]
