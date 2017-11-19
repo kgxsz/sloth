@@ -15,7 +15,9 @@
              :medium 10
              :large 50
              :huge 100}
-   :filling {:tiny 2}
+   :filling {:tiny 2
+             :small 20
+             :medium 40}
    :breakpoint {:tiny 320
                 :small 480
                 :medium 768
@@ -27,7 +29,7 @@
              :medium 20
              :large 25}})
 
-(def app
+(def page
   {:width {:tiny 300
            :small 460
            :medium 700
@@ -36,39 +38,53 @@
 (def user
   {:height {:medium 24}})
 
+
 (defstyles app
-  [:.app
+  [:.app])
+
+(defstyles notice
+  [:.notice
+   {:display :flex
+    :align-items :center
+    :justify-content :center
+    :width (percent 100)
+    :height (-> dimensions :filling :medium px)
+    :padding [[0 (-> dimensions :spacing :medium px)]]
+    :font-size (-> text :heading :small px)
+    :color :white
+    :background-color (-> colours :black :light)}
+
+   [:&--hidden
+    (at-media
+     {:min-width (-> dimensions :breakpoint :tiny px)}
+     [:&
+      {:display :none}])]])
+
+(defstyles page
+  [:.page
    {:display :none}
 
    (at-media
     {:min-width (-> dimensions :breakpoint :tiny px)}
     [:&
      {:display :block
-      :width (-> app :width :tiny px)
-      :margin [[(-> dimensions :spacing :huge px) :auto]]}])
+      :width (-> page :width :tiny px)
+      :margin [[(-> dimensions :spacing :large px) :auto]]}])
 
    (at-media
     {:min-width (-> dimensions :breakpoint :small px)}
     [:&
-     {:width (-> app :width :small px)}])
+     {:width (-> page :width :small px)}])
 
    (at-media
     {:min-width (-> dimensions :breakpoint :medium px)}
     [:&
-     {:width (-> app :width :medium px)}])
+     {:width (-> page :width :medium px)}])
 
    (at-media
     {:min-width (-> dimensions :breakpoint :large px)}
     [:&
-     {:width (-> app :width :large px)}])
-
-   [:&__sizing-notice
-    {:display :block}
-    (at-media
-     {:min-width (-> dimensions :breakpoint :tiny px)}
-     [:&
-      {:display :none}])]
-   ])
+     {:width (-> page :width :large px)}])])
 
 (defstyles user
   [:.user
@@ -99,22 +115,6 @@
      :margin-left (-> dimensions :spacing :medium px)
      :background-color (-> colours :grey :light)}]])
 
-(defstyles app-failure-notice
-  [:.app-failure-notice
-   {:font-size (-> text :heading :small px)
-    :color (-> colours :grey :dark)
-    :text-align :center
-    :padding [[(-> dimensions :spacing :large px)
-               (-> dimensions :spacing :tiny px)
-               0
-               (-> dimensions :spacing :tiny px)]]}
-
-   [:&--screen-too-narrow
-    (at-media
-     {:min-width (-> dimensions :breakpoint :tiny px)}
-     [:&
-      {:display :none}])]])
-
 (defstyles foundations
   [:*
    {:box-sizing :border-box
@@ -135,6 +135,7 @@
 (defstyles app
   normalize
   foundations
-  app-failure-notice
   app
+  notice
+  page
   user)

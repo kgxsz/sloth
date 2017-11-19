@@ -39,25 +39,63 @@
 (def ui-user (om/factory User))
 
 
+(defui ^:once Grid
+  static om/IQuery
+  (query
+   [_]
+   [:grid/title
+    :grid/subtitle])
+
+  static fc/InitialAppState
+  (initial-state
+   [_ {:keys [title subtitle]}]
+   {:gird/title title
+    :grid/subtitle subtitle})
+
+  Object
+  (render
+   [this]
+   (let [{:keys [grid/title grid/subtitle]} (om/props this)]
+     (dom/div
+      #js {:className "grid"}
+      (dom/div
+       #js {:className "grid__header"}
+       (dom/span
+        #js {:className "grid__header__title"}
+        title)
+       (dom/span
+        #js {:className "grid__header-subtitle"}
+        subtitle))))))
+
+(def ui-grid (om/factory Grid))
+
+
 (defui ^:once App
   static om/IQuery
   (query
    [_]
    [:ui/react-key
-    {:user (om/get-query User)}])
+    {:user (om/get-query User)
+     :grid (om/get-query Grid)}])
   static fc/InitialAppState
   (initial-state
    [_ _]
    {:user (fc/get-initial-state User {:first-name "Keigo"
-                                      :avatar-url "images/avatar.jpg"})})
+                                      :avatar-url "images/avatar.jpg"})
+    :grid (fc/get-initial-state Grid {:title "Coding"
+                                      :subtitle "at least 1 commit"})})
 
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key user]} (om/props this)]
+   (let [{:keys [ui/react-key user grid]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
-      (ui-user user)
       (dom/div
-       #js {:className "grid-list"})))))
+       #js {:className "notice notice--hidden"}
+       "! You need to use a wider screen.")
+      (dom/div
+       #js {:className "page"}
+       (ui-user user)
+       (ui-grid grid))))))
