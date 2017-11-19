@@ -70,7 +70,11 @@
    [:&__first-name
     {:margin-left (-> dimensions :spacing :medium px)
      :font-size (-> text :heading :medium px)
-     :font-weight :bold}]
+     :font-weight :bold
+     :max-width (percent 40)
+     :text-overflow :ellipsis
+     :white-space :nowrap
+     :overflow :hidden}]
 
    [:&__divider
     {:flex-grow 1
