@@ -5,7 +5,7 @@
             [normalize.core :refer [normalize]]))
 
 (def colours
-  {:black {:light "#333"}
+  {:black {:light "#333333"}
    :grey {:light "#F2F2F2"
           :dark "#999999"}})
 
@@ -38,7 +38,6 @@
 
 (def user
   {:height {:medium 24}})
-
 
 (defstyles app
   [:.app])
@@ -116,6 +115,33 @@
      :margin-left (-> dimensions :spacing :medium px)
      :background-color (-> colours :grey :light)}]])
 
+(defstyles grid
+  [:.grid
+   {:margin-top (-> dimensions :spacing :large px)}
+   [:&__header
+    {:height (-> dimensions :filling :medium px)}
+
+    [:&__title
+     {:font-size (-> text :heading :medium px)
+      :font-weight :bold
+      :max-width (percent 30)
+      :text-overflow :ellipsis
+      :white-space :nowrap
+      :overflow :hidden}]
+
+    [:&__divider
+     {:margin [[0 (-> dimensions :spacing :medium px)]]
+      :font-size (-> text :heading :medium px)
+      :color (-> colours :grey :dark)}]
+
+    [:&__subtitle
+     {:font-size (-> text :heading :medium px)
+      :color (-> colours :grey :dark)
+      :max-width (percent 30)
+      :text-overflow :ellipsis
+      :white-space :nowrap
+      :overflow :hidden}]]])
+
 (defstyles foundations
   [:*
    {:box-sizing :border-box
@@ -139,4 +165,5 @@
   app
   notice
   page
-  user)
+  user
+  grid)

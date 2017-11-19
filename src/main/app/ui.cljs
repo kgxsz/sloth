@@ -64,7 +64,10 @@
         #js {:className "grid__header__title"}
         title)
        (dom/span
-        #js {:className "grid__header-subtitle"}
+        #js {:className "grid__header__divider"}
+        "—")
+       (dom/span
+        #js {:className "grid__header__subtitle"}
         subtitle))))))
 
 (def ui-grid (om/factory Grid))
