@@ -34,17 +34,9 @@
   {:height {:medium 24}})
 
 (defstyles app
-  (at-media
-   {:max-width (-> dimensions :breakpoint :tiny (- 1) px)}
-   [:.app
-    {:display :none}])
-
-  (at-media
-   {:min-width (-> dimensions :breakpoint :tiny px)}
-   [:.app
-    {:width (-> app :width :tiny px)
-     :min-width (-> app :width :tiny px)
-     :margin [[(-> dimensions :spacing :huge px) :auto]]}])
+  [:.app
+   {:width (-> app :width :tiny px)
+    :margin [[(-> dimensions :spacing :huge px) :auto]]}]
 
   (at-media
    {:min-width (-> dimensions :breakpoint :small px)}
@@ -93,15 +85,23 @@
     :padding 0}]
 
   [:html
-   {:height (percent 100)
-    :overflow :auto}]
+   {:overflow :auto
+    :height (percent 100)}]
 
   [:body
    {:overflow :auto
     :height (percent 100)
     :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
     :font-size (px 12)
-    :color "#333"}])
+    :color "#333"}]
+
+  [:#app-container
+   {:display :none}]
+
+  (at-media
+   {:min-width (-> dimensions :breakpoint :tiny  px)}
+   [:#app-container
+    {:display :block}]))
 
 (defstyles app
   normalize
