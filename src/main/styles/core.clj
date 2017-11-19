@@ -27,7 +27,8 @@
   {:heading {:tiny 10
              :small 15
              :medium 20
-             :large 25}})
+             :large 25}
+   :paragraph {:medium 14}})
 
 (def page
   {:width {:tiny 300
@@ -129,7 +130,7 @@
    {:overflow :auto
     :height (percent 100)
     :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
-    :font-size (px 12)
+    :font-size (-> text :paragraph :medium px)
     :color (-> colours :black :light)}])
 
 (defstyles app
