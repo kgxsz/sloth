@@ -49,7 +49,7 @@
   static fc/InitialAppState
   (initial-state
    [_ {:keys [title subtitle]}]
-   {:gird/title title
+   {:grid/title title
     :grid/subtitle subtitle})
 
   Object
@@ -75,8 +75,8 @@
   (query
    [_]
    [:ui/react-key
-    {:user (om/get-query User)
-     :grid (om/get-query Grid)}])
+    {:user (om/get-query User)}
+    {:grid (om/get-query Grid)}])
   static fc/InitialAppState
   (initial-state
    [_ _]
