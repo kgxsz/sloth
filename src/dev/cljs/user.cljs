@@ -15,7 +15,7 @@
 (defn refresh
   "A function for Figwheel to refresh the app when files are edited."
   []
-  (swap! core/app fc/mount ui/App "app"))
+  (swap! core/app fc/mount ui/App "app-container"))
 
 (refresh)
 

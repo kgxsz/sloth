@@ -3,4 +3,4 @@
             [app.core :as core]
             [fulcro.client.core :as fc]))
 
-(reset! core/app (fc/mount @core/app ui/App "app"))
+(reset! core/app (fc/mount @core/app ui/App "app-container"))
