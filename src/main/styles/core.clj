@@ -34,35 +34,32 @@
   {:height {:medium 24}})
 
 (defstyles components
-  [:.app
-   {:display :flex
-    :flex-direction :column
-    :align-items :center
-    :min-width (-> dimensions :breakpoint :tiny px)
-    :width (-> app :width :tiny px)
-    :margin-top (-> dimensions :spacing :huge px)
-    :margin-bottom (-> dimensions :spacing :huge px)
-    :margin-left :auto
-    :margin-right :auto
-    :background-color :green}]
+  (at-media
+   {:max-width (-> dimensions :breakpoint :tiny (- 1) px)}
+   [:.app
+    {:display :none}])
+
+  (at-media
+   {:min-width (-> dimensions :breakpoint :tiny px)}
+   [:.app
+    {:width (-> app :width :tiny px)
+     :min-width (-> app :width :tiny px)
+     :margin [[(-> dimensions :spacing :huge px) :auto]]}])
 
   (at-media
    {:min-width (-> dimensions :breakpoint :small px)}
    [:.app
-    {:width (-> app :width :small px)
-     :background-color :red}])
+    {:width (-> app :width :small px)}])
 
   (at-media
    {:min-width (-> dimensions :breakpoint :medium px)}
    [:.app
-    {:width (-> app :width :medium px)
-     :background-color :blue}])
+    {:width (-> app :width :medium px)}])
 
   (at-media
    {:min-width (-> dimensions :breakpoint :large px)}
    [:.app
-    {:width (-> app :width :large px)
-     :background-color :yellow}])
+    {:width (-> app :width :large px)}])
 
   [:.user
    {:display :flex
