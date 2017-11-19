@@ -44,22 +44,20 @@
   (query
    [_]
    [:ui/react-key
-    {:current-user (om/get-query User)}])
+    {:user (om/get-query User)}])
   static fc/InitialAppState
   (initial-state
    [_ _]
-   {:current-user (fc/get-initial-state User {:first-name "Keigo"
-                                              :avatar-url "images/avatar.jpg"})})
+   {:user (fc/get-initial-state User {:first-name "Keigo"
+                                      :avatar-url "images/avatar.jpg"})})
 
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key current-user]} (om/props this)]
+   (let [{:keys [ui/react-key user]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
+      (ui-user user)
       (dom/div
-       #js {:className "app__header"}
-       (ui-user current-user))
-      (dom/div
-       #js {:className "app__body"})))))
+       #js {:className "grid-list"})))))
