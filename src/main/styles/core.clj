@@ -13,7 +13,11 @@
              :medium 10
              :large 50
              :huge 100}
-   :filling {:tiny 2}})
+   :filling {:tiny 2}
+   :breakpoint {:tiny 320
+                :small 480
+                :medium 768
+                :large 960}})
 
 (def text
   {:heading {:small 15
@@ -21,7 +25,10 @@
              :large 25}})
 
 (def app
-  {:width {:large 862}})
+  {:width {:tiny 300
+           :small 460
+           :medium 700
+           :large 862}})
 
 (def user
   {:height {:medium 24}})
@@ -31,20 +38,38 @@
    {:display :flex
     :flex-direction :column
     :align-items :center
-    :width (-> app :width :large px)
+    :min-width (-> dimensions :breakpoint :tiny px)
+    :width (-> app :width :tiny px)
     :margin-top (-> dimensions :spacing :huge px)
     :margin-bottom (-> dimensions :spacing :huge px)
     :margin-left :auto
     :margin-right :auto
     :background-color :green}]
 
+  (at-media
+   {:min-width (-> dimensions :breakpoint :small px)}
+   [:.app
+    {:width (-> app :width :small px)
+     :background-color :red}])
+
+  (at-media
+   {:min-width (-> dimensions :breakpoint :medium px)}
+   [:.app
+    {:width (-> app :width :medium px)
+     :background-color :blue}])
+
+  (at-media
+   {:min-width (-> dimensions :breakpoint :large px)}
+   [:.app
+    {:width (-> app :width :large px)
+     :background-color :yellow}])
+
   [:.user
    {:display :flex
     :flex-direction :row
     :align-items :center
     :height (-> user :height :medium px)
-    :width (percent 100)
-    :background-color :pink}
+    :width (percent 100)}
 
    [:&__avatar
     {:height (-> user :height :medium px)
@@ -69,8 +94,14 @@
     :margin 0
     :padding 0}]
 
+  [:html
+   {:height (percent 100)
+    :overflow :auto}]
+
   [:body
-   {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
+   {:overflow :auto
+    :height (percent 100)
+    :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
     :font-size (px 12)
     :color "#333"}])
 
