@@ -18,5 +18,3 @@
   (swap! core/app fc/mount ui/App "app-container"))
 
 (refresh)
-
-
