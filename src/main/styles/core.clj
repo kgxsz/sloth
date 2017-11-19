@@ -33,7 +33,7 @@
 (def user
   {:height {:medium 24}})
 
-(defstyles components
+(defstyles app
   (at-media
    {:max-width (-> dimensions :breakpoint :tiny (- 1) px)}
    [:.app
@@ -59,8 +59,9 @@
   (at-media
    {:min-width (-> dimensions :breakpoint :large px)}
    [:.app
-    {:width (-> app :width :large px)}])
+    {:width (-> app :width :large px)}]))
 
+(defstyles user
   [:.user
    {:display :flex
     :flex-direction :row
@@ -105,4 +106,5 @@
 (defstyles app
   normalize
   foundations
-  components)
+  app
+  user)
