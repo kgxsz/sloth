@@ -5,7 +5,9 @@
             [normalize.core :refer [normalize]]))
 
 (def colours
-  {:grey {:light "#F2F2F2"}})
+  {:black {:light "#333"}
+   :grey {:light "#F2F2F2"
+          :dark "#999999"}})
 
 (def dimensions
   {:spacing {:tiny 1
@@ -20,7 +22,8 @@
                 :large 960}})
 
 (def text
-  {:heading {:small 15
+  {:heading {:tiny 10
+             :small 15
              :medium 20
              :large 25}})
 
@@ -35,23 +38,37 @@
 
 (defstyles app
   [:.app
-   {:width (-> app :width :tiny px)
-    :margin [[(-> dimensions :spacing :huge px) :auto]]}]
+   {:display :none}
 
-  (at-media
-   {:min-width (-> dimensions :breakpoint :small px)}
-   [:.app
-    {:width (-> app :width :small px)}])
+   (at-media
+    {:min-width (-> dimensions :breakpoint :tiny px)}
+    [:&
+     {:display :block
+      :width (-> app :width :tiny px)
+      :margin [[(-> dimensions :spacing :huge px) :auto]]}])
 
-  (at-media
-   {:min-width (-> dimensions :breakpoint :medium px)}
-   [:.app
-    {:width (-> app :width :medium px)}])
+   (at-media
+    {:min-width (-> dimensions :breakpoint :small px)}
+    [:&
+     {:width (-> app :width :small px)}])
 
-  (at-media
-   {:min-width (-> dimensions :breakpoint :large px)}
-   [:.app
-    {:width (-> app :width :large px)}]))
+   (at-media
+    {:min-width (-> dimensions :breakpoint :medium px)}
+    [:&
+     {:width (-> app :width :medium px)}])
+
+   (at-media
+    {:min-width (-> dimensions :breakpoint :large px)}
+    [:&
+     {:width (-> app :width :large px)}])
+
+   [:&__sizing-notice
+    {:display :block}
+    (at-media
+     {:min-width (-> dimensions :breakpoint :tiny px)}
+     [:&
+      {:display :none}])]
+   ])
 
 (defstyles user
   [:.user
@@ -82,6 +99,22 @@
      :margin-left (-> dimensions :spacing :medium px)
      :background-color (-> colours :grey :light)}]])
 
+(defstyles app-failure-notice
+  [:.app-failure-notice
+   {:font-size (-> text :heading :small px)
+    :color (-> colours :grey :dark)
+    :text-align :center
+    :padding [[(-> dimensions :spacing :large px)
+               (-> dimensions :spacing :tiny px)
+               0
+               (-> dimensions :spacing :tiny px)]]}
+
+   [:&--screen-too-narrow
+    (at-media
+     {:min-width (-> dimensions :breakpoint :tiny px)}
+     [:&
+      {:display :none}])]])
+
 (defstyles foundations
   [:*
    {:box-sizing :border-box
@@ -97,18 +130,11 @@
     :height (percent 100)
     :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
     :font-size (px 12)
-    :color "#333"}]
-
-  [:#app-container
-   {:display :none}]
-
-  (at-media
-   {:min-width (-> dimensions :breakpoint :tiny  px)}
-   [:#app-container
-    {:display :block}]))
+    :color (-> colours :black :light)}])
 
 (defstyles app
   normalize
   foundations
+  app-failure-notice
   app
   user)

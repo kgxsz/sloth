@@ -8,10 +8,19 @@
     <title>Habitrack</title>
   </head>
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="app-container"></div>
+      <noscript>
+          <div class="app-failure-notice app-failure-notice--javascript-disabled">
+              You need to enable JavaScript.
+          </div>
+      </noscript>
+
+      <div class="app-failure-notice app-failure-notice--screen-too-narrow">
+          You need to use a wider screen.
+      </div>
+
+      <div id="app-container">
+      </div>
+
     <script src="js/app.js" type="text/javascript"></script>
   </body>
 </html>
