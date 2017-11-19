@@ -1,64 +1,67 @@
 (ns styles.core
   (:require [garden.def :refer [defstyles]]
+            [garden.stylesheet :refer [at-media]]
             [garden.units :refer [px percent]]
             [normalize.core :refer [normalize]]))
 
+(def colours
+  {:grey {:light "#F2F2F2"}})
+
+(def dimensions
+  {:spacing {:tiny 1
+             :small 5
+             :medium 10
+             :large 50
+             :huge 100}
+   :filling {:tiny 2}})
+
+(def text
+  {:heading {:small 15
+             :medium 20
+             :large 25}})
+
+(def app
+  {:width {:large 862}})
+
+(def user
+  {:height {:medium 24}})
+
 (defstyles components
   [:.app
-   {:width (px 950)
-    :margin-top (px 100)
-    :margin-bottom (px 100)
+   {:display :flex
+    :flex-direction :column
+    :align-items :center
+    :width (-> app :width :large px)
+    :margin-top (-> dimensions :spacing :huge px)
+    :margin-bottom (-> dimensions :spacing :huge px)
     :margin-left :auto
-    :margin-right :auto}
-
-   [:&__header
-    {:width (percent 100)
-     :height (px 170)}]
-
-   [:&__body
-    {:width (percent 100)
-     :height (px 170)
-     :background-color "#F0F0F0"}]]
+    :margin-right :auto
+    :background-color :green}]
 
   [:.user
-   {:height (px 24)
-    :display :flex
-    :flex-direction :row}
+   {:display :flex
+    :flex-direction :row
+    :align-items :center
+    :height (-> user :height :medium px)
+    :width (percent 100)
+    :background-color :pink}
 
    [:&__avatar
-    {:width (px 24)
-     :height (px 24)
-     :border-radius (percent 50)}]
+    {:height (-> user :height :medium px)
+     :width (-> user :height :medium px)
+     :border-radius (percent 50)
+     :background-color (-> colours :grey :light)}]
 
    [:&__first-name
-    {:margin-left (px 10)
-     :font-size (px 20)
-     :line-height (px 24)
+    {:margin-left (-> dimensions :spacing :medium px)
+     :font-size (-> text :heading :medium px)
      :font-weight :bold}]
 
    [:&__divider
     {:flex-grow 1
-     :margin-left (px 10)
-     :margin-top (px 11)
-     :margin-bottom (px 11)
-     :border-top-color "#F2F2F2"
-     :border-top-style :solid
-     :border-top-width (px 2)}]
-
-   [:&__options
-    {:width (px 24)
-     :height (px 24)
-     :display :flex
-     :flex-direction :row
-     :align-items :center
-     :justify-content :space-between
-     :margin-left (px 10)}
-
-    [:&__ellipse
-     {:height (px 6)
-      :width (px 6)
-      :border-radius (percent 50)
-      :background-color "#333"}]]])
+     :height (-> dimensions :filling :tiny px)
+     :margin-left (-> dimensions :spacing :medium px)
+     :background-color (-> colours :grey :light)}]])
 
 (defstyles foundations
   [:*
