@@ -34,16 +34,7 @@
        first-name)
 
       (dom/div
-       #js {:className "user__divider"})
-
-      (dom/div
-       #js {:className "user__options"}
-       (dom/div
-        #js {:className "user__options__ellipse"})
-       (dom/div
-        #js {:className "user__options__ellipse"})
-       (dom/div
-        #js {:className "user__options__ellipse"}))))))
+       #js {:className "user__divider"})))))
 
 (def ui-user (om/factory User))
 
