@@ -41,43 +41,76 @@
 
 
 
-(defui ^:once Grid
+(defui ^:once Task
   static om/IQuery
   (query
    [_]
-   [:grid/title
-    :grid/subtitle])
+   [:task/title
+    :task/subtitle])
 
   static fc/InitialAppState
   (initial-state
    [_ {:keys [title subtitle]}]
-   {:grid/title title
-    :grid/subtitle subtitle})
+   {:task/title title
+    :task/subtitle subtitle})
 
   Object
   (render
    [this]
-   (let [{:keys [grid/title grid/subtitle]} (om/props this)]
+   (let [{:keys [task/title task/subtitle]} (om/props this)]
      (dom/div
-      #js {:className "grid"}
+      #js {:className "task"}
       (dom/div
-       #js {:className "grid__header"}
+       #js {:className "task__header"}
        (dom/span
-        #js {:className "grid__header__title"}
+        #js {:className "task__header__title"}
         title)
        (dom/span
-        #js {:className "grid__header__divider"}
+        #js {:className "task__header__divider"}
         "—")
        (dom/span
-        #js {:className "grid__header__subtitle"}
+        #js {:className "task__header__subtitle"}
         subtitle))
 
       (dom/div
-       #js {:className "grid__body"}
-       (dom/div
-        #js {:className "grid__body__day"}))))))
+       #js {:className "task__body"}
 
-(def ui-grid (om/factory Grid))
+
+       (dom/div
+        #js {:className "task__body__day-labels"}
+        (doall
+         (for [day-label ["mon" "wed" "fri" "sun"]]
+           (dom/span
+            #js {:key day-label
+                 :className "task__body__day-labels__day-label"}
+            day-label))))
+
+       (dom/div
+        #js {:className "task__body__scroll-parent"}
+
+        (dom/div
+         #js {:className "task__body__scroll-child"}
+
+         (dom/div
+          #js {:className "task__body__days"}
+          (doall
+           (for [i (range 364)]
+             (dom/div
+              #js {:key i
+                   :className "task__body__days__day"}))))
+         (dom/div
+          #js {:className "task__body__month-labels"}
+          (doall
+           (for [month-label ["jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "oct" "nov" "dec"]]
+             (dom/span
+              #js {:key month-label
+                   :className "task__body__month-labels__month-label"}
+              month-label)))))))
+
+      (dom/div
+       #js {:className "task__footer"})))))
+
+(def ui-task (om/factory Task))
 
 
 (defui ^:once App
@@ -86,19 +119,19 @@
    [_]
    [:ui/react-key
     {:user (om/get-query User)}
-    {:grid (om/get-query Grid)}])
+    {:task (om/get-query Task)}])
   static fc/InitialAppState
   (initial-state
    [_ _]
    {:user (fc/get-initial-state User {:first-name "Keigo"
                                       :avatar-url "images/avatar.jpg"})
-    :grid (fc/get-initial-state Grid {:title "Some task"
+    :task (fc/get-initial-state Task {:title "Some task"
                                       :subtitle "some condition of satisfaction"})})
 
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key user grid]} (om/props this)]
+   (let [{:keys [ui/react-key user task]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
@@ -108,4 +141,4 @@
       (dom/div
        #js {:className "page"}
        (ui-user user)
-       (ui-grid grid))))))
+       (ui-task task))))))

@@ -5,12 +5,16 @@
             [normalize.core :refer [normalize]]))
 
 (def colours
-  {:black {:light "#333333"}
+  {:white {:light "#FFFFFF"}
+   :black {:light "#333333"}
    :grey {:light "#F2F2F2"
           :dark "#BBBBBB"}})
 
 (def dimensions
   {:spacing {:tiny 1
+             :xxx-small 2
+             :xx-small 3
+             :x-small 4
              :small 5
              :medium 10
              :large 30
@@ -29,7 +33,8 @@
              :small 15
              :medium 20
              :large 25}
-   :paragraph {:medium 14}})
+   :paragraph {:small 12
+               :medium 14}})
 
 (def page
   {:width {:tiny 300
@@ -110,8 +115,8 @@
      :margin-left (-> dimensions :spacing :medium px)
      :background-color (-> colours :grey :light)}]])
 
-(defstyles grid
-  [:.grid
+(defstyles task
+  [:.task
    {:margin-top (-> dimensions :spacing :x-large px)}
 
    [:&__header
@@ -128,11 +133,55 @@
      {:color (-> colours :grey :dark)}]]
 
    [:&__body
-    {:margin-top (-> dimensions :spacing :large px)}
-    [:&__day
-     {:width (px 14)
-      :height (px 14)
-      :background-color (-> colours :grey :light)}]]])
+    {:display :flex
+     :height (px 140)
+     :margin-top (-> dimensions :spacing :large px)}
+
+    [:&__day-labels
+     {:display :flex
+      :flex-direction :column
+      :width (px 32)
+      :min-width (px 32)
+      :height (percent 100)
+      :background-color (-> colours :white :light)}
+     [:&__day-label
+      {:height (px 32)
+       :font-size (-> text :paragraph :small px)
+       :font-weight :bold}]]
+
+    [:&__scroll-parent
+     {:display :flex
+      :flex-direction :row-reverse
+      :overflow-y :auto
+      :width (percent 100)}]
+
+    [:&__scroll-child
+     {:position :relative
+      :overflow :hidden
+      :width (px 830)
+      :min-width (px 830)}]
+
+    [:&__days
+     {:display :grid
+      :grid-template-columns [(repeat 52 (px 14))]
+      :grid-auto-rows (px 14)
+      :grid-gap (px 2)}
+     [:&__day
+      {:border-radius (px 1)
+       :background-color (-> colours :grey :light)}]]
+
+    [:&__month-labels
+     [:&__month-label
+      {:display :inline-block
+       :width (px 64)
+       :font-size (-> text :paragraph :small px)
+       :font-weight :bold}]]]
+
+   [:&__footer
+    {:margin-top (-> dimensions :spacing :large px)
+     :border-bottom-style :solid
+     :border-bottom-width (-> dimensions :filling :tiny px)
+     :border-bottom-color (-> colours :grey :light)}]])
 
 (defstyles foundations
   [:*
@@ -159,4 +208,4 @@
   notice
   page
   user
-  grid)
+  task)
