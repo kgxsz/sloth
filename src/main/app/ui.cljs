@@ -3,8 +3,7 @@
             [app.schema :as schema]
             [fulcro.client.core :as fc]
             [om.dom :as dom]
-            [om.next :as om :refer [defui]]
-            [cljs.spec.alpha :as spec]))
+            [om.next :as om :refer [defui]]))
 
 (defui ^:once User
   static om/IQuery
@@ -39,6 +38,9 @@
 (def ui-user (om/factory User))
 
 
+
+
+
 (defui ^:once Grid
   static om/IQuery
   (query
@@ -68,7 +70,12 @@
         "—")
        (dom/span
         #js {:className "grid__header__subtitle"}
-        subtitle))))))
+        subtitle))
+
+      (dom/div
+       #js {:className "grid__body"}
+       (dom/div
+        #js {:className "grid__body__day"}))))))
 
 (def ui-grid (om/factory Grid))
 
@@ -85,8 +92,8 @@
    [_ _]
    {:user (fc/get-initial-state User {:first-name "Keigo"
                                       :avatar-url "images/avatar.jpg"})
-    :grid (fc/get-initial-state Grid {:title "Coding"
-                                      :subtitle "at least 1 commit"})})
+    :grid (fc/get-initial-state Grid {:title "Some task"
+                                      :subtitle "some condition of satisfaction"})})
 
   Object
   (render

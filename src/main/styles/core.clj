@@ -64,7 +64,7 @@
     [:&
      {:display :block
       :width (-> page :width :tiny px)
-      :margin [[(-> dimensions :spacing :large px) :auto]]}])
+      :margin [[(-> dimensions :spacing :x-large px) :auto]]}])
 
    (at-media
     {:min-width (-> dimensions :breakpoint :small px)}
@@ -112,30 +112,27 @@
 
 (defstyles grid
   [:.grid
-   {:margin-top (-> dimensions :spacing :large px)}
+   {:margin-top (-> dimensions :spacing :x-large px)}
+
    [:&__header
-    {:height (-> dimensions :filling :medium px)}
+    {:font-size (-> text :heading :medium px)}
 
     [:&__title
-     {:font-size (-> text :heading :medium px)
-      :font-weight :bold
-      :max-width (percent 30)
-      :text-overflow :ellipsis
-      :white-space :nowrap
-      :overflow :hidden}]
+     {:font-weight :bold}]
 
     [:&__divider
      {:margin [[0 (-> dimensions :spacing :medium px)]]
-      :font-size (-> text :heading :medium px)
       :color (-> colours :grey :dark)}]
 
     [:&__subtitle
-     {:font-size (-> text :heading :medium px)
-      :color (-> colours :grey :dark)
-      :max-width (percent 30)
-      :text-overflow :ellipsis
-      :white-space :nowrap
-      :overflow :hidden}]]])
+     {:color (-> colours :grey :dark)}]]
+
+   [:&__body
+    {:margin-top (-> dimensions :spacing :large px)}
+    [:&__day
+     {:width (px 14)
+      :height (px 14)
+      :background-color (-> colours :grey :light)}]]])
 
 (defstyles foundations
   [:*
@@ -152,6 +149,7 @@
     :height (percent 100)
     :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
     :font-size (-> text :paragraph :medium px)
+    :line-height 1.3
     :color (-> colours :black :light)}])
 
 (defstyles app
