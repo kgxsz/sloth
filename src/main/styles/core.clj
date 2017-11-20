@@ -7,13 +7,14 @@
 (def colours
   {:black {:light "#333333"}
    :grey {:light "#F2F2F2"
-          :dark "#999999"}})
+          :dark "#BBBBBB"}})
 
 (def dimensions
   {:spacing {:tiny 1
              :small 5
              :medium 10
-             :large 50
+             :large 30
+             :x-large 60
              :huge 100}
    :filling {:tiny 2
              :small 20
