@@ -97,7 +97,7 @@
            :className "app"}
       (dom/div
        #js {:className "notice notice--hidden"}
-       "! You need to use a wider screen.")
+       "You need to use a wider screen.")
       (dom/div
        #js {:className "page"}
        (ui-user user)

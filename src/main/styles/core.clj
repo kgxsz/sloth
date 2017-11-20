@@ -44,15 +44,9 @@
 
 (defstyles notice
   [:.notice
-   {:display :flex
-    :align-items :center
-    :justify-content :center
-    :width (percent 100)
-    :height (-> dimensions :filling :medium px)
-    :padding [[0 (-> dimensions :spacing :medium px)]]
-    :font-size (-> text :heading :small px)
-    :color :white
-    :background-color (-> colours :black :light)}
+   {:padding [[(-> dimensions :spacing :large px) (-> dimensions :spacing :medium px)]]
+    :text-align :center
+    :color (-> colours :grey :dark)}
 
    [:&--hidden
     (at-media
