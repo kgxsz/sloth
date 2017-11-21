@@ -134,48 +134,49 @@
 
    [:&__body
     {:display :flex
-     :height (px 140)
+     :height (px 130)
      :margin-top (-> dimensions :spacing :large px)}
 
-    [:&__day-labels
-     {:display :flex
-      :flex-direction :column
-      :width (px 32)
-      :min-width (px 32)
-      :height (percent 100)
-      :background-color (-> colours :white :light)}
-     [:&__day-label
-      {:height (px 32)
-       :font-size (-> text :paragraph :small px)
-       :font-weight :bold}]]
+    [:&__section-left
+     {:width (px 32)
+      :min-width (px 32)}]
 
-    [:&__scroll-parent
-     {:display :flex
-      :flex-direction :row-reverse
-      :overflow-y :auto
-      :width (percent 100)}]
-
-    [:&__scroll-child
+    [:&__section-right
      {:position :relative
       :overflow :hidden
-      :width (px 830)
-      :min-width (px 830)}]
+      :width (percent 100)}]]
 
-    [:&__days
-     {:display :grid
-      :grid-template-columns [(repeat 52 (px 14))]
-      :grid-auto-rows (px 14)
-      :grid-gap (px 2)}
-     [:&__day
-      {:border-radius (px 1)
-       :background-color (-> colours :grey :light)}]]
+   [:&__day-label
+    {:display :block
+     :height (px 32)
+     :font-size (-> text :paragraph :small px)
+     :font-weight :bold}]
 
-    [:&__month-labels
-     [:&__month-label
-      {:display :inline-block
-       :width (px 64)
-       :font-size (-> text :paragraph :small px)
-       :font-weight :bold}]]]
+   [:&__days
+    {:display :grid
+     :grid-template-columns [(repeat 52 (px 14))]
+     :grid-auto-rows (px 14)
+     :grid-gap (px 2)
+     :position :absolute
+     :top 0
+     :right 0
+     :width (px 830)}
+    [:&__day
+     {:border-radius (px 1)
+      :background-color (-> colours :grey :light)}]]
+
+   [:&__month-labels
+    {:position :absolute
+     :bottom 0
+     :right 0
+     :width (px 830)
+     :height (px 20)
+     }
+    [:&__month-label
+     {:display :inline-block
+      :width (px 64)
+      :font-size (-> text :paragraph :small px)
+      :font-weight :bold}]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)

@@ -75,37 +75,33 @@
       (dom/div
        #js {:className "task__body"}
 
-
        (dom/div
-        #js {:className "task__body__day-labels"}
+        #js {:className "task__body__section-left"}
         (doall
          (for [day-label ["mon" "wed" "fri" "sun"]]
            (dom/span
             #js {:key day-label
-                 :className "task__body__day-labels__day-label"}
+                 :className "task__day-label"}
             day-label))))
 
        (dom/div
-        #js {:className "task__body__scroll-parent"}
+        #js {:className "task__body__section-right"}
 
         (dom/div
-         #js {:className "task__body__scroll-child"}
-
-         (dom/div
-          #js {:className "task__body__days"}
-          (doall
-           (for [i (range 364)]
-             (dom/div
-              #js {:key i
-                   :className "task__body__days__day"}))))
-         (dom/div
-          #js {:className "task__body__month-labels"}
-          (doall
-           (for [month-label ["jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "oct" "nov" "dec"]]
-             (dom/span
-              #js {:key month-label
-                   :className "task__body__month-labels__month-label"}
-              month-label)))))))
+         #js {:className "task__days"}
+         (doall
+          (for [i (range 364)]
+            (dom/div
+             #js {:key i
+                  :className "task__days__day"}))))
+        (dom/div
+         #js {:className "task__month-labels"}
+         (doall
+          (for [month-label ["jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "oct" "nov" "dec"]]
+            (dom/span
+             #js {:key month-label
+                  :className "task__month-labels__month-label"}
+             month-label))))))
 
       (dom/div
        #js {:className "task__footer"})))))
