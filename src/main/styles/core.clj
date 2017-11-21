@@ -167,15 +167,15 @@
      [:&__insulator
       {:position :absolute
        :right 0
-       :width (-> task :days-width px)}]]]
+       :width (-> task :days-width px)}]]
 
-   [:&__label
-    {:display :block
-     :font-size (-> text :paragraph :small px)
-     :font-weight :bold}
-    [:&--vertical
-     {:transform "rotate(-90deg)"
-      :transform-origin [[:left :top 0]]}]]
+    [:&__label
+     {:display :block
+      :font-size (-> text :paragraph :small px)
+      :font-weight :bold}
+     [:&--vertical
+      {:transform "rotate(-90deg)"
+       :transform-origin [[:left :top 0]]}]]]
 
    [:&__day-label-container
     {:height (-> task :day-label-container-height px)}]

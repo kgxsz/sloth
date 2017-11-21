@@ -79,7 +79,7 @@
             #js {:key day-label
                  :className "task__day-label-container"}
             (dom/span
-             #js {:className "task__label"}
+             #js {:className "task__calendar__label"}
              day-label)))))
 
        (dom/div
@@ -102,7 +102,7 @@
               #js {:key month-label
                    :className "task__month-labels__month-label-container"}
               (dom/span
-               #js {:className "task__label task__label--vertical"}
+               #js {:className "task__calendar__label task__calendar__label--vertical"}
                month-label))))))))
 
       (dom/div
