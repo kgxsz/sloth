@@ -36,14 +36,27 @@
    :paragraph {:small 12
                :medium 14}})
 
+(def task
+  (let [day-width 14
+        day-gutter 2]
+    {:day-width day-width
+     :day-gutter day-gutter
+     :day-label-width 32
+     :day-label-height (* 2 (+ day-width day-gutter))
+     :month-label-height 20
+     :days-width (+ (* 52 day-width) (* 51 day-gutter))
+     :days-height (+ (* 7 day-width) (* 6 day-gutter))}))
+
+(def user
+  {:height 24})
+
 (def page
   {:width {:tiny 300
            :small 460
            :medium 700
-           :large 862}})
+           :large (+ (:days-width task) (:day-label-width task))}})
+;; 862
 
-(def user
-  {:height {:medium 24}})
 
 (defstyles app
   [:.app])
@@ -91,12 +104,12 @@
    {:display :flex
     :flex-direction :row
     :align-items :center
-    :height (-> user :height :medium px)
+    :height (-> user :height px)
     :width (percent 100)}
 
    [:&__avatar
-    {:height (-> user :height :medium px)
-     :width (-> user :height :medium px)
+    {:height (-> user :height px)
+     :width (-> user :height px)
      :border-radius (percent 50)
      :background-color (-> colours :grey :light)}]
 
@@ -120,26 +133,25 @@
    {:margin-top (-> dimensions :spacing :x-large px)}
 
    [:&__header
-    {:font-size (-> text :heading :medium px)}
+    {:font-size (-> text :heading :medium px)}]
 
-    [:&__title
-     {:font-weight :bold}]
+   [:&__title
+    {:font-weight :bold}]
 
-    [:&__divider
-     {:margin [[0 (-> dimensions :spacing :medium px)]]
-      :color (-> colours :grey :dark)}]
+   [:&__divider
+    {:margin [[0 (-> dimensions :spacing :medium px)]]
+     :color (-> colours :grey :dark)}]
 
-    [:&__subtitle
-     {:color (-> colours :grey :dark)}]]
+   [:&__subtitle
+    {:color (-> colours :grey :dark)}]
 
    [:&__body
     {:display :flex
-     :height (px 130)
      :margin-top (-> dimensions :spacing :large px)}
 
     [:&__section-left
-     {:width (px 32)
-      :min-width (px 32)}]
+     {:width (-> task :day-label-width px)
+      :min-width (-> task :day-label-width px)}]
 
     [:&__section-right
      {:position :relative
@@ -148,7 +160,7 @@
 
    [:&__day-label
     {:display :block
-     :height (px 32)
+     :height (-> task :day-label-height px)
      :font-size (-> text :paragraph :small px)
      :font-weight :bold}]
 
@@ -170,8 +182,7 @@
      :bottom 0
      :right 0
      :width (px 830)
-     :height (px 20)
-     }
+     :height (px 20)}
     [:&__month-label
      {:display :inline-block
       :width (px 64)
