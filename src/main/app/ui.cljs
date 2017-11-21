@@ -38,9 +38,6 @@
 (def ui-user (om/factory User))
 
 
-
-
-
 (defui ^:once Task
   static om/IQuery
   (query
