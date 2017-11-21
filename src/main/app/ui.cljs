@@ -63,20 +63,19 @@
       (dom/div
        #js {:className "task__header"}
        (dom/span
-        #js {:className "task__title"}
+        #js {:className "task__header__title"}
         title)
        (dom/span
-        #js {:className "task__divider"}
+        #js {:className "task__header__separator"}
         "—")
        (dom/span
-        #js {:className "task__subtitle"}
+        #js {:className "task__header__subtitle"}
         subtitle))
 
       (dom/div
-       #js {:className "task__body"}
-
+       #js {:className "task__calendar"}
        (dom/div
-        #js {:className "task__body__section-left"}
+        #js {:className "task__calendar__section-left"}
         (doall
          (for [day-label ["mon" "wed" "fri" "sun"]]
            (dom/div
@@ -87,10 +86,9 @@
              day-label)))))
 
        (dom/div
-        #js {:className "task__body__section-right"}
+        #js {:className "task__calendar__section-right"}
         (dom/div
-         #js {:className "task__body__section-right__insulator"}
-
+         #js {:className "task__calendar__section-right__insulator"}
          (dom/div
           #js {:className "task__days"}
           (doall

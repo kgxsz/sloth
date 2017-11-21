@@ -137,19 +137,21 @@
    {:margin-top (-> dimensions :spacing :x-large px)}
 
    [:&__header
-    {:font-size (-> text :heading :medium px)}]
+    [:&__title
+     {:font-size (-> text :heading :medium px)
+      :font-weight :bold
+      :color (-> colours :black :light)}]
+    [:&__separator
+     {:padding [[0 (-> dimensions :spacing :medium px)]]
+      :font-size (-> text :heading :medium px)
+      :font-weight :normal
+      :color (-> colours :grey :dark)}]
+    [:&__subtitle
+     {:font-size (-> text :heading :medium px)
+      :font-weight :normal
+      :color (-> colours :grey :dark)}]]
 
-   [:&__title
-    {:font-weight :bold}]
-
-   [:&__divider
-    {:margin [[0 (-> dimensions :spacing :medium px)]]
-     :color (-> colours :grey :dark)}]
-
-   [:&__subtitle
-    {:color (-> colours :grey :dark)}]
-
-   [:&__body
+   [:&__calendar
     {:display :flex
      :height (px (+ (:days-height task) (:label-container-width task)))
      :margin-top (-> dimensions :spacing :large px)}
