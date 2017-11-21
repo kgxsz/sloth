@@ -24,7 +24,8 @@
              :xx-small 10
              :x-small 14
              :small 20
-             :medium 40}
+             :medium 24
+             :large 32}
    :radius {:tiny 1}
    :breakpoint {:tiny 320
                 :small 480
@@ -44,9 +45,8 @@
         day-gutter (-> dimensions :spacing :xxx-small)]
     {:day-width day-width
      :day-gutter day-gutter
-     :day-label-width 32
-     :day-label-height (* 2 (+ day-width day-gutter))
-     :month-label-height 20
+     :label-container-width (-> dimensions :filling :large)
+     :day-label-container-height (* 2 (+ day-width day-gutter))
      :days-width (+ (* 52 day-width) (* 51 day-gutter))
      :days-height (+ (* 7 day-width) (* 6 day-gutter))}))
 
@@ -54,10 +54,14 @@
   {:height 24})
 
 (def page
-  {:width {:tiny (+ (* 17 (:day-width task)) (* 16 (:day-gutter task)) (:day-label-width task))
-           :small (+ (* 27 (:day-width task)) (* 26 (:day-gutter task)) (:day-label-width task))
-           :medium (+ (* 45 (:day-width task)) (* 44 (:day-gutter task)) (:day-label-width task))
-           :large (+ (* 52 (:day-width task)) (* 51 (:day-gutter task)) (:day-label-width task))}})
+  (let [weeks-to-widths (fn [num-weeks]
+                          (+ (* num-weeks (:day-width task))
+                             (* (dec num-weeks) (:day-gutter task))
+                             (:label-container-width task)))]
+    {:width {:tiny (weeks-to-widths 17)
+             :small (weeks-to-widths 27)
+             :medium (weeks-to-widths 45)
+             :large (weeks-to-widths 52)}}))
 
 (defstyles app
   [:.app])
@@ -148,47 +152,50 @@
 
    [:&__body
     {:display :flex
+     :height (px (+ (:days-height task) (:label-container-width task)))
      :margin-top (-> dimensions :spacing :large px)}
 
     [:&__section-left
-     {:width (-> task :day-label-width px)
-      :min-width (-> task :day-label-width px)}]
+     {:width (-> task :label-container-width px)
+      :min-width (-> task :label-container-width px)}]
 
     [:&__section-right
      {:position :relative
       :overflow :hidden
-      :width (percent 100)}]]
+      :width (percent 100)}
+     [:&__insulator
+      {:position :absolute
+       :right 0
+       :width (-> task :days-width px)}]]]
 
-   [:&__day-label
+   [:&__label
     {:display :block
-     :height (-> task :day-label-height px)
      :font-size (-> text :paragraph :small px)
-     :font-weight :bold}]
+     :font-weight :bold}
+    [:&--vertical
+     {:transform "rotate(-90deg)"
+      :transform-origin [[:left :top 0]]}]]
+
+   [:&__day-label-container
+    {:height (-> task :day-label-container-height px)}]
 
    [:&__days
     {:display :grid
      :grid-template-columns [(repeat 52 (-> task :day-width px))]
      :grid-auto-rows (-> task :day-width px)
-     :grid-gap (-> task :day-gutter px)
-     :position :absolute
-     :top 0
-     :right 0
-     :width (-> task :days-width px)}
+     :grid-gap (-> task :day-gutter px)}
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)
       :background-color (-> colours :grey :light)}]]
 
    [:&__month-labels
-    {:position :absolute
-     :bottom 0
-     :right 0
-     :width (-> task :days-width px)
-     :height (-> task :month-label-height px)}
-    [:&__month-label
-     {:display :inline-block
-      :width (px 64) ;; TODO - this is decided by the application
-      :font-size (-> text :paragraph :small px)
-      :font-weight :bold}]]
+    {:display :flex}
+    [:&__month-label-container
+     {:position :relative
+      :top (-> task :label-container-width px)
+      :height 0
+      :width (px 64)  ;; TODO - this is decided by the application
+      }]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)

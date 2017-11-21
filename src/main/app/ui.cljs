@@ -79,29 +79,36 @@
         #js {:className "task__body__section-left"}
         (doall
          (for [day-label ["mon" "wed" "fri" "sun"]]
-           (dom/span
+           (dom/div
             #js {:key day-label
-                 :className "task__day-label"}
-            day-label))))
+                 :className "task__day-label-container"}
+            (dom/span
+             #js {:className "task__label"}
+             day-label)))))
 
        (dom/div
         #js {:className "task__body__section-right"}
+        (dom/div
+         #js {:className "task__body__section-right__insulator"}
 
-        (dom/div
-         #js {:className "task__days"}
-         (doall
-          (for [i (range 364)]
-            (dom/div
-             #js {:key i
-                  :className "task__days__day"}))))
-        (dom/div
-         #js {:className "task__month-labels"}
-         (doall
-          (for [month-label ["jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "oct" "nov" "dec"]]
-            (dom/span
-             #js {:key month-label
-                  :className "task__month-labels__month-label"}
-             month-label))))))
+         (dom/div
+          #js {:className "task__days"}
+          (doall
+           (for [i (range 364)]
+             (dom/div
+              #js {:key i
+                   :className "task__days__day"}))))
+
+         (dom/div
+          #js {:className "task__month-labels"}
+          (doall
+           (for [month-label ["jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "oct" "nov" "dec"]]
+             (dom/div
+              #js {:key month-label
+                   :className "task__month-labels__month-label-container"}
+              (dom/span
+               #js {:className "task__label task__label--vertical"}
+               month-label))))))))
 
       (dom/div
        #js {:className "task__footer"})))))
