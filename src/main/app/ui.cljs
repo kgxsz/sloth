@@ -139,7 +139,7 @@
       #js {:key react-key
            :className "app"}
       (dom/div
-       #js {:className "notice notice--hidden"}
+       #js {:className "app-error-notice"}
        "You need to use a wider screen.")
       (dom/div
        #js {:className "page"}

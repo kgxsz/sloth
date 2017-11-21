@@ -66,21 +66,20 @@
 (defstyles app
   [:.app])
 
-(defstyles notice
-  [:.notice
-   {:padding [[(-> dimensions :spacing :large px) (-> dimensions :spacing :medium px)]]
+(defstyles app-error-notice
+  [:.app-error-notice
+   {:position :absolute
+    :left 0
+    :right 0
+    :z-index -1
+    :padding [[(-> dimensions :spacing :large px) (-> dimensions :spacing :medium px)]]
     :text-align :center
-    :color (-> colours :grey :dark)}
-
-   [:&--hidden
-    (at-media
-     {:min-width (-> dimensions :breakpoint :tiny px)}
-     [:&
-      {:display :none}])]])
+    :color (-> colours :grey :dark)}])
 
 (defstyles page
   [:.page
-   {:display :none}
+   {:display :none
+    :background-color (-> colours :white :light)}
 
    (at-media
     {:min-width (-> dimensions :breakpoint :tiny px)}
@@ -225,7 +224,7 @@
   normalize
   foundations
   app
-  notice
+  app-error-notice
   page
   user
   task)
