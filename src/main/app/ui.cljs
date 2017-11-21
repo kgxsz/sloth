@@ -94,9 +94,9 @@
          (dom/div
           #js {:className "task__days"}
           (doall
-           (for [i (range 364)]
+           (for [day (range 364)]
              (dom/div
-              #js {:key i
+              #js {:key day
                    :className "task__days__day"}))))
 
          (dom/div
