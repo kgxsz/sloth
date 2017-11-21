@@ -21,8 +21,11 @@
              :x-large 60
              :huge 100}
    :filling {:tiny 2
+             :xx-small 10
+             :x-small 14
              :small 20
              :medium 40}
+   :radius {:tiny 1}
    :breakpoint {:tiny 320
                 :small 480
                 :medium 768
@@ -37,8 +40,8 @@
                :medium 14}})
 
 (def task
-  (let [day-width 14
-        day-gutter 2]
+  (let [day-width (-> dimensions :filling :x-small)
+        day-gutter (-> dimensions :spacing :xxx-small)]
     {:day-width day-width
      :day-gutter day-gutter
      :day-label-width 32
@@ -51,12 +54,10 @@
   {:height 24})
 
 (def page
-  {:width {:tiny 300
-           :small 460
-           :medium 700
-           :large (+ (:days-width task) (:day-label-width task))}})
-;; 862
-
+  {:width {:tiny (+ (* 17 (:day-width task)) (* 16 (:day-gutter task)) (:day-label-width task))
+           :small (+ (* 27 (:day-width task)) (* 26 (:day-gutter task)) (:day-label-width task))
+           :medium (+ (* 45 (:day-width task)) (* 44 (:day-gutter task)) (:day-label-width task))
+           :large (+ (* 52 (:day-width task)) (* 51 (:day-gutter task)) (:day-label-width task))}})
 
 (defstyles app
   [:.app])
@@ -166,26 +167,26 @@
 
    [:&__days
     {:display :grid
-     :grid-template-columns [(repeat 52 (px 14))]
-     :grid-auto-rows (px 14)
-     :grid-gap (px 2)
+     :grid-template-columns [(repeat 52 (-> task :day-width px))]
+     :grid-auto-rows (-> task :day-width px)
+     :grid-gap (-> task :day-gutter px)
      :position :absolute
      :top 0
      :right 0
-     :width (px 830)}
+     :width (-> task :days-width px)}
     [:&__day
-     {:border-radius (px 1)
+     {:border-radius (-> dimensions :radius :tiny px)
       :background-color (-> colours :grey :light)}]]
 
    [:&__month-labels
     {:position :absolute
      :bottom 0
      :right 0
-     :width (px 830)
-     :height (px 20)}
+     :width (-> task :days-width px)
+     :height (-> task :month-label-height px)}
     [:&__month-label
      {:display :inline-block
-      :width (px 64)
+      :width (px 64) ;; TODO - this is decided by the application
       :font-size (-> text :paragraph :small px)
       :font-weight :bold}]]
 
