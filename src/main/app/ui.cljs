@@ -63,13 +63,13 @@
       (dom/div
        #js {:className "task__header"}
        (dom/span
-        #js {:className "task__header__title"}
+        #js {:className "task__title"}
         title)
        (dom/span
-        #js {:className "task__header__divider"}
+        #js {:className "task__divider"}
         "—")
        (dom/span
-        #js {:className "task__header__subtitle"}
+        #js {:className "task__subtitle"}
         subtitle))
 
       (dom/div
