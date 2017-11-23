@@ -1,6 +1,8 @@
 (ns app.ui
   (:require [app.operations :as ops]
             [app.schema :as schema]
+            [cljs-time.core :as t]
+            [cljs-time.format :as tf]
             [fulcro.client.core :as fc]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
@@ -88,11 +90,18 @@
          #js {:className "task__calendar__section-right__insulator"}
          (dom/div
           #js {:className "task__days"}
-          (doall
-           (for [day (range 364)]
-             (dom/div
-              #js {:key day
-                   :className "task__days__day"}))))
+          (let [today (t/today)
+                days (->> today
+                          (iterate #(t/minus- % (t/days 1)))
+                          (take (+ 357 (t/day-of-week today)))
+                          (reverse))
+                formatter (tf/formatter "EEEE do 'of' MMMM, Y")]
+            (doall
+             (for [day days]
+               (dom/div
+                #js {:key (tf/unparse (tf/formatters :basic-date) day)
+                     :title (tf/unparse formatter day)
+                     :className "task__days__day"})))))
 
          (dom/div
           #js {:className "task__month-labels"}
