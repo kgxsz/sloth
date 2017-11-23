@@ -191,13 +191,13 @@
       :background-color (-> colours :grey :light)}]]
 
    [:&__month-labels
-    {:display :flex}
+    {:display :flex
+     :flex-direction :row-reverse}
     [:&__month-label-container
      {:position :relative
       :top (-> task :label-container-width px)
       :height 0
-      :width (px 64)  ;; TODO - this is decided by the application
-      }]]
+      :width (px (+ (-> task :day-width) (-> task :day-gutter)))}]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)

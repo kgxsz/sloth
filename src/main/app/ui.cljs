@@ -76,7 +76,7 @@
        (dom/div
         #js {:className "task__calendar__section-left"}
         (doall
-         (for [day-label ["mon" "wed" "fri" "sun"]]
+         (for [day-label ["Mon" "Wed" "Fri" "Sun"]]
            (dom/div
             #js {:key day-label
                  :className "task__day-label-container"}
@@ -90,12 +90,12 @@
          #js {:className "task__calendar__section-right__insulator"}
          (dom/div
           #js {:className "task__days"}
-          (let [today (t/today)
+          (let [formatter (tf/formatter "EEEE do 'of' MMMM, Y")
+                today (t/today)
                 days (->> today
                           (iterate #(t/minus- % (t/days 1)))
                           (take (+ 357 (t/day-of-week today)))
-                          (reverse))
-                formatter (tf/formatter "EEEE do 'of' MMMM, Y")]
+                          (reverse))]
             (doall
              (for [day days]
                (dom/div
@@ -103,19 +103,36 @@
                      :title (tf/unparse formatter day)
                      :className "task__days__day"})))))
 
-         (dom/div
+ (dom/div
           #js {:className "task__month-labels"}
-          (doall
-           (for [month-label ["jan" "feb" "mar" "apr" "may" "jun" "jul" "aug" "sep" "oct" "nov" "dec"]]
-             (dom/div
-              #js {:key month-label
-                   :className "task__month-labels__month-label-container"}
-              (dom/span
-               #js {:className "task__calendar__label task__calendar__label--vertical"}
-               month-label))))))))
+          (let [formatter (tf/formatter "MMM")
+                today (t/today)
+                next-sunday (t/plus- today (t/days (- 7 (t/day-of-week today))))
+                sundays (->> next-sunday
+                             (iterate #(t/minus- % (t/weeks 1)))
+                             (take 52))]
+            (doall
+             (for [sunday sundays]
+               (let [show? (< (t/day sunday) 8)]
+                 (dom/div
+                  #js {:key (tf/unparse (tf/formatters :basic-date) sunday)
+                       :className "task__month-labels__month-label-container"}
+                  (when show?
+                    (dom/span
+                     #js {:className "task__calendar__label task__calendar__label--vertical"}
+                     (tf/unparse formatter sunday))))))))))))
 
       (dom/div
        #js {:className "task__footer"})))))
+
+(def next-sunday (t/plus- (t/today) (t/days (- 7 (t/day-of-week (t/today))))))
+
+(->> next-sunday
+     (iterate #(t/minus- % (t/weeks 1)))
+     (take 52)
+     (map (partial tf/unparse (tf/formatter "MMM"))))
+
+(tf/unparse (tf/formatters :basic-date) next-sunday)
 
 (def ui-task (om/factory Task))
 
