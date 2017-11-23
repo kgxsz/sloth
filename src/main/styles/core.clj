@@ -182,8 +182,9 @@
 
    [:&__days
     {:display :grid
-     :grid-template-columns [(repeat 52 (-> task :day-width px))]
-     :grid-auto-rows (-> task :day-width px)
+     :grid-template-rows [(repeat 7 (-> task :day-width px))]
+     :grid-auto-columns (-> task :day-width px)
+     :grid-auto-flow :column
      :grid-gap (-> task :day-gutter px)}
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)
