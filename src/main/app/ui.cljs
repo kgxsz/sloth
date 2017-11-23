@@ -125,14 +125,6 @@
       (dom/div
        #js {:className "task__footer"})))))
 
-(def next-sunday (t/plus- (t/today) (t/days (- 7 (t/day-of-week (t/today))))))
-
-(->> next-sunday
-     (iterate #(t/minus- % (t/weeks 1)))
-     (take 52)
-     (map (partial tf/unparse (tf/formatter "MMM"))))
-
-(tf/unparse (tf/formatters :basic-date) next-sunday)
 
 (def ui-task (om/factory Task))
 
