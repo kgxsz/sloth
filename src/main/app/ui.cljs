@@ -3,6 +3,7 @@
             [app.schema :as schema]
             [cljs-time.core :as t]
             [cljs-time.format :as tf]
+            [cljs-time.coerce :as tc]
             [fulcro.client.core :as fc]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
@@ -40,56 +41,56 @@
 (def ui-user (om/factory User))
 
 
-(defui ^:once Task
+(defui ^:once Calendar
   static om/IQuery
   (query
    [_]
-   [:task/title
-    :task/subtitle])
+   [:calendar/title
+    :calendar/subtitle])
 
   static fc/InitialAppState
   (initial-state
    [_ {:keys [title subtitle]}]
-   {:task/title title
-    :task/subtitle subtitle})
+   {:calendar/title title
+    :calendar/subtitle subtitle})
 
   Object
   (render
    [this]
-   (let [{:keys [task/title task/subtitle]} (om/props this)]
+   (let [{:keys [calendar/title calendar/subtitle]} (om/props this)]
      (dom/div
-      #js {:className "task"}
+      #js {:className "calendar"}
       (dom/div
-       #js {:className "task__header"}
+       #js {:className "calendar__header"}
        (dom/span
-        #js {:className "task__header__title"}
+        #js {:className "calendar__header__title"}
         title)
        (dom/span
-        #js {:className "task__header__separator"}
+        #js {:className "calendar__header__separator"}
         "—")
        (dom/span
-        #js {:className "task__header__subtitle"}
+        #js {:className "calendar__header__subtitle"}
         subtitle))
 
       (dom/div
-       #js {:className "task__calendar"}
+       #js {:className "calendar__body"}
        (dom/div
-        #js {:className "task__calendar__section-left"}
+        #js {:className "calendar__body__section-left"}
         (doall
          (for [day-label ["Mon" "Wed" "Fri" "Sun"]]
            (dom/div
             #js {:key day-label
-                 :className "task__day-label-container"}
+                 :className "calendar__day-label-container"}
             (dom/span
-             #js {:className "task__calendar__label"}
+             #js {:className "calendar__label"}
              day-label)))))
 
        (dom/div
-        #js {:className "task__calendar__section-right"}
+        #js {:className "calendar__body__section-right"}
         (dom/div
-         #js {:className "task__calendar__section-right__insulator"}
+         #js {:className "calendar__body__section-right__insulator"}
          (dom/div
-          #js {:className "task__days"}
+          #js {:className "calendar__days"}
           (let [formatter (tf/formatter "EEEE do 'of' MMMM, Y")
                 today (t/today)
                 days (->> today
@@ -101,10 +102,10 @@
                (dom/div
                 #js {:key (tf/unparse (tf/formatters :basic-date) day)
                      :title (tf/unparse formatter day)
-                     :className "task__days__day"})))))
+                     :className "calendar__days__day"})))))
 
- (dom/div
-          #js {:className "task__month-labels"}
+         (dom/div
+          #js {:className "calendar__month-labels"}
           (let [formatter (tf/formatter "MMM")
                 today (t/today)
                 next-sunday (t/plus- today (t/days (- 7 (t/day-of-week today))))
@@ -116,17 +117,20 @@
                (let [show? (< (t/day sunday) 8)]
                  (dom/div
                   #js {:key (tf/unparse (tf/formatters :basic-date) sunday)
-                       :className "task__month-labels__month-label-container"}
+                       :className "calendar__month-labels__month-label-container"}
                   (when show?
                     (dom/span
-                     #js {:className "task__calendar__label task__calendar__label--vertical"}
+                     #js {:className "calendar__label calendar__label--vertical"}
                      (tf/unparse formatter sunday))))))))))))
 
       (dom/div
-       #js {:className "task__footer"})))))
+       #js {:className "calendar__footer"})))))
 
 
-(def ui-task (om/factory Task))
+(tc/from-long (tc/to-long (t/today)))
+
+
+(def ui-calendar (om/factory Calendar))
 
 
 (defui ^:once App
@@ -135,19 +139,19 @@
    [_]
    [:ui/react-key
     {:user (om/get-query User)}
-    {:task (om/get-query Task)}])
+    {:calendar (om/get-query Calendar)}])
   static fc/InitialAppState
   (initial-state
    [_ _]
    {:user (fc/get-initial-state User {:first-name "Keigo"
                                       :avatar-url "images/avatar.jpg"})
-    :task (fc/get-initial-state Task {:title "Some task"
-                                      :subtitle "some condition of satisfaction"})})
+    :calendar (fc/get-initial-state Calendar {:title "Some title"
+                                              :subtitle "some subtitle"})})
 
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key user task]} (om/props this)]
+   (let [{:keys [ui/react-key user calendar]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
@@ -157,4 +161,4 @@
       (dom/div
        #js {:className "page"}
        (ui-user user)
-       (ui-task task))))))
+       (ui-calendar calendar))))))

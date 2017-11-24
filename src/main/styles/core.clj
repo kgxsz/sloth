@@ -40,7 +40,7 @@
    :paragraph {:small 12
                :medium 14}})
 
-(def task
+(def calendar
   (let [day-width (-> dimensions :filling :x-small)
         day-gutter (-> dimensions :spacing :xxx-small)]
     {:day-width day-width
@@ -55,9 +55,9 @@
 
 (def page
   (let [weeks-to-widths (fn [num-weeks]
-                          (+ (* num-weeks (:day-width task))
-                             (* (dec num-weeks) (:day-gutter task))
-                             (:label-container-width task)))]
+                          (+ (* num-weeks (:day-width calendar))
+                             (* (dec num-weeks) (:day-gutter calendar))
+                             (:label-container-width calendar)))]
     {:width {:tiny (weeks-to-widths 17)
              :small (weeks-to-widths 27)
              :medium (weeks-to-widths 45)
@@ -132,8 +132,8 @@
      :margin-left (-> dimensions :spacing :medium px)
      :background-color (-> colours :grey :light)}]])
 
-(defstyles task
-  [:.task
+(defstyles calendar
+  [:.calendar
    {:margin-top (-> dimensions :spacing :x-large px)}
 
    [:&__header
@@ -151,14 +151,14 @@
       :font-weight :normal
       :color (-> colours :grey :dark)}]]
 
-   [:&__calendar
+   [:&__body
     {:display :flex
-     :height (px (+ (:days-height task) (:label-container-width task)))
+     :height (px (+ (:days-height calendar) (:label-container-width calendar)))
      :margin-top (-> dimensions :spacing :large px)}
 
     [:&__section-left
-     {:width (-> task :label-container-width px)
-      :min-width (-> task :label-container-width px)}]
+     {:width (-> calendar :label-container-width px)
+      :min-width (-> calendar :label-container-width px)}]
 
     [:&__section-right
      {:position :relative
@@ -167,25 +167,25 @@
      [:&__insulator
       {:position :absolute
        :right 0
-       :width (-> task :days-width px)}]]
+       :width (-> calendar :days-width px)}]]]
 
-    [:&__label
-     {:display :block
-      :font-size (-> text :paragraph :small px)
-      :font-weight :bold}
-     [:&--vertical
-      {:transform "rotate(-90deg)"
-       :transform-origin [[:left :top 0]]}]]]
+   [:&__label
+    {:display :block
+     :font-size (-> text :paragraph :small px)
+     :font-weight :bold}
+    [:&--vertical
+     {:transform "rotate(-90deg)"
+      :transform-origin [[:left :top 0]]}]]
 
    [:&__day-label-container
-    {:height (-> task :day-label-container-height px)}]
+    {:height (-> calendar :day-label-container-height px)}]
 
    [:&__days
     {:display :grid
-     :grid-template-rows [(repeat 7 (-> task :day-width px))]
-     :grid-auto-columns (-> task :day-width px)
+     :grid-template-rows [(repeat 7 (-> calendar :day-width px))]
+     :grid-auto-columns (-> calendar :day-width px)
      :grid-auto-flow :column
-     :grid-gap (-> task :day-gutter px)}
+     :grid-gap (-> calendar :day-gutter px)}
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)
       :background-color (-> colours :grey :light)}]]
@@ -195,9 +195,9 @@
      :flex-direction :row-reverse}
     [:&__month-label-container
      {:position :relative
-      :top (-> task :label-container-width px)
+      :top (-> calendar :label-container-width px)
       :height 0
-      :width (px (+ (-> task :day-width) (-> task :day-gutter)))}]]
+      :width (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))}]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)
@@ -230,4 +230,4 @@
   app-error-notice
   page
   user
-  task)
+  calendar)
