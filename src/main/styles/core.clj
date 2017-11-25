@@ -193,10 +193,11 @@
      :grid-auto-flow :column
      :grid-gap (-> calendar :day-gutter px)}
     [:&__day
-     {:border-radius (-> dimensions :radius :tiny px)
-      :background-color (-> colours :grey :light)}
-     [:&--medium
-      {:background-color (-> colours :grey :medium)}]]]
+     {:border-radius (-> dimensions :radius :tiny px)}
+     [:&--dark
+      {:background-color (-> colours :grey :medium)}]
+     [:&--light
+      {:background-color (-> colours :grey :light)}]]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)

@@ -67,7 +67,9 @@
            :title (tf/unparse title-formatter date)
            ;; TODO - time to use utils for BEM
            :className (str "calendar__days__day"
-                           (when (odd? (t/month date)) " calendar__days__day--medium"))}))))
+                           (if (odd? (t/month date))
+                             " calendar__days__day--dark"
+                             " calendar__days__day--light"))}))))
 
 (def ui-day (om/factory Day))
 
