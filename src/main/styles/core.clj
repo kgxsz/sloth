@@ -45,10 +45,7 @@
         day-gutter (-> dimensions :spacing :xxx-small)]
     {:day-width day-width
      :day-gutter day-gutter
-     :label-container-width (-> dimensions :filling :large)
-     :day-label-container-height (* 2 (+ day-width day-gutter))
-     :days-width (+ (* 52 day-width) (* 51 day-gutter))
-     :days-height (+ (* 7 day-width) (* 6 day-gutter))}))
+     :label-container-width (-> dimensions :filling :large)}))
 
 (def user
   {:height 24})
@@ -152,37 +149,49 @@
       :color (-> colours :grey :dark)}]]
 
    [:&__body
-    {:display :flex
-     :height (px (+ (:days-height calendar) (:label-container-width calendar)))
-     :margin-top (-> dimensions :spacing :large px)}
+    {:position :relative
+     :overflow :hidden
+     :height (px (+ (* 7 (:day-width calendar))
+                    (* 6 (:day-gutter calendar))
+                    (:label-container-width calendar)))
+     :width (percent 100)
+     :margin-top (-> dimensions :spacing :large px)}]
 
-    [:&__section-left
-     {:width (-> calendar :label-container-width px)
-      :min-width (-> calendar :label-container-width px)}]
-
-    ;; TODO - use absolute position instead of insulators
-    [:&__section-right
-     {:position :relative
-      :overflow :hidden
-      :width (percent 100)}
-     [:&__insulator
-      {:position :absolute
-       :right 0
-       :width (-> calendar :days-width px)}]]]
+   [:&__labels
+    [:&--horizontal
+     {:position :absolute
+      :bottom 0
+      :right 0
+      :display :flex
+      :flex-direction :row-reverse
+      :height 0
+      :background-color :green}]
+    [:&--vertical
+     {:position :absolute
+      :top 0
+      :bottom 0
+      :left 0
+      :width (-> calendar :label-container-width px)
+      :background-color (-> colours :white :light)}]]
 
    [:&__label
     {:display :block
      :font-size (-> text :paragraph :small px)
      :font-weight :bold}
+    [:&--hidden
+     {:visibility :hidden}]
+    [:&--horizontal
+     {:height (px (* 2 (+ (-> calendar :day-width) (-> calendar :day-gutter))))}]
     [:&--vertical
-     {:transform "rotate(-90deg)"
+     {:width (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))
+      :transform "rotate(-90deg)"
       :transform-origin [[:left :top 0]]}]]
 
-   [:&__day-label-container
-    {:height (-> calendar :day-label-container-height px)}]
-
    [:&__days
-    {:display :grid
+    {:position :absolute
+     :top 0
+     :right 0
+     :display :grid
      :grid-template-rows [(repeat 7 (-> calendar :day-width px))]
      :grid-auto-columns (-> calendar :day-width px)
      :grid-auto-flow :column
@@ -190,15 +199,6 @@
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)
       :background-color (-> colours :grey :light)}]]
-
-   [:&__month-labels
-    {:display :flex
-     :flex-direction :row-reverse}
-    [:&__month-label-container
-     {:position :relative
-      :top (-> calendar :label-container-width px)
-      :height 0
-      :width (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))}]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)

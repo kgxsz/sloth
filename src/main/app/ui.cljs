@@ -113,38 +113,31 @@
       (dom/div
        #js {:className "calendar__body"}
        (dom/div
-        #js {:className "calendar__body__section-left"}
-        (doall
-         (for [day-label ["Mon" "Wed" "Fri" "Sun"]]
-           (dom/div
-            #js {:key day-label
-                 :className "calendar__day-label-container"}
-            (dom/span
-             #js {:className "calendar__label"}
-             day-label)))))
+        #js {:className "calendar__days"}
+        (map ui-day days))
 
        (dom/div
-        #js {:className "calendar__body__section-right"}
-        (dom/div
-         #js {:className "calendar__body__section-right__insulator"}
-         (dom/div
-          #js {:className "calendar__days"}
-          (map ui-day days))
+        #js {:className "calendar__labels calendar__labels--horizontal"}
+        (doall
+         (for [last-day-of-the-week (->> (t/plus- today (t/days (- 7 (t/day-of-week today))))
+                                         (iterate #(t/minus- % (t/weeks 1)))
+                                         (take 52))]
+           (let [hidden? (> (t/day last-day-of-the-week) 7)]
+             (dom/span
+              #js {:key (tf/unparse key-formatter last-day-of-the-week)
+                   ;; TODO - time to use utils for BEM
+                   :className (str "calendar__label calendar__label--vertical"
+                                   (when hidden? " calendar__label--hidden"))}
+              (tf/unparse month-label-formatter last-day-of-the-week))))))
 
-         (dom/div
-          #js {:className "calendar__month-labels"}
-          (doall
-           (for [last-day-of-the-week (->> (t/plus- today (t/days (- 7 (t/day-of-week today))))
-                                           (iterate #(t/minus- % (t/weeks 1)))
-                                           (take 52))]
-             (let [show? (< (t/day last-day-of-the-week) 8)]
-               (dom/div
-                #js {:key (tf/unparse key-formatter last-day-of-the-week)
-                     :className "calendar__month-labels__month-label-container"}
-                (when show?
-                  (dom/span
-                   #js {:className "calendar__label calendar__label--vertical"}
-                   (tf/unparse month-label-formatter last-day-of-the-week)))))))))))
+       (dom/div
+        #js {:className "calendar__labels calendar__labels--vertical"}
+        (doall
+         (for [day-label ["Mon" "Wed" "Fri" "Sun"]]
+           (dom/span
+            #js {:key day-label
+                 :className "calendar__label calendar__label--horizontal"}
+            day-label)))))
 
       (dom/div
        #js {:className "calendar__footer"})))))
