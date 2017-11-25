@@ -8,6 +8,10 @@
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
 
+(def title-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
+(def month-label-formatter (tf/formatter "MMM"))
+(def key-formatter (tf/formatters :basic-date))
+
 (defui ^:once User
   static om/IQuery
   (query
@@ -41,23 +45,55 @@
 (def ui-user (om/factory User))
 
 
+(defui ^:once Day
+  static om/IQuery
+  (query
+   [_]
+   [:day/date
+    :day/selected?])
+
+  static fc/InitialAppState
+  (initial-state
+   [_ {:keys [date selected?]}]
+   {:day/date date
+    :day/selected? selected?})
+
+  Object
+  (render
+   [this]
+   (let [{:keys [day/date day/selected?]} (om/props this)]
+     (dom/div
+      #js {:key date
+           :title (tf/unparse title-formatter date)
+           :className "calendar__days__day"}))))
+
+(def ui-day (om/factory Day))
+
+
 (defui ^:once Calendar
   static om/IQuery
   (query
    [_]
    [:calendar/title
-    :calendar/subtitle])
+    :calendar/subtitle
+    :calendar/today
+    {:calendar/days (om/get-query Day)}])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [title subtitle]}]
+   [_ {:keys [title subtitle today]}]
    {:calendar/title title
-    :calendar/subtitle subtitle})
+    :calendar/subtitle subtitle
+    :calendar/today today
+    :calendar/days (mapv
+                    (fn [n]
+                      (fc/get-initial-state Day {:date (t/plus- today (t/days n)) :selected? false}))
+                    (range (- -356 (t/day-of-week today)) 1))})
 
   Object
   (render
    [this]
-   (let [{:keys [calendar/title calendar/subtitle]} (om/props this)]
+   (let [{:keys [calendar/title calendar/subtitle calendar/today calendar/days]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -91,24 +127,11 @@
          #js {:className "calendar__body__section-right__insulator"}
          (dom/div
           #js {:className "calendar__days"}
-          (let [formatter (tf/formatter "EEEE do 'of' MMMM, Y")
-                today (t/today)
-                days (->> today
-                          (iterate #(t/minus- % (t/days 1)))
-                          (take (+ 357 (t/day-of-week today)))
-                          (reverse))]
-            (doall
-             (for [day days]
-               (dom/div
-                #js {:key (tf/unparse (tf/formatters :basic-date) day)
-                     :title (tf/unparse formatter day)
-                     :className "calendar__days__day"})))))
+          (map ui-day days))
 
          (dom/div
           #js {:className "calendar__month-labels"}
-          (let [formatter (tf/formatter "MMM")
-                today (t/today)
-                next-sunday (t/plus- today (t/days (- 7 (t/day-of-week today))))
+          (let [next-sunday (t/plus- today (t/days (- 7 (t/day-of-week today))))
                 sundays (->> next-sunday
                              (iterate #(t/minus- % (t/weeks 1)))
                              (take 52))]
@@ -116,19 +139,15 @@
              (for [sunday sundays]
                (let [show? (< (t/day sunday) 8)]
                  (dom/div
-                  #js {:key (tf/unparse (tf/formatters :basic-date) sunday)
+                  #js {:key (tf/unparse key-formatter sunday)
                        :className "calendar__month-labels__month-label-container"}
                   (when show?
                     (dom/span
                      #js {:className "calendar__label calendar__label--vertical"}
-                     (tf/unparse formatter sunday))))))))))))
+                     (tf/unparse month-label-formatter sunday))))))))))))
 
       (dom/div
        #js {:className "calendar__footer"})))))
-
-
-(tc/from-long (tc/to-long (t/today)))
-
 
 (def ui-calendar (om/factory Calendar))
 
@@ -146,7 +165,8 @@
    {:user (fc/get-initial-state User {:first-name "Keigo"
                                       :avatar-url "images/avatar.jpg"})
     :calendar (fc/get-initial-state Calendar {:title "Some title"
-                                              :subtitle "some subtitle"})})
+                                              :subtitle "some subtitle"
+                                              :today (t/today)})})
 
   Object
   (render

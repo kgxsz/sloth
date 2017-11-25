@@ -160,6 +160,7 @@
      {:width (-> calendar :label-container-width px)
       :min-width (-> calendar :label-container-width px)}]
 
+    ;; TODO - use absolute position instead of insulators
     [:&__section-right
      {:position :relative
       :overflow :hidden
