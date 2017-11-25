@@ -85,10 +85,12 @@
    {:calendar/title title
     :calendar/subtitle subtitle
     :calendar/today today
-    :calendar/days (mapv
-                    (fn [n]
-                      (fc/get-initial-state Day {:date (t/plus- today (t/days n)) :selected? false}))
-                    (range (- -356 (t/day-of-week today)) 1))})
+    :calendar/days (into []
+                    (for [date (->> today
+                                    (iterate #(t/minus- % (t/days 1)))
+                                    (take (+ 357 (t/day-of-week today)))
+                                    (reverse))]
+                      (fc/get-initial-state Day {:date date :selected? false})))})
 
   Object
   (render
@@ -131,20 +133,18 @@
 
          (dom/div
           #js {:className "calendar__month-labels"}
-          (let [next-sunday (t/plus- today (t/days (- 7 (t/day-of-week today))))
-                sundays (->> next-sunday
-                             (iterate #(t/minus- % (t/weeks 1)))
-                             (take 52))]
-            (doall
-             (for [sunday sundays]
-               (let [show? (< (t/day sunday) 8)]
-                 (dom/div
-                  #js {:key (tf/unparse key-formatter sunday)
-                       :className "calendar__month-labels__month-label-container"}
-                  (when show?
-                    (dom/span
-                     #js {:className "calendar__label calendar__label--vertical"}
-                     (tf/unparse month-label-formatter sunday))))))))))))
+          (doall
+           (for [last-day-of-the-week (->> (t/plus- today (t/days (- 7 (t/day-of-week today))))
+                                           (iterate #(t/minus- % (t/weeks 1)))
+                                           (take 52))]
+             (let [show? (< (t/day last-day-of-the-week) 8)]
+               (dom/div
+                #js {:key (tf/unparse key-formatter last-day-of-the-week)
+                     :className "calendar__month-labels__month-label-container"}
+                (when show?
+                  (dom/span
+                   #js {:className "calendar__label calendar__label--vertical"}
+                   (tf/unparse month-label-formatter last-day-of-the-week)))))))))))
 
       (dom/div
        #js {:className "calendar__footer"})))))
