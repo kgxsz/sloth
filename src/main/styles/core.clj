@@ -41,20 +41,18 @@
                :medium 14}})
 
 (def calendar
-  (let [day-width (-> dimensions :filling :x-small)
-        day-gutter (-> dimensions :spacing :xxx-small)]
-    {:day-width day-width
-     :day-gutter day-gutter
-     :label-container-width (-> dimensions :filling :large)}))
+  {:day-width (-> dimensions :filling :x-small)
+   :day-gutter (-> dimensions :spacing :xxx-small)
+   :label-width (-> dimensions :filling :large)})
 
 (def user
-  {:height 24})
+  {:height (-> dimensions :filling :medium)})
 
 (def page
   (let [weeks-to-widths (fn [num-weeks]
                           (+ (* num-weeks (:day-width calendar))
                              (* (dec num-weeks) (:day-gutter calendar))
-                             (:label-container-width calendar)))]
+                             (:label-width calendar)))]
     {:width {:tiny (weeks-to-widths 17)
              :small (weeks-to-widths 27)
              :medium (weeks-to-widths 45)
@@ -153,7 +151,7 @@
      :overflow :hidden
      :height (px (+ (* 7 (:day-width calendar))
                     (* 6 (:day-gutter calendar))
-                    (:label-container-width calendar)))
+                    (:label-width calendar)))
      :width (percent 100)
      :margin-top (-> dimensions :spacing :large px)}]
 
@@ -171,7 +169,7 @@
       :top 0
       :bottom 0
       :left 0
-      :width (-> calendar :label-container-width px)
+      :width (-> calendar :label-width px)
       :background-color (-> colours :white :light)}]]
 
    [:&__label
