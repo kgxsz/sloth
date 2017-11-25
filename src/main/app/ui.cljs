@@ -65,7 +65,9 @@
      (dom/div
       #js {:key date
            :title (tf/unparse title-formatter date)
-           :className "calendar__days__day"}))))
+           ;; TODO - time to use utils for BEM
+           :className (str "calendar__days__day"
+                           (when (odd? (t/month date)) " calendar__days__day--medium"))}))))
 
 (def ui-day (om/factory Day))
 

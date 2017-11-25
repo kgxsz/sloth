@@ -8,6 +8,7 @@
   {:white {:light "#FFFFFF"}
    :black {:light "#333333"}
    :grey {:light "#F2F2F2"
+          :medium "#EAEAEA"
           :dark "#BBBBBB"}})
 
 (def dimensions
@@ -156,18 +157,15 @@
      :margin-top (-> dimensions :spacing :large px)}]
 
    [:&__labels
+    {:position :absolute
+     :bottom 0}
     [:&--horizontal
-     {:position :absolute
-      :bottom 0
-      :right 0
+     {:right 0
       :display :flex
       :flex-direction :row-reverse
-      :height 0
-      :background-color :green}]
+      :height 0}]
     [:&--vertical
-     {:position :absolute
-      :top 0
-      :bottom 0
+     {:top 0
       :left 0
       :width (-> calendar :label-width px)
       :background-color (-> colours :white :light)}]]
@@ -196,7 +194,9 @@
      :grid-gap (-> calendar :day-gutter px)}
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)
-      :background-color (-> colours :grey :light)}]]
+      :background-color (-> colours :grey :light)}
+     [:&--medium
+      {:background-color (-> colours :grey :medium)}]]]
 
    [:&__footer
     {:margin-top (-> dimensions :spacing :large px)
