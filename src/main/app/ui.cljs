@@ -1,9 +1,7 @@
 (ns app.ui
   (:require [app.operations :as ops]
-            [app.schema :as schema]
             [cljs-time.core :as t]
             [cljs-time.format :as tf]
-            [cljs-time.coerce :as tc]
             [fulcro.client.core :as fc]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
@@ -12,6 +10,7 @@
 (def month-label-formatter (tf/formatter "MMM"))
 (def key-formatter (tf/formatters :basic-date))
 
+;; TODO - figure out where this goes in state
 (def today (t/today))
 
 (defui ^:once User
@@ -75,7 +74,7 @@
   Object
   (render
    [this]
-   (let [{:day/keys [date checked? colour]} (om/props this)]
+   (let [{:day/keys [id date checked? colour]} (om/props this)]
      (dom/div
       #js {:title (tf/unparse title-formatter date)
            ;; TODO - time to use utils for BEM
@@ -84,7 +83,8 @@
                            (cond
                              checked? (name colour)
                              (odd? (t/month date)) "grey-medium"
-                             :else "grey-light"))}))))
+                             :else "grey-light"))
+           :onClick #(om/transact! this `[(ops/toggle-day-checked?! {:id ~id})])}))))
 
 (def ui-day (om/factory Day))
 
@@ -189,7 +189,7 @@
     :calendars/calendars [(fc/get-initial-state Calendar {:id (random-uuid)
                                                           :title "Some title"
                                                           :subtitle "some subtitle"
-                                                          :colour :yellow})
+                                                          :colour :green})
                           (fc/get-initial-state Calendar {:id (random-uuid)
                                                           :title "Some other title"
                                                           :subtitle "some other subtitle"

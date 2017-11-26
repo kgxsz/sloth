@@ -1,8 +1,7 @@
 (ns app.operations
   (:require [fulcro.client.mutations :as m :refer [defmutation]]))
 
-
-(defmutation toggle-item-checked?!
+(defmutation toggle-day-checked?!
   [{:keys [id]}]
   (action [{:keys [state]}]
-          (swap! state update-in [:item/by-id id :item/checked?] not)))
+          (swap! state update-in [:day/by-id id :day/checked?] not)))
