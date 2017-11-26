@@ -61,28 +61,28 @@
    [_]
    [:day/id
     :day/date
-    :day/selected?
+    :day/checked?
     :day/colour])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [id date selected? colour]}]
+   [_ {:keys [id date checked? colour]}]
    {:day/id id
     :day/date date
-    :day/selected? selected?
+    :day/checked? checked?
     :day/colour colour})
 
   Object
   (render
    [this]
-   (let [{:day/keys [date selected? colour]} (om/props this)]
+   (let [{:day/keys [date checked? colour]} (om/props this)]
      (dom/div
       #js {:title (tf/unparse title-formatter date)
            ;; TODO - time to use utils for BEM
            :className (str "calendar__days__day "
                            "calendar__days__day--"
                            (cond
-                             selected? (name colour)
+                             checked? (name colour)
                              (odd? (t/month date)) "grey-medium"
                              :else "grey-light"))}))))
 
@@ -116,7 +116,7 @@
                                          (reverse))]
                            (fc/get-initial-state Day {:id (random-uuid)
                                                       :date date
-                                                      :selected? false
+                                                      :checked? false
                                                       :colour colour})))})
 
   Object
