@@ -12,17 +12,24 @@
 (def month-label-formatter (tf/formatter "MMM"))
 (def key-formatter (tf/formatters :basic-date))
 
+(def today (t/today))
+
 (defui ^:once User
+  static om/Ident
+  (ident [_ props] [:user/by-id (:user/id props)])
+
   static om/IQuery
   (query
    [_]
-   [:user/first-name
+   [:user/id
+    :user/first-name
     :user/avatar-url])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [first-name avatar-url]}]
-   {:user/first-name first-name
+   [_ {:keys [id first-name avatar-url]}]
+   {:user/id id
+    :user/first-name first-name
     :user/avatar-url avatar-url})
 
   Object
@@ -46,16 +53,21 @@
 
 
 (defui ^:once Day
+  static om/Ident
+  (ident [_ props] [:day/by-id (:day/id props)])
+
   static om/IQuery
   (query
    [_]
-   [:day/date
+   [:day/id
+    :day/date
     :day/selected?])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [date selected?]}]
-   {:day/date date
+   [_ {:keys [id date selected?]}]
+   {:day/id id
+    :day/date date
     :day/selected? selected?})
 
   Object
@@ -63,8 +75,7 @@
    [this]
    (let [{:keys [day/date day/selected?]} (om/props this)]
      (dom/div
-      #js {:key date
-           :title (tf/unparse title-formatter date)
+      #js {:title (tf/unparse title-formatter date)
            ;; TODO - time to use utils for BEM
            :className (str "calendar__days__day"
                            (if (odd? (t/month date))
@@ -75,31 +86,36 @@
 
 
 (defui ^:once Calendar
+  static om/Ident
+  (ident [_ props] [:calendar/by-id (:calendar/id props)])
+
   static om/IQuery
   (query
    [_]
-   [:calendar/title
+   [:calendar/id
+    :calendar/title
     :calendar/subtitle
-    :calendar/today
     {:calendar/days (om/get-query Day)}])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [title subtitle today]}]
-   {:calendar/title title
+   [_ {:keys [id title subtitle]}]
+   {:calendar/id id
+    :calendar/title title
     :calendar/subtitle subtitle
-    :calendar/today today
     :calendar/days (into []
-                    (for [date (->> today
-                                    (iterate #(t/minus- % (t/days 1)))
-                                    (take (+ 357 (t/day-of-week today)))
-                                    (reverse))]
-                      (fc/get-initial-state Day {:date date :selected? false})))})
+                         (for [date (->> today
+                                         (iterate #(t/minus- % (t/days 1)))
+                                         (take (+ 357 (t/day-of-week today)))
+                                         (reverse))]
+                           (fc/get-initial-state Day {:id (random-uuid)
+                                                      :date date
+                                                      :selected? false})))})
 
   Object
   (render
    [this]
-   (let [{:keys [calendar/title calendar/subtitle calendar/today calendar/days]} (om/props this)]
+   (let [{:keys [calendar/title calendar/subtitle calendar/days]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -149,26 +165,60 @@
 (def ui-calendar (om/factory Calendar))
 
 
+(defui ^:once Calendars
+  static om/Ident
+  (ident [_ props] [:calendars/by-id (:calendars/id props)])
+
+  static om/IQuery
+  (query
+   [_]
+   [:calendars/id
+    {:calendars/calendars (om/get-query Calendar)}])
+
+  static fc/InitialAppState
+  (initial-state
+   [_ {:keys [id]}]
+   {:calendars/id id
+    :calendars/calendars [(fc/get-initial-state Calendar {:id (random-uuid)
+                                                          :title "Some title"
+                                                          :subtitle "some subtitle"})
+                          (fc/get-initial-state Calendar {:id (random-uuid)
+                                                          :title "Some other title"
+                                                          :subtitle "some other subtitle"})
+                          (fc/get-initial-state Calendar {:id (random-uuid)
+                                                          :title "Another title"
+                                                          :subtitle "another subtitle"})]})
+
+  Object
+  (render
+   [this]
+   (let [{:keys [calendars/calendars]} (om/props this)]
+     (dom/div
+      #js {:className "calendars"}
+      (map ui-calendar calendars)))))
+
+(def ui-calendars (om/factory Calendars))
+
+
 (defui ^:once App
   static om/IQuery
   (query
    [_]
    [:ui/react-key
     {:user (om/get-query User)}
-    {:calendar (om/get-query Calendar)}])
+    {:calendars (om/get-query Calendars)}])
   static fc/InitialAppState
   (initial-state
    [_ _]
-   {:user (fc/get-initial-state User {:first-name "Keigo"
+   {:user (fc/get-initial-state User {:id (random-uuid)
+                                      :first-name "Keigo"
                                       :avatar-url "images/avatar.jpg"})
-    :calendar (fc/get-initial-state Calendar {:title "Some title"
-                                              :subtitle "some subtitle"
-                                              :today (t/today)})})
+    :calendars (fc/get-initial-state Calendars {:id (random-uuid)})})
 
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key user calendar]} (om/props this)]
+   (let [{:keys [ui/react-key user calendars]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
@@ -178,4 +228,4 @@
       (dom/div
        #js {:className "page"}
        (ui-user user)
-       (ui-calendar calendar))))))
+       (ui-calendars calendars))))))
