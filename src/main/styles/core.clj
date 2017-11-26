@@ -207,7 +207,6 @@
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)
       :cursor :pointer}
-     ;; TODO - play with the colours a little more here, and use shading transform on the month
      [:&--green
       {:background-color (-> colours :green :dark)}]
      [:&--yellow
