@@ -205,19 +205,21 @@
      :grid-auto-flow :column
      :grid-gap (-> calendar :day-gutter px)}
     [:&__day
-     {:border-radius (-> dimensions :radius :tiny px)}
+     {:border-radius (-> dimensions :radius :tiny px)
+      :cursor :pointer}
+     ;; TODO - play with the colours a little more here, and use shading transform on the month
      [:&--green
-      {:background-color (-> colours :green :light)}]
+      {:background-color (-> colours :green :dark)}]
      [:&--yellow
-      {:background-color (-> colours :yellow :light)}]
+      {:background-color (-> colours :yellow :dark)}]
      [:&--pink
-      {:background-color (-> colours :pink :light)}]
+      {:background-color (-> colours :pink :dark)}]
      [:&--purple
-      {:background-color (-> colours :purple :light)}]
+      {:background-color (-> colours :purple :dark)}]
      [:&--blue
-      {:background-color (-> colours :blue :light)}]
+      {:background-color (-> colours :blue :dark)}]
      [:&--violet
-      {:background-color (-> colours :violet :light)}]
+      {:background-color (-> colours :violet :dark)}]
      [:&--grey-medium
       {:background-color (-> colours :grey :medium)}]
      [:&--grey-light
