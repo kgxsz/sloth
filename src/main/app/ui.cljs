@@ -35,7 +35,7 @@
   Object
   (render
    [this]
-   (let [{:keys [user/first-name user/avatar-url]} (om/props this)]
+   (let [{:user/keys [first-name avatar-url]} (om/props this)]
      (dom/div
       #js {:className "user"}
       (dom/img
@@ -61,26 +61,30 @@
    [_]
    [:day/id
     :day/date
-    :day/selected?])
+    :day/selected?
+    :day/colour])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [id date selected?]}]
+   [_ {:keys [id date selected? colour]}]
    {:day/id id
     :day/date date
-    :day/selected? selected?})
+    :day/selected? selected?
+    :day/colour colour})
 
   Object
   (render
    [this]
-   (let [{:keys [day/date day/selected?]} (om/props this)]
+   (let [{:day/keys [date selected? colour]} (om/props this)]
      (dom/div
       #js {:title (tf/unparse title-formatter date)
            ;; TODO - time to use utils for BEM
-           :className (str "calendar__days__day"
-                           (if (odd? (t/month date))
-                             " calendar__days__day--dark"
-                             " calendar__days__day--light"))}))))
+           :className (str "calendar__days__day "
+                           "calendar__days__day--"
+                           (cond
+                             selected? (name colour)
+                             (odd? (t/month date)) "grey-medium"
+                             :else "grey-light"))}))))
 
 (def ui-day (om/factory Day))
 
@@ -95,14 +99,16 @@
    [:calendar/id
     :calendar/title
     :calendar/subtitle
+    :calendar/colour
     {:calendar/days (om/get-query Day)}])
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [id title subtitle]}]
+   [_ {:keys [id title subtitle colour]}]
    {:calendar/id id
     :calendar/title title
     :calendar/subtitle subtitle
+    :calendar/colour colour
     :calendar/days (into []
                          (for [date (->> today
                                          (iterate #(t/minus- % (t/days 1)))
@@ -110,12 +116,13 @@
                                          (reverse))]
                            (fc/get-initial-state Day {:id (random-uuid)
                                                       :date date
-                                                      :selected? false})))})
+                                                      :selected? false
+                                                      :colour colour})))})
 
   Object
   (render
    [this]
-   (let [{:keys [calendar/title calendar/subtitle calendar/days]} (om/props this)]
+   (let [{:calendar/keys [title subtitle days]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -146,8 +153,8 @@
              (dom/span
               #js {:key (tf/unparse key-formatter last-day-of-the-week)
                    ;; TODO - time to use utils for BEM
-                   :className (str "calendar__label calendar__label--vertical"
-                                   (when hidden? " calendar__label--hidden"))}
+                   :className (str "calendar__label calendar__label--vertical "
+                                   (when hidden? "calendar__label--hidden"))}
               (tf/unparse month-label-formatter last-day-of-the-week))))))
 
        (dom/div
@@ -181,18 +188,21 @@
    {:calendars/id id
     :calendars/calendars [(fc/get-initial-state Calendar {:id (random-uuid)
                                                           :title "Some title"
-                                                          :subtitle "some subtitle"})
+                                                          :subtitle "some subtitle"
+                                                          :colour :yellow})
                           (fc/get-initial-state Calendar {:id (random-uuid)
                                                           :title "Some other title"
-                                                          :subtitle "some other subtitle"})
+                                                          :subtitle "some other subtitle"
+                                                          :colour :pink})
                           (fc/get-initial-state Calendar {:id (random-uuid)
                                                           :title "Another title"
-                                                          :subtitle "another subtitle"})]})
+                                                          :subtitle "another subtitle"
+                                                          :colour :blue})]})
 
   Object
   (render
    [this]
-   (let [{:keys [calendars/calendars]} (om/props this)]
+   (let [{:calendars/keys [calendars]} (om/props this)]
      (dom/div
       #js {:className "calendars"}
       (map ui-calendar calendars)))))

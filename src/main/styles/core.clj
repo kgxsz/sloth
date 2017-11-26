@@ -206,9 +206,21 @@
      :grid-gap (-> calendar :day-gutter px)}
     [:&__day
      {:border-radius (-> dimensions :radius :tiny px)}
-     [:&--dark
+     [:&--green
+      {:background-color (-> colours :green :light)}]
+     [:&--yellow
+      {:background-color (-> colours :yellow :light)}]
+     [:&--pink
+      {:background-color (-> colours :pink :light)}]
+     [:&--purple
+      {:background-color (-> colours :purple :light)}]
+     [:&--blue
+      {:background-color (-> colours :blue :light)}]
+     [:&--violet
+      {:background-color (-> colours :violet :light)}]
+     [:&--grey-medium
       {:background-color (-> colours :grey :medium)}]
-     [:&--light
+     [:&--grey-light
       {:background-color (-> colours :grey :light)}]]]
 
    [:&__footer
