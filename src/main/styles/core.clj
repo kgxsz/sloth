@@ -10,18 +10,10 @@
    :grey {:light "#F2F2F2"
           :medium "#EAEAEA"
           :dark "#BBBBBB"}
-   :green {:light "#DEEAC5"
-           :dark "#B0D082"}
-   :yellow {:light "#FCECD1"
-            :dark "#EDA443"}
-   :pink {:light "#F5D6E5"
-          :dark "#DB348D"}
-   :purple {:light "#DDCEE1"
-            :dark "#812A88"}
-   :blue {:light "#CDE9FB"
-          :dark "#73AFC6"}
-   :violet {:light "#D3D3E6"
-            :dark "#303A8C"}})
+   :green {:dark "#8ACA55"}
+   :yellow {:dark "#FADA6E"}
+   :purple {:dark "#D4A3E3"}
+   :blue {:dark "#58A1F5"}})
 
 (def dimensions
   {:spacing {:tiny 1
@@ -211,14 +203,12 @@
       {:background-color (-> colours :green :dark)}]
      [:&--yellow
       {:background-color (-> colours :yellow :dark)}]
-     [:&--pink
-      {:background-color (-> colours :pink :dark)}]
+     [:&--green
+      {:background-color (-> colours :green :dark)}]
      [:&--purple
       {:background-color (-> colours :purple :dark)}]
      [:&--blue
       {:background-color (-> colours :blue :dark)}]
-     [:&--violet
-      {:background-color (-> colours :violet :dark)}]
      [:&--grey-medium
       {:background-color (-> colours :grey :medium)}]
      [:&--grey-light

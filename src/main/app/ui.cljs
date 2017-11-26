@@ -193,10 +193,10 @@
                           (fc/get-initial-state Calendar {:id (random-uuid)
                                                           :title "Some other title"
                                                           :subtitle "some other subtitle"
-                                                          :colour :pink})
+                                                          :colour :yellow})
                           (fc/get-initial-state Calendar {:id (random-uuid)
-                                                          :title "Another title"
-                                                          :subtitle "another subtitle"
+                                                          :title "Another really long title"
+                                                          :subtitle "another really really really long subtitle"
                                                           :colour :blue})]})
 
   Object
