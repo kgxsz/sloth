@@ -9,7 +9,19 @@
    :black {:light "#333333"}
    :grey {:light "#F2F2F2"
           :medium "#EAEAEA"
-          :dark "#BBBBBB"}})
+          :dark "#BBBBBB"}
+   :green {:light "#DEEAC5"
+           :dark "#B0D082"}
+   :yellow {:light "#FCECD1"
+            :dark "#EDA443"}
+   :pink {:light "#F5D6E5"
+          :dark "#DB348D"}
+   :purple {:light "#DDCEE1"
+            :dark "#812A88"}
+   :blue {:light "#CDE9FB"
+          :dark "#73AFC6"}
+   :violet {:light "#D3D3E6"
+            :dark "#303A8C"}})
 
 (def dimensions
   {:spacing {:tiny 1
