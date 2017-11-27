@@ -173,45 +173,19 @@
 (def ui-calendar (om/factory Calendar))
 
 
-(defui ^:once Calendars
-  static om/Ident
-  (ident [_ props] [:calendars/by-id (:calendars/id props)])
-
-  static om/IQuery
-  (query
-   [_]
-   [:calendars/id
-    {:calendars/calendars (om/get-query Calendar)}])
-
-  static fc/InitialAppState
-  (initial-state
-   [_ {:keys [id]}]
-   {:calendars/id id
-    :calendars/calendars []})
-
-  Object
-  (render
-   [this]
-   (let [{:calendars/keys [calendars]} (om/props this)]
-     (dom/div
-      #js {:className "calendars"}
-      (map ui-calendar calendars)))))
-
-(def ui-calendars (om/factory Calendars))
-
-
 (defui ^:once App
   static om/IQuery
   (query
    [_]
    [:ui/react-key
     {:user (om/get-query User)}
-    {:calendars (om/get-query Calendars)}])
+    {:calendars (om/get-query Calendar)}])
 
   static fc/InitialAppState
   (initial-state
    [_ _]
-   {:calendars (fc/get-initial-state Calendars {:id :default})})
+   {:user nil
+    :calendars []})
 
   Object
   (render
@@ -226,4 +200,4 @@
       (dom/div
        #js {:className "page"}
        (ui-user user)
-       (ui-calendars calendars))))))
+       (map ui-calendar calendars))))))

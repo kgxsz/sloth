@@ -6,6 +6,6 @@
 (defonce app (atom (fc/new-fulcro-client
                     :started-callback (fn [app]
                                         (df/load app :server/user ui/User {:target [:user]})
-                                        (df/load app :server/calendars ui/Calendar {:target [:calendars/by-id :default :calendars/calendars]})))))
+                                        (df/load app :server/calendars ui/Calendar {:target [:calendars]})))))
 
 
