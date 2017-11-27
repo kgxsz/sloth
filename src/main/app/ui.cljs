@@ -6,6 +6,7 @@
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
 
+;; TODO - move these into a utils file
 (def title-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
 (def month-label-formatter (tf/formatter "MMM"))
 (def key-formatter (tf/formatters :basic-date))
@@ -109,7 +110,7 @@
     :calendar/title title
     :calendar/subtitle subtitle
     :calendar/colour colour
-    :calendar/days (into []
+    :calendar/days [] #_(into []
                          (for [date (->> today
                                          (iterate #(t/minus- % (t/days 1)))
                                          (take (+ 357 (t/day-of-week today)))
@@ -186,18 +187,7 @@
   (initial-state
    [_ {:keys [id]}]
    {:calendars/id id
-    :calendars/calendars [(fc/get-initial-state Calendar {:id (random-uuid)
-                                                          :title "Some title"
-                                                          :subtitle "some subtitle"
-                                                          :colour :green})
-                          (fc/get-initial-state Calendar {:id (random-uuid)
-                                                          :title "Some other title"
-                                                          :subtitle "some other subtitle"
-                                                          :colour :yellow})
-                          (fc/get-initial-state Calendar {:id (random-uuid)
-                                                          :title "Another really long title"
-                                                          :subtitle "another really really really long subtitle"
-                                                          :colour :blue})]})
+    :calendars/calendars []})
 
   Object
   (render
@@ -217,13 +207,11 @@
    [:ui/react-key
     {:user (om/get-query User)}
     {:calendars (om/get-query Calendars)}])
+
   static fc/InitialAppState
   (initial-state
    [_ _]
-   {:user (fc/get-initial-state User {:id (random-uuid)
-                                      :first-name "Keigo"
-                                      :avatar-url "images/avatar.jpg"})
-    :calendars (fc/get-initial-state Calendars {:id (random-uuid)})})
+   {:calendars (fc/get-initial-state Calendars {:id :default})})
 
   Object
   (render
