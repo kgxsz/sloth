@@ -4,6 +4,7 @@
                  [org.clojure/clojurescript "1.9.908"]
                  [org.omcljs/om "1.0.0-beta1"]
                  [fulcrologic/fulcro "1.0.0-beta10"]
+                 [com.stuartsierra/component "0.3.2"]
                  [garden "1.3.3"]
                  [com.powernoodle/normalize "7.0.0"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]]
