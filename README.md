@@ -10,4 +10,4 @@
 ## Development workflow
 - Start a repl, and do `(go)`.
 - After adding/changing code, do `(reset)` to see those changes.
-- In case of compile errors, the `user` namespace might not load properly, in this case, you can do `(tools-ns/refresh)` then `(go)`.
+- In case of compile errors, the `user` namespace might not load properly, in this case, you can do `(repl/refresh)` then `(go)`.
