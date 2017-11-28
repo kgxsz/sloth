@@ -77,7 +77,6 @@
   (render
    [this]
    (let [{:day/keys [id date checked? colour]} (om/props this)
-         ;; TODO - can the date be converted when incoming?
          local-date (tc/to-local-date date)]
      (dom/div
       #js {:title (tf/unparse title-formatter local-date)

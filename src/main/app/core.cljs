@@ -5,7 +5,9 @@
 
 (defonce app (atom (fc/new-fulcro-client
                     :started-callback (fn [app]
-                                        (df/load app :server/user ui/User {:target [:user]})
-                                        (df/load app :server/calendars ui/Calendar {:target [:calendars]})))))
+                                        ;; TODO - figure out how to make these compose into a single query
+                                        #_(df/load app :server/days ui/Day)
+                                        (df/load app :server/calendars ui/Calendar {:target [:calendars]})
+                                        (df/load app :server/user ui/User {:target [:user]})))))
 
 
