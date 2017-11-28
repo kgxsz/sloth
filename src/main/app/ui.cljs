@@ -2,6 +2,7 @@
   (:require [app.operations :as ops]
             [cljs-time.core :as t]
             [cljs-time.format :as tf]
+            [cljs-time.coerce :as tc]
             [fulcro.client.core :as fc]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
@@ -27,10 +28,10 @@
 
   static fc/InitialAppState
   (initial-state
-   [_ {:keys [id first-name avatar-url]}]
-   {:user/id id
-    :user/first-name first-name
-    :user/avatar-url avatar-url})
+   [_ _]
+   {:user/id 2
+    :user/first-name "first-name"
+    :user/avatar-url "avatar-url"})
 
   Object
   (render
@@ -75,19 +76,21 @@
   Object
   (render
    [this]
-   (let [{:day/keys [id date checked? colour]} (om/props this)]
+   (let [{:day/keys [id date checked? colour]} (om/props this)
+         ;; TODO - can the date be converted when incoming?
+         local-date (tc/to-local-date date)]
      (dom/div
-      #js {:title (tf/unparse title-formatter date)
+      #js {:title (tf/unparse title-formatter local-date)
            ;; TODO - time to use utils for BEM
            :className (str "calendar__days__day "
                            "calendar__days__day--"
                            (cond
                              checked? (name colour)
-                             (odd? (t/month date)) "grey-medium"
+                             (odd? (t/month local-date)) "grey-medium"
                              :else "grey-light"))
            :onClick #(om/transact! this `[(ops/toggle-day-checked?! {:id ~id})])}))))
 
-(def ui-day (om/factory Day))
+(def ui-day (om/factory Day {:keyfn :day/id}))
 
 
 (defui ^:once Calendar
@@ -100,11 +103,12 @@
    [:calendar/id
     :calendar/title
     :calendar/subtitle
+    ;; TODO - figure out how to deal with this two level colour business
     :calendar/colour
     {:calendar/days (om/get-query Day)}])
 
   static fc/InitialAppState
-  (initial-state
+ (initial-state
    [_ {:keys [id title subtitle colour]}]
    {:calendar/id id
     :calendar/title title
@@ -170,7 +174,7 @@
       (dom/div
        #js {:className "calendar__footer"})))))
 
-(def ui-calendar (om/factory Calendar))
+(def ui-calendar (om/factory Calendar {:keyfn :calendar/id}))
 
 
 (defui ^:once App
@@ -178,26 +182,44 @@
   (query
    [_]
    [:ui/react-key
+    :ui/loading-data
     {:user (om/get-query User)}
     {:calendars (om/get-query Calendar)}])
 
   static fc/InitialAppState
   (initial-state
    [_ _]
-   {:user nil
+   {:user {}
     :calendars []})
 
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key user calendars]} (om/props this)]
+   (let [{:keys [ui/react-key ui/loading-data user calendars]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
       (dom/div
        #js {:className "app-error-notice"}
        "You need to use a wider screen.")
-      (dom/div
-       #js {:className "page"}
-       (ui-user user)
-       (map ui-calendar calendars))))))
+      (if (or loading-data (empty? user))
+        (dom/div
+         #js {:className "loader"}
+         "LOADING!!!")
+        (dom/div
+         #js {:className "page"}
+         (ui-user user)
+         (map ui-calendar calendars)))))))
+
+
+#_(into {}
+      (for [date (->> (t/today)
+                      (iterate #(t/minus- % (t/days 1)))
+                      (take (+ 357 (t/day-of-week (t/today))))
+                      (reverse))]
+        (let [id (random-uuid)]
+          [id {:day/id id
+               :day/date date
+               :day/checked? false
+               :day/colour :blue}])))
+
