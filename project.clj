@@ -7,6 +7,7 @@
                  [com.stuartsierra/component "0.3.2"]
                  [garden "1.3.3"]
                  [com.powernoodle/normalize "7.0.0"]
+                 [clj-time "0.14.2"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]]
 
   :source-paths ["src/main"]
