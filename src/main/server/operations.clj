@@ -1,12 +1,8 @@
 (ns server.operations
   (:require [clj-time.core :as t]
-            [clj-time.coerce :as tc]
             [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]))
 
-;; TODO - shoudln't do this
-(def today (t/today))
-
-;; TODO - use a real db, not this nested bullshit
+;; TODO - use a real db
 (def db (atom {:user/by-id {#uuid "d1cce9c9-171c-4616-ad61-d2990150dae2"
                             #:user{:id #uuid "d1cce9c9-171c-4616-ad61-d2990150dae2"
                                    :first-name "Keigo"
@@ -16,47 +12,28 @@
                                            :title "Some title"
                                            :subtitle "some subtitle"
                                            :colour :green
-                                           ;; TODO - deal with the latest day issue
-                                           :days (into []
-                                                       (for [date (->> today
-                                                                       (iterate #(t/minus- % (t/days 1)))
-                                                                       (take (+ 357 (t/day-of-week today)))
-                                                                       (map tc/to-date)
-                                                                       (reverse))]
-                                                         #:day{:id (java.util.UUID/randomUUID)
-                                                               :date date
-                                                               :checked? (rand-nth [true false false false false])
-                                                               :colour :green})) }
+                                           :checked-dates #{"20171125"
+                                                            "20171126"
+                                                            "20171127"
+                                                            "20171128"}}
                                 #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"
                                 #:calendar{:id #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"
                                            :title "Some other title"
                                            :subtitle "some other subtitle"
                                            :colour :yellow
-                                           :days (into []
-                                                       (for [date (->> today
-                                                                       (iterate #(t/minus- % (t/days 1)))
-                                                                       (take (+ 357 (t/day-of-week today)))
-                                                                       (map tc/to-date)
-                                                                       (reverse))]
-                                                         #:day{:id (java.util.UUID/randomUUID)
-                                                               :date date
-                                                               :checked? (rand-nth [true false false false false])
-                                                               :colour :yellow}))}
+                                           :checked-dates #{"20171125"
+                                                            "20171126"
+                                                            "20171127"
+                                                            "20171128"}}
                                 #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"
                                 #:calendar{:id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"
                                            :title "Another really long title"
                                            :subtitle "another really really really long subtitle"
                                            :colour :blue
-                                           :days (into []
-                                                       (for [date (->> today
-                                                                       (iterate #(t/minus- % (t/days 1)))
-                                                                       (take (+ 357 (t/day-of-week today)))
-                                                                       (map tc/to-date)
-                                                                       (reverse))]
-                                                         #:day{:id (java.util.UUID/randomUUID)
-                                                               :date date
-                                                               :checked? (rand-nth [true false false false false])
-                                                               :colour :blue}))}}}))
+                                           :checked-dates #{"20171008"
+                                                            "20171101"
+                                                            "20171122"
+                                                            "20171128"}}}}))
 
 ;; TODO - make sure you use the incoming query to select the keys you need
 (defquery-root :server/user
@@ -66,11 +43,5 @@
 (defquery-root :server/calendars
   (value [{:keys [query]} params]
          (->> (:calendar/by-id @db)
-              (vals)
-              (vec))))
-
-(defquery-root :server/days
-  (value [{:keys [query]} params]
-         (->> (:day/by-id @db)
               (vals)
               (vec))))

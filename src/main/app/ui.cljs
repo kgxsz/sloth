@@ -3,6 +3,8 @@
             [cljs-time.core :as t]
             [cljs-time.format :as tf]
             [cljs-time.coerce :as tc]
+            [cljs-time.predicates :as tp]
+            [cljs-time.periodic :as tpc]
             [fulcro.client.core :as fc]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
@@ -10,7 +12,7 @@
 ;; TODO - move these into a utils file
 (def title-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
 (def month-label-formatter (tf/formatter "MMM"))
-(def key-formatter (tf/formatters :basic-date))
+(def basic-date-formatter (tf/formatters :basic-date))
 
 ;; TODO - figure out where this goes in state
 (def today (t/today))
@@ -53,45 +55,6 @@
 (def ui-user (om/factory User))
 
 
-(defui ^:once Day
-  static om/Ident
-  (ident [_ props] [:day/by-id (:day/id props)])
-
-  static om/IQuery
-  (query
-   [_]
-   [:day/id
-    :day/date
-    :day/checked?
-    :day/colour])
-
-  static fc/InitialAppState
-  (initial-state
-   [_ {:keys [id date checked? colour]}]
-   {:day/id id
-    :day/date date
-    :day/checked? checked?
-    :day/colour colour})
-
-  Object
-  (render
-   [this]
-   (let [{:day/keys [id date checked? colour]} (om/props this)
-         local-date (tc/to-local-date date)]
-     (dom/div
-      #js {:title (tf/unparse title-formatter local-date)
-           ;; TODO - time to use utils for BEM
-           :className (str "calendar__days__day "
-                           "calendar__days__day--"
-                           (cond
-                             checked? (name colour)
-                             (odd? (t/month local-date)) "grey-medium"
-                             :else "grey-light"))
-           :onClick #(om/transact! this `[(ops/toggle-day-checked?! {:id ~id})])}))))
-
-(def ui-day (om/factory Day {:keyfn :day/id}))
-
-
 (defui ^:once Calendar
   static om/Ident
   (ident [_ props] [:calendar/by-id (:calendar/id props)])
@@ -104,7 +67,7 @@
     :calendar/subtitle
     ;; TODO - figure out how to deal with this two level colour business
     :calendar/colour
-    {:calendar/days (om/get-query Day)}])
+    :calendar/checked-dates])
 
   static fc/InitialAppState
  (initial-state
@@ -113,20 +76,17 @@
     :calendar/title title
     :calendar/subtitle subtitle
     :calendar/colour colour
-    :calendar/days [] #_(into []
-                         (for [date (->> today
-                                         (iterate #(t/minus- % (t/days 1)))
-                                         (take (+ 357 (t/day-of-week today)))
-                                         (reverse))]
-                           (fc/get-initial-state Day {:id (random-uuid)
-                                                      :date date
-                                                      :checked? false
-                                                      :colour colour})))})
+    :calendar/checked-dates #{}})
 
   Object
   (render
    [this]
-   (let [{:calendar/keys [title subtitle days]} (om/props this)]
+   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)
+         ;; TODO - get this at the top level
+         today (t/today)
+         days (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
+                                (t/plus- today (t/days 1))
+                                (t/days 1))]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -145,24 +105,42 @@
        #js {:className "calendar__body"}
        (dom/div
         #js {:className "calendar__days"}
-        (map ui-day days))
+        (doall
+         (for [day days]
+           (let [date (tf/unparse basic-date-formatter day)
+                 checked? (contains? checked-dates date)]
+             (dom/div
+              #js {:key date
+                   :title (tf/unparse title-formatter day)
+                   ;; TODO - time to use utils for BEM
+                   :className (str "calendar__days__day "
+                                   "calendar__days__day--"
+                                   (cond
+                                     checked? (name colour)
+                                     (odd? (t/month day)) "grey-medium"
+                                     :else "grey-light"))
+                   :onClick #(if checked?
+                               (om/transact! this `[(ops/remove-checked-date! {:id ~id :date ~date})])
+                               (om/transact! this `[(ops/add-checked-date! {:id ~id :date ~date})]))})))))
 
        (dom/div
         #js {:className "calendar__labels calendar__labels--horizontal"}
+        ;; TODO - clean this up using weeks and contains first-day-of-the-month
         (doall
-         (for [last-day-of-the-week (->> (t/plus- today (t/days (- 7 (t/day-of-week today))))
-                                         (iterate #(t/minus- % (t/weeks 1)))
-                                         (take 52))]
-           (let [hidden? (> (t/day last-day-of-the-week) 7)]
+         (for [last-date-of-the-week (->> (t/plus- today (t/days (- 7 (t/day-of-week today))))
+                                          (iterate #(t/minus- % (t/weeks 1)))
+                                          (take 52))]
+           (let [hidden? (> (t/day last-date-of-the-week) 7)]
              (dom/span
-              #js {:key (tf/unparse key-formatter last-day-of-the-week)
+              #js {:key (tf/unparse basic-date-formatter last-date-of-the-week)
                    ;; TODO - time to use utils for BEM
                    :className (str "calendar__label calendar__label--vertical "
                                    (when hidden? "calendar__label--hidden"))}
-              (tf/unparse month-label-formatter last-day-of-the-week))))))
+              (tf/unparse month-label-formatter last-date-of-the-week))))))
 
        (dom/div
         #js {:className "calendar__labels calendar__labels--vertical"}
+        ;; TODO - clean this up using formatters
         (doall
          (for [day-label ["Mon" "Wed" "Fri" "Sun"]]
            (dom/span
@@ -209,16 +187,3 @@
          #js {:className "page"}
          (ui-user user)
          (map ui-calendar calendars)))))))
-
-
-#_(into {}
-      (for [date (->> (t/today)
-                      (iterate #(t/minus- % (t/days 1)))
-                      (take (+ 357 (t/day-of-week (t/today))))
-                      (reverse))]
-        (let [id (random-uuid)]
-          [id {:day/id id
-               :day/date date
-               :day/checked? false
-               :day/colour :blue}])))
-
