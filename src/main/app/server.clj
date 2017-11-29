@@ -1,4 +1,4 @@
-(ns server.core
+(ns app.server
   (:require [fulcro.easy-server :as easy]
             [fulcro.server :as server]
             [taoensso.timbre :as timbre]))

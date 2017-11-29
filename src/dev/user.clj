@@ -1,7 +1,7 @@
 (ns user
   (:require [clojure.tools.namespace.repl :as repl]
-            [server.core :as server]
-            [server.operations :as operations]
+            [app.server :as server]
+            [app.operations :as operations]
             [com.stuartsierra.component :as component]))
 
 (repl/set-refresh-dirs "src/dev" "src/main")

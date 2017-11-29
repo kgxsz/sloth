@@ -1,6 +1,7 @@
-(ns server.operations
+(ns app.operations
   (:require [clj-time.core :as t]
-            [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]))
+            [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]
+            [fulcro.client.impl.application :as app]))
 
 ;; TODO - use a real db
 (def db (atom {:user/by-id {#uuid "d1cce9c9-171c-4616-ad61-d2990150dae2"
@@ -45,3 +46,16 @@
          (->> (:calendar/by-id @db)
               (vals)
               (vec))))
+
+(defmutation add-checked-date!
+  [{:keys [id date]}]
+  (action [_]
+          (swap! db update-in [:calendar/by-id id :calendar/checked-dates] conj date)))
+
+(defmutation remove-checked-date!
+  [{:keys [id date]}]
+  (action [_]
+          (swap! db update-in [:calendar/by-id id :calendar/checked-dates] disj date)))
+
+
+
