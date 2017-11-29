@@ -166,7 +166,7 @@
     [:&--horizontal
      {:right 0
       :display :flex
-      :flex-direction :row-reverse
+      :flex-direction :row
       :height 0}]
     [:&--vertical
      {:top 0
@@ -181,7 +181,7 @@
     [:&--hidden
      {:visibility :hidden}]
     [:&--horizontal
-     {:height (px (* 2 (+ (-> calendar :day-width) (-> calendar :day-gutter))))}]
+     {:height (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))}]
     [:&--vertical
      {:width (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))
       :transform "rotate(-90deg)"

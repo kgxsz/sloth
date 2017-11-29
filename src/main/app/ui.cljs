@@ -12,6 +12,7 @@
 ;; TODO - move these into a utils file
 (def title-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
 (def month-label-formatter (tf/formatter "MMM"))
+(def day-label-formatter (tf/formatter "E"))
 (def basic-date-formatter (tf/formatters :basic-date))
 
 ;; TODO - figure out where this goes in state
@@ -125,28 +126,24 @@
 
        (dom/div
         #js {:className "calendar__labels calendar__labels--horizontal"}
-        ;; TODO - clean this up using weeks and contains first-day-of-the-month
         (doall
-         (for [last-date-of-the-week (->> (t/plus- today (t/days (- 7 (t/day-of-week today))))
-                                          (iterate #(t/minus- % (t/weeks 1)))
-                                          (take 52))]
-           (let [hidden? (> (t/day last-date-of-the-week) 7)]
+         (for [monday (take-nth 7 days)]
+           (let [sunday (t/plus- monday (t/days 6))]
              (dom/span
-              #js {:key (tf/unparse basic-date-formatter last-date-of-the-week)
-                   ;; TODO - time to use utils for BEM
-                   :className (str "calendar__label calendar__label--vertical "
-                                   (when hidden? "calendar__label--hidden"))}
-              (tf/unparse month-label-formatter last-date-of-the-week))))))
+              #js {:key (tf/unparse basic-date-formatter monday)
+                   :className "calendar__label calendar__label--vertical"}
+              (when (> 7 (t/day sunday))
+                (tf/unparse month-label-formatter sunday)))))))
 
        (dom/div
         #js {:className "calendar__labels calendar__labels--vertical"}
-        ;; TODO - clean this up using formatters
         (doall
-         (for [day-label ["Mon" "Wed" "Fri" "Sun"]]
+         (for [day (take 7 days)]
            (dom/span
-            #js {:key day-label
+            #js {:key (tf/unparse basic-date-formatter day)
                  :className "calendar__label calendar__label--horizontal"}
-            day-label)))))
+            (when (odd? (t/day day))
+              (tf/unparse day-label-formatter day)))))))
 
       (dom/div
        #js {:className "calendar__footer"})))))
