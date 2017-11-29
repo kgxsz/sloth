@@ -15,9 +15,6 @@
 (def day-label-formatter (tf/formatter "E"))
 (def basic-date-formatter (tf/formatters :basic-date))
 
-;; TODO - figure out where this goes in state
-(def today (t/today))
-
 (defui ^:once User
   static om/Ident
   (ident [_ props] [:user/by-id (:user/id props)])
@@ -63,7 +60,8 @@
   static om/IQuery
   (query
    [_]
-   [:calendar/id
+   [[:ui/days '_]
+    :calendar/id
     :calendar/title
     :calendar/subtitle
     ;; TODO - figure out how to deal with this two level colour business
@@ -82,12 +80,7 @@
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)
-         ;; TODO - get this at the top level
-         today (t/today)
-         days (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
-                                (t/plus- today (t/days 1))
-                                (t/days 1))]
+   (let [{:calendar/keys [id title subtitle colour checked-dates] :ui/keys [days]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -157,13 +150,18 @@
    [_]
    [:ui/react-key
     :ui/loading-data
+    :ui/days
     {:user (om/get-query User)}
     {:calendars (om/get-query Calendar)}])
 
   static fc/InitialAppState
   (initial-state
    [_ _]
-   {:user {}
+   {:ui/days (let [today (t/today)]
+               (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
+                                 (t/plus- today (t/days 1))
+                                 (t/days 1)))
+    :user {}
     :calendars []})
 
   Object
