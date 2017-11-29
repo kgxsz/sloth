@@ -115,7 +115,7 @@
              (dom/span
               #js {:key (tf/unparse basic-date-formatter monday)
                    :className "calendar__label calendar__label--vertical"}
-              (when (> 7 (t/day sunday))
+              (when (> 8 (t/day sunday))
                 (tf/unparse month-label-formatter sunday)))))))
 
        (dom/div
