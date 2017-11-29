@@ -64,18 +64,8 @@
     :calendar/id
     :calendar/title
     :calendar/subtitle
-    ;; TODO - figure out how to deal with this two level colour business
     :calendar/colour
     :calendar/checked-dates])
-
-  static fc/InitialAppState
- (initial-state
-   [_ {:keys [id title subtitle colour]}]
-   {:calendar/id id
-    :calendar/title title
-    :calendar/subtitle subtitle
-    :calendar/colour colour
-    :calendar/checked-dates #{}})
 
   Object
   (render
@@ -160,9 +150,7 @@
    {:ui/days (let [today (t/today)]
                (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
                                  (t/plus- today (t/days 1))
-                                 (t/days 1)))
-    :user {}
-    :calendars []})
+                                 (t/days 1)))})
 
   Object
   (render
