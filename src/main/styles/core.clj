@@ -22,12 +22,13 @@
              :x-small 5
              :small 7
              :medium 10
-             :large 15
+             :large 16
              :x-large 30
              :xx-large 60
              :xxx-large 90
              :huge 120}
    :filling {:tiny 2
+             :xxx-small 6
              :xx-small 10
              :x-small 14
              :small 20
