@@ -1,7 +1,7 @@
 (ns styles.core
   (:require [garden.def :refer [defstyles]]
             [garden.stylesheet :refer [at-media]]
-            [garden.units :refer [px percent]]
+            [garden.units :refer [px percent vh]]
             [normalize.core :refer [normalize]]))
 
 (def colours
@@ -29,7 +29,10 @@
              :x-large 30
              :xx-large 40
              :xxx-large 50
-             :huge 60}
+             :huge 60
+             :x-huge 100
+             :xx-huge 140
+             :xxx-huge 180}
    :filling {:xxx-tiny 1
              :xx-tiny 2
              :x-tiny 3
@@ -42,7 +45,10 @@
              :large 30
              :x-large 50
              :xx-large 70
-             :huge 90}
+             :huge 90
+             :x-huge 150
+             :xx-huge 210
+             :xxx-huge 270}
    :radius {:tiny 1
             :small 2
             :medium 3
@@ -66,7 +72,7 @@
    :item-gutter (-> dimensions :spacing :xx-tiny)
    :label-width (-> dimensions :filling :large)})
 
-(def user
+(def user-details
   {:height (-> dimensions :filling :medium)})
 
 (def page
@@ -93,6 +99,16 @@
     :padding [[(-> dimensions :spacing :x-large px) (-> dimensions :spacing :x-small px)]]
     :text-align :center
     :color (-> colours :grey :dark)}])
+
+(defstyles logo
+  [:.logo
+   {:width (-> dimensions :filling :xx-large px)
+    :margin [[(-> dimensions :spacing :xx-huge px) :auto]]}
+   [:&__square
+    [:&--grey-medium
+     {:fill (-> colours :grey :medium)}]
+    [:&--grey-dark
+     {:fill (-> colours :grey :dark)}]]])
 
 (defstyles page
   [:.page
@@ -121,7 +137,7 @@
    {:display :flex
     :flex-direction :row
     :align-items :center
-    :height (-> user :height px)
+    :height (-> user-details :height px)
     :width (percent 100)}
 
    [:&__avatar
@@ -255,6 +271,7 @@
   normalize
   foundations
   app-error-notice
+  logo
   page
   user-details
   calendar)
