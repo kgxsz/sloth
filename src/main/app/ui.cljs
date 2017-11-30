@@ -54,7 +54,8 @@
   static om/IQuery
   (query
    [_]
-   [:calendar/id
+   [[:ui/today '_]
+    :calendar/id
     :calendar/title
     :calendar/subtitle
     :calendar/colour
@@ -63,9 +64,7 @@
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)
-         ;; TODO - figure out where to put this guy
-         today (t/today)]
+   (let [{:calendar/keys [id title subtitle colour checked-dates] :ui/keys [today]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -165,11 +164,17 @@
 
 
 (defui ^:once App
+  static fc/InitialAppState
+  (initial-state
+   [_ _]
+   {:ui/today (t/today)})
+
   static om/IQuery
   (query
    [_]
    [:ui/react-key
     :ui/loading-data
+    :ui/today
     {:current-user (om/get-query User)}])
 
   Object
