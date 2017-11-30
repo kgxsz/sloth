@@ -10,8 +10,8 @@
 ;; TODO - use a real db
 (def db (atom {:user/by-id {#uuid "d1cce9c9-171c-4616-ad61-d2990150dae2"
                             #:user{:id #uuid "d1cce9c9-171c-4616-ad61-d2990150dae2"
-                                   :first-name "Keigo"
-                                   :avatar-url "images/avatar.jpg"
+                                   :names {:first-name "Keigo" :last-name "Suzukawa"}
+                                   :avatar {:url "images/avatar.jpg"}
                                    :calendars [[:calendar/by-id #uuid "67eb2269-35f1-4477-8061-60193cd4709e"]
                                                [:calendar/by-id #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"]
                                                [:calendar/by-id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"]]}}

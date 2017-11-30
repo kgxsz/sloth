@@ -54,8 +54,7 @@
   static om/IQuery
   (query
    [_]
-   [[:ui/today '_]
-    :calendar/id
+   [:calendar/id
     :calendar/title
     :calendar/subtitle
     :calendar/colour
@@ -64,7 +63,7 @@
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour checked-dates] :ui/keys [today]} (om/props this)]
+   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -85,7 +84,7 @@
         ;; TODO - change the css to items
         #js {:className "calendar__items"}
         (doall
-         (for [{:keys [date label shaded?]} (make-items today)]
+         (for [{:keys [date label shaded?]} (make-items (t/today))]
            (let [checked? (contains? checked-dates date)]
              (dom/div
               #js {:key date
@@ -104,7 +103,7 @@
        (dom/div
         #js {:className "calendar__labels calendar__labels--horizontal"}
         (doall
-         (for [{:keys [date label visible?]} (make-horizontal-labels today)]
+         (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
            (dom/span
             #js {:key date
                  :className "calendar__label calendar__label--vertical"}
@@ -114,7 +113,7 @@
        (dom/div
         #js {:className "calendar__labels calendar__labels--vertical"}
         (doall
-         (for [{:keys [date label visible?]} (make-vertical-labels today)]
+         (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
            (dom/span
             #js {:key date
                  :className "calendar__label calendar__label--horizontal"}
@@ -127,6 +126,26 @@
 (def ui-calendar (om/factory Calendar {:keyfn :calendar/id}))
 
 
+(defui ^:once UserDetails
+  Object
+  (render
+   [this]
+   (let [{{:keys [first-name]} :names {:keys [url]} :avatar} (om/props this)]
+     (dom/div
+      #js {:className "user__details"}
+      (dom/img
+       #js {:className "user__details__avatar"
+            :alt "user-details-avatar"
+            :src url})
+      (dom/span
+       #js {:className "user__details__first-name"}
+       first-name)
+      (dom/div
+       #js {:className "user__details__divider"})))))
+
+(def ui-user-details (om/factory UserDetails))
+
+
 (defui ^:once User
   static om/Ident
   (ident [_ props] [:user/by-id (:user/id props)])
@@ -135,46 +154,28 @@
   (query
    [_]
    [:user/id
-    :user/first-name
-    :user/avatar-url
+    {:user/names [:first-name :last-name]}
+    {:user/avatar [:url]}
     {:user/calendars (om/get-query Calendar)}])
 
   Object
   (render
    [this]
-   (let [{:user/keys [first-name avatar-url calendars]} (om/props this)]
+   (let [{:user/keys [names avatar calendars]} (om/props this)]
      (dom/div
       #js {:className "user"}
-      (dom/div
-       #js {:className "user__details"}
-       (dom/img
-        #js {:className "user__details__avatar"
-             :alt "user-details-avatar"
-             :src avatar-url})
-       (dom/span
-        #js {:className "user__details__first-name"}
-        first-name)
-
-       (dom/div
-        #js {:className "user__details__divider"}))
-
+      (ui-user-details {:names names :avatar avatar})
       (map ui-calendar calendars)))))
 
 (def ui-user (om/factory User))
 
 
 (defui ^:once App
-  static fc/InitialAppState
-  (initial-state
-   [_ _]
-   {:ui/today (t/today)})
-
   static om/IQuery
   (query
    [_]
    [:ui/react-key
     :ui/loading-data
-    :ui/today
     {:current-user (om/get-query User)}])
 
   Object
