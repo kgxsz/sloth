@@ -16,37 +16,54 @@
    :blue {:dark "#58A1F5"}})
 
 (def dimensions
-  {:spacing {:tiny 1
-             :xxx-small 2
-             :xx-small 3
-             :x-small 5
-             :small 7
-             :medium 10
-             :large 16
+  {:spacing {:xxx-tiny 1
+             :xx-tiny 2
+             :x-tiny 3
+             :tiny 4
+             :xxx-small 6
+             :xx-small 8
+             :x-small 10
+             :small 12
+             :medium 16
+             :large 20
              :x-large 30
-             :xx-large 60
-             :xxx-large 90
-             :huge 120}
-   :filling {:tiny 2
+             :xx-large 40
+             :xxx-large 50
+             :huge 60}
+   :filling {:xxx-tiny 1
+             :xx-tiny 2
+             :x-tiny 3
+             :tiny 4
              :xxx-small 6
              :xx-small 10
              :x-small 14
-             :small 20
+             :small 18
              :medium 24
-             :large 30}
-   :radius {:tiny 1}})
+             :large 30
+             :x-large 50
+             :xx-large 70
+             :huge 90}
+   :radius {:tiny 1
+            :small 2
+            :medium 3
+            :large 4
+            :huge 5}})
 
 (def text
   {:heading {:tiny 10
-             :small 15
+             :small 14
              :medium 20
-             :large 25}
-   :paragraph {:small 12
-               :medium 14}})
+             :large 28
+             :huge 36}
+   :paragraph {:tiny 10
+               :small 12
+               :medium 14
+               :large 16
+               :huge 18}})
 
 (def calendar
   {:item-width (-> dimensions :filling :x-small)
-   :item-gutter (-> dimensions :spacing :xxx-small)
+   :item-gutter (-> dimensions :spacing :xx-tiny)
    :label-width (-> dimensions :filling :large)})
 
 (def user
@@ -63,8 +80,8 @@
     {:width {:small width-small
              :medium width-medium
              :large width-large}
-     :breakpoint {:small (px (+ width-small (* 2 (-> dimensions :spacing :medium))))
-                  :medium (px (+ width-medium (* 2 (-> dimensions :spacing :large))))
+     :breakpoint {:small (px (+ width-small (* 2 (-> dimensions :spacing :x-small))))
+                  :medium (px (+ width-medium (* 2 (-> dimensions :spacing :medium))))
                   :large (px (+ width-large (* 2 (-> dimensions :spacing :x-large))))}}))
 
 (defstyles app-error-notice
@@ -73,7 +90,7 @@
     :left 0
     :right 0
     :z-index -1
-    :padding [[(-> dimensions :spacing :x-large px) (-> dimensions :spacing :medium px)]]
+    :padding [[(-> dimensions :spacing :x-large px) (-> dimensions :spacing :x-small px)]]
     :text-align :center
     :color (-> colours :grey :dark)}])
 
@@ -87,7 +104,7 @@
     [:&
      {:display :block
       :width (-> page :width :small px)
-      :margin [[(-> dimensions :spacing :xx-large px) :auto]]}])
+      :margin [[(-> dimensions :spacing :huge px) :auto]]}])
 
    (at-media
     {:min-width (-> page :breakpoint :medium px)}
@@ -114,7 +131,7 @@
      :background-color (-> colours :grey :light)}]
 
    [:&__first-name
-    {:margin-left (-> dimensions :spacing :medium px)
+    {:margin-left (-> dimensions :spacing :x-small px)
      :font-size (-> text :heading :medium px)
      :font-weight :bold
      :max-width (percent 40)
@@ -124,13 +141,13 @@
 
    [:&__divider
     {:flex-grow 1
-     :height (-> dimensions :filling :tiny px)
-     :margin-left (-> dimensions :spacing :medium px)
+     :height (-> dimensions :filling :xx-tiny px)
+     :margin-left (-> dimensions :spacing :x-small px)
      :background-color (-> colours :grey :light)}]])
 
 (defstyles calendar
   [:.calendar
-   {:margin-top (-> dimensions :spacing :xx-large px)}
+   {:margin-top (-> dimensions :spacing :huge px)}
 
    [:&__header
     [:&__title
@@ -138,7 +155,7 @@
       :font-weight :bold
       :color (-> colours :black :light)}]
     [:&__separator
-     {:padding [[0 (-> dimensions :spacing :medium px)]]
+     {:padding [[0 (-> dimensions :spacing :x-small px)]]
       :font-size (-> text :heading :medium px)
       :font-weight :normal
       :color (-> colours :grey :dark)}]
@@ -213,7 +230,7 @@
    [:&__footer
     {:margin-top (-> dimensions :spacing :x-large px)
      :border-bottom-style :solid
-     :border-bottom-width (-> dimensions :filling :tiny px)
+     :border-bottom-width (-> dimensions :filling :xx-tiny px)
      :border-bottom-color (-> colours :grey :light)}]])
 
 (defstyles foundations
