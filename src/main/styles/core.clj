@@ -19,18 +19,20 @@
   {:spacing {:tiny 1
              :xxx-small 2
              :xx-small 3
-             :x-small 4
-             :small 5
+             :x-small 5
+             :small 7
              :medium 10
-             :large 30
-             :x-large 60
-             :huge 100}
+             :large 15
+             :x-large 30
+             :xx-large 60
+             :xxx-large 90
+             :huge 120}
    :filling {:tiny 2
              :xx-small 10
              :x-small 14
              :small 20
              :medium 24
-             :large 32}
+             :large 30}
    :radius {:tiny 1}})
 
 (def text
@@ -60,9 +62,9 @@
     {:width {:small width-small
              :medium width-medium
              :large width-large}
-     :breakpoint {:small (px (+ width-small 18))
-                  :medium (px (+ width-medium 36))
-                  :large (px (+ width-large 72))}}))
+     :breakpoint {:small (px (+ width-small (* 2 (-> dimensions :spacing :medium))))
+                  :medium (px (+ width-medium (* 2 (-> dimensions :spacing :large))))
+                  :large (px (+ width-large (* 2 (-> dimensions :spacing :x-large))))}}))
 
 (defstyles app-error-notice
   [:.app-error-notice
@@ -70,7 +72,7 @@
     :left 0
     :right 0
     :z-index -1
-    :padding [[(-> dimensions :spacing :large px) (-> dimensions :spacing :medium px)]]
+    :padding [[(-> dimensions :spacing :x-large px) (-> dimensions :spacing :medium px)]]
     :text-align :center
     :color (-> colours :grey :dark)}])
 
@@ -84,7 +86,7 @@
     [:&
      {:display :block
       :width (-> page :width :small px)
-      :margin [[(-> dimensions :spacing :x-large px) :auto]]}])
+      :margin [[(-> dimensions :spacing :xx-large px) :auto]]}])
 
    (at-media
     {:min-width (-> page :breakpoint :medium px)}
@@ -127,7 +129,7 @@
 
 (defstyles calendar
   [:.calendar
-   {:margin-top (-> dimensions :spacing :x-large px)}
+   {:margin-top (-> dimensions :spacing :xx-large px)}
 
    [:&__header
     [:&__title
@@ -151,7 +153,7 @@
                     (* 6 (:day-gutter calendar))
                     (:label-width calendar)))
      :width (percent 100)
-     :margin-top (-> dimensions :spacing :large px)}]
+     :margin-top (-> dimensions :spacing :x-large px)}]
 
    [:&__labels
     {:position :absolute
@@ -208,7 +210,7 @@
       {:background-color (-> colours :grey :light)}]]]
 
    [:&__footer
-    {:margin-top (-> dimensions :spacing :large px)
+    {:margin-top (-> dimensions :spacing :x-large px)
      :border-bottom-style :solid
      :border-bottom-width (-> dimensions :filling :tiny px)
      :border-bottom-color (-> colours :grey :light)}]])
