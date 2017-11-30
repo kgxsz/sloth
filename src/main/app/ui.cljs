@@ -143,16 +143,7 @@
    [_]
    [:ui/react-key
     :ui/loading-data
-    :ui/days
     {:current-user (om/get-query User)}])
-
-  static fc/InitialAppState
-  (initial-state
-   [_ _]
-   {:ui/days (let [today (t/today)]
-               (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
-                                 (t/plus- today (t/days 1))
-                                 (t/days 1)))})
 
   Object
   (render
