@@ -132,16 +132,16 @@
    [this]
    (let [{{:keys [first-name]} :names {:keys [url]} :avatar} (om/props this)]
      (dom/div
-      #js {:className "user__details"}
+      #js {:className "user-details"}
       (dom/img
-       #js {:className "user__details__avatar"
+       #js {:className "user-details__avatar"
             :alt "user-details-avatar"
             :src url})
       (dom/span
-       #js {:className "user__details__first-name"}
+       #js {:className "user-details__first-name"}
        first-name)
       (dom/div
-       #js {:className "user__details__divider"})))))
+       #js {:className "user-details__divider"})))))
 
 (def ui-user-details (om/factory UserDetails))
 
@@ -163,7 +163,7 @@
    [this]
    (let [{:user/keys [names avatar calendars]} (om/props this)]
      (dom/div
-      #js {:className "user"}
+      nil
       (ui-user-details {:names names :avatar avatar})
       (map ui-calendar calendars)))))
 

@@ -103,35 +103,34 @@
     [:&
      {:width (-> page :width :large px)}])])
 
-(defstyles user
-  [:.user
-   [:&__details
-    {:display :flex
-     :flex-direction :row
-     :align-items :center
-     :height (-> user :height px)
-     :width (percent 100)}
+(defstyles user-details
+  [:.user-details
+   {:display :flex
+    :flex-direction :row
+    :align-items :center
+    :height (-> user :height px)
+    :width (percent 100)}
 
-    [:&__avatar
-     {:height (-> user :height px)
-      :width (-> user :height px)
-      :border-radius (percent 50)
-      :background-color (-> colours :grey :light)}]
+   [:&__avatar
+    {:height (-> user :height px)
+     :width (-> user :height px)
+     :border-radius (percent 50)
+     :background-color (-> colours :grey :light)}]
 
-    [:&__first-name
-     {:margin-left (-> dimensions :spacing :medium px)
-      :font-size (-> text :heading :medium px)
-      :font-weight :bold
-      :max-width (percent 40)
-      :text-overflow :ellipsis
-      :white-space :nowrap
-      :overflow :hidden}]
+   [:&__first-name
+    {:margin-left (-> dimensions :spacing :medium px)
+     :font-size (-> text :heading :medium px)
+     :font-weight :bold
+     :max-width (percent 40)
+     :text-overflow :ellipsis
+     :white-space :nowrap
+     :overflow :hidden}]
 
-    [:&__divider
-     {:flex-grow 1
-      :height (-> dimensions :filling :tiny px)
-      :margin-left (-> dimensions :spacing :medium px)
-      :background-color (-> colours :grey :light)}]]])
+   [:&__divider
+    {:flex-grow 1
+     :height (-> dimensions :filling :tiny px)
+     :margin-left (-> dimensions :spacing :medium px)
+     :background-color (-> colours :grey :light)}]])
 
 (defstyles calendar
   [:.calendar
@@ -245,5 +244,5 @@
   app
   app-error-notice
   page
-  user
+  user-details
   calendar)
