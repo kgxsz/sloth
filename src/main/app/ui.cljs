@@ -15,43 +15,11 @@
 (def day-label-formatter (tf/formatter "E"))
 (def basic-date-formatter (tf/formatters :basic-date))
 
-(defui ^:once User
-  static om/Ident
-  (ident [_ props] [:user/by-id (:user/id props)])
-
-  static om/IQuery
-  (query
-   [_]
-   [:user/id
-    :user/first-name
-    :user/avatar-url])
-
-  static fc/InitialAppState
-  (initial-state
-   [_ _]
-   {:user/id 2
-    :user/first-name "first-name"
-    :user/avatar-url "avatar-url"})
-
-  Object
-  (render
-   [this]
-   (let [{:user/keys [first-name avatar-url]} (om/props this)]
-     (dom/div
-      #js {:className "user"}
-      (dom/img
-       #js {:className "user__avatar"
-            :alt "user-avatar"
-            :src avatar-url})
-      (dom/span
-       #js {:className "user__first-name"}
-       first-name)
-
-      (dom/div
-       #js {:className "user__divider"})))))
-
-(def ui-user (om/factory User))
-
+;; TODO - find a better way to do this
+(def days (let [today (t/today)]
+            (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
+                              (t/plus- today (t/days 1))
+                              (t/days 1))))
 
 (defui ^:once Calendar
   static om/Ident
@@ -60,8 +28,7 @@
   static om/IQuery
   (query
    [_]
-   [[:ui/days '_]
-    :calendar/id
+   [:calendar/id
     :calendar/title
     :calendar/subtitle
     :calendar/colour
@@ -70,7 +37,7 @@
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour checked-dates] :ui/keys [days]} (om/props this)]
+   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -134,6 +101,42 @@
 (def ui-calendar (om/factory Calendar {:keyfn :calendar/id}))
 
 
+(defui ^:once User
+  static om/Ident
+  (ident [_ props] [:user/by-id (:user/id props)])
+
+  static om/IQuery
+  (query
+   [_]
+   [:user/id
+    :user/first-name
+    :user/avatar-url
+    {:user/calendars (om/get-query Calendar)}])
+
+  Object
+  (render
+   [this]
+   (let [{:user/keys [first-name avatar-url calendars]} (om/props this)]
+     (dom/div
+      #js {:className "user"}
+      (dom/div
+       #js {:className "user__details"}
+       (dom/img
+        #js {:className "user__details__avatar"
+             :alt "user-details-avatar"
+             :src avatar-url})
+       (dom/span
+        #js {:className "user__details__first-name"}
+        first-name)
+
+       (dom/div
+        #js {:className "user__details__divider"}))
+
+      (map ui-calendar calendars)))))
+
+(def ui-user (om/factory User))
+
+
 (defui ^:once App
   static om/IQuery
   (query
@@ -141,8 +144,7 @@
    [:ui/react-key
     :ui/loading-data
     :ui/days
-    {:user (om/get-query User)}
-    {:calendars (om/get-query Calendar)}])
+    {:current-user (om/get-query User)}])
 
   static fc/InitialAppState
   (initial-state
@@ -155,18 +157,17 @@
   Object
   (render
    [this]
-   (let [{:keys [ui/react-key ui/loading-data user calendars]} (om/props this)]
+   (let [{:keys [ui/react-key ui/loading-data current-user]} (om/props this)]
      (dom/div
       #js {:key react-key
            :className "app"}
       (dom/div
        #js {:className "app-error-notice"}
        "You need to use a wider screen.")
-      (if (or loading-data (empty? user))
+      (if (or loading-data (empty? current-user))
         (dom/div
          #js {:className "loader"}
          "LOADING!!!")
         (dom/div
          #js {:className "page"}
-         (ui-user user)
-         (map ui-calendar calendars)))))))
+         (ui-user current-user)))))))
