@@ -188,7 +188,7 @@
       :transform "rotate(-90deg)"
       :transform-origin [[:left :top 0]]}]]
 
-   [:&__days
+   [:&__items
     {:position :absolute
      :top 0
      :right 0
@@ -197,7 +197,7 @@
      :grid-auto-columns (-> calendar :day-width px)
      :grid-auto-flow :column
      :grid-gap (-> calendar :day-gutter px)}
-    [:&__day
+    [:&__item
      {:border-radius (-> dimensions :radius :tiny px)
       :cursor :pointer}
      [:&--green

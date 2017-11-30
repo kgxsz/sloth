@@ -10,16 +10,42 @@
             [om.next :as om :refer [defui]]))
 
 ;; TODO - move these into a utils file
-(def title-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
 (def month-label-formatter (tf/formatter "MMM"))
 (def day-label-formatter (tf/formatter "E"))
-(def basic-date-formatter (tf/formatters :basic-date))
+(def date-label-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
+(def basic-formatter (tf/formatters :basic-date))
 
-;; TODO - find a better way to do this
-(def days (let [today (t/today)]
-            (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
-                              (t/plus- today (t/days 1))
-                              (t/days 1))))
+;; TODO - put these helpers somewhere where it makes sense
+(def make-items
+  (memoize
+   (fn [today]
+     (for [date (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
+                                  (t/plus- today (t/days 1))
+                                  (t/days 1))]
+       {:date (tf/unparse basic-formatter date)
+        :label (tf/unparse date-label-formatter date)
+        :shaded? (odd? (t/month date))}))))
+
+(def make-horizontal-labels
+  (memoize
+   (fn [today]
+     (for [date (tpc/periodic-seq (t/minus- today (t/days (+ 350 (t/day-of-week today))))
+                                  (t/plus- today (t/days (- 8 (t/day-of-week today))))
+                                  (t/weeks 1))]
+       {:date (tf/unparse basic-formatter date)
+        :label (tf/unparse month-label-formatter date)
+        :visible? (> 8 (t/day date))}))))
+
+(def make-vertical-labels
+  (memoize
+   (fn [today]
+     (for [date (tpc/periodic-seq (t/minus- today (t/days (- (t/day-of-week today) 1)))
+                                  (t/plus- today (t/days (- 8 (t/day-of-week today))))
+                                  (t/days 1))]
+       {:date (tf/unparse basic-formatter date)
+        :label (tf/unparse day-label-formatter date)
+        :visible? (odd? (t/day date))}))))
+
 
 (defui ^:once Calendar
   static om/Ident
@@ -37,7 +63,9 @@
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)]
+   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)
+         ;; TODO - figure out where to put this guy
+         today (t/today)]
      (dom/div
       #js {:className "calendar"}
       (dom/div
@@ -55,20 +83,20 @@
       (dom/div
        #js {:className "calendar__body"}
        (dom/div
-        #js {:className "calendar__days"}
+        ;; TODO - change the css to items
+        #js {:className "calendar__items"}
         (doall
-         (for [day days]
-           (let [date (tf/unparse basic-date-formatter day)
-                 checked? (contains? checked-dates date)]
+         (for [{:keys [date label shaded?]} (make-items today)]
+           (let [checked? (contains? checked-dates date)]
              (dom/div
               #js {:key date
-                   :title (tf/unparse title-formatter day)
+                   :title label
                    ;; TODO - time to use utils for BEM
-                   :className (str "calendar__days__day "
-                                   "calendar__days__day--"
+                   :className (str "calendar__items__item"
+                                   " calendar__items__item--"
                                    (cond
                                      checked? (name colour)
-                                     (odd? (t/month day)) "grey-medium"
+                                     shaded? "grey-medium"
                                      :else "grey-light"))
                    :onClick #(if checked?
                                (om/transact! this `[(ops/remove-checked-date! {:id ~id :date ~date})])
@@ -77,23 +105,22 @@
        (dom/div
         #js {:className "calendar__labels calendar__labels--horizontal"}
         (doall
-         (for [monday (take-nth 7 days)]
-           (let [sunday (t/plus- monday (t/days 6))]
-             (dom/span
-              #js {:key (tf/unparse basic-date-formatter monday)
-                   :className "calendar__label calendar__label--vertical"}
-              (when (> 8 (t/day sunday))
-                (tf/unparse month-label-formatter sunday)))))))
+         (for [{:keys [date label visible?]} (make-horizontal-labels today)]
+           (dom/span
+            #js {:key date
+                 :className "calendar__label calendar__label--vertical"}
+            (when visible?
+              label)))))
 
        (dom/div
         #js {:className "calendar__labels calendar__labels--vertical"}
         (doall
-         (for [day (take 7 days)]
+         (for [{:keys [date label visible?]} (make-vertical-labels today)]
            (dom/span
-            #js {:key (tf/unparse basic-date-formatter day)
+            #js {:key date
                  :className "calendar__label calendar__label--horizontal"}
-            (when (odd? (t/day day))
-              (tf/unparse day-label-formatter day)))))))
+            (when visible?
+              label))))))
 
       (dom/div
        #js {:className "calendar__footer"})))))
