@@ -45,8 +45,8 @@
                :medium 14}})
 
 (def calendar
-  {:day-width (-> dimensions :filling :x-small)
-   :day-gutter (-> dimensions :spacing :xxx-small)
+  {:item-width (-> dimensions :filling :x-small)
+   :item-gutter (-> dimensions :spacing :xxx-small)
    :label-width (-> dimensions :filling :large)})
 
 (def user
@@ -54,8 +54,8 @@
 
 (def page
   (let [weeks-to-width (fn [num-weeks]
-                          (+ (* num-weeks (:day-width calendar))
-                             (* (dec num-weeks) (:day-gutter calendar))
+                          (+ (* num-weeks (:item-width calendar))
+                             (* (dec num-weeks) (:item-gutter calendar))
                              (:label-width calendar)))
         width-small (weeks-to-width 17)
         width-medium (weeks-to-width 32)
@@ -150,8 +150,8 @@
    [:&__body
     {:position :relative
      :overflow :hidden
-     :height (px (+ (* 7 (:day-width calendar))
-                    (* 6 (:day-gutter calendar))
+     :height (px (+ (* 7 (:item-width calendar))
+                    (* 6 (:item-gutter calendar))
                     (:label-width calendar)))
      :width (percent 100)
      :margin-top (-> dimensions :spacing :x-large px)}]
@@ -177,9 +177,9 @@
     [:&--hidden
      {:visibility :hidden}]
     [:&--horizontal
-     {:height (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))}]
+     {:height (px (+ (-> calendar :item-width) (-> calendar :item-gutter)))}]
     [:&--vertical
-     {:width (px (+ (-> calendar :day-width) (-> calendar :day-gutter)))
+     {:width (px (+ (-> calendar :item-width) (-> calendar :item-gutter)))
       :transform "rotate(-90deg)"
       :transform-origin [[:left :top 0]]}]]
 
@@ -188,10 +188,10 @@
      :top 0
      :right 0
      :display :grid
-     :grid-template-rows [(repeat 7 (-> calendar :day-width px))]
-     :grid-auto-columns (-> calendar :day-width px)
+     :grid-template-rows [(repeat 7 (-> calendar :item-width px))]
+     :grid-auto-columns (-> calendar :item-width px)
      :grid-auto-flow :column
-     :grid-gap (-> calendar :day-gutter px)}
+     :grid-gap (-> calendar :item-gutter px)}
     [:&__item
      {:border-radius (-> dimensions :radius :tiny px)
       :cursor :pointer}
