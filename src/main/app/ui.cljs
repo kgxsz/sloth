@@ -183,8 +183,7 @@
    [this]
    (let [{:keys [ui/react-key ui/loading-data current-user]} (om/props this)]
      (dom/div
-      #js {:key react-key
-           :className "app"}
+      #js {:key react-key}
       (dom/div
        #js {:className "app-error-notice"}
        "You need to use a wider screen.")

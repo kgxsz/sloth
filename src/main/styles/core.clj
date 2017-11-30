@@ -31,11 +31,7 @@
              :small 20
              :medium 24
              :large 32}
-   :radius {:tiny 1}
-   :breakpoint {:tiny 320
-                :small 480
-                :medium 768
-                :large 960}})
+   :radius {:tiny 1}})
 
 (def text
   {:heading {:tiny 10
@@ -54,17 +50,19 @@
   {:height (-> dimensions :filling :medium)})
 
 (def page
-  (let [weeks-to-widths (fn [num-weeks]
+  (let [weeks-to-width (fn [num-weeks]
                           (+ (* num-weeks (:day-width calendar))
                              (* (dec num-weeks) (:day-gutter calendar))
-                             (:label-width calendar)))]
-    {:width {:tiny (weeks-to-widths 17)
-             :small (weeks-to-widths 27)
-             :medium (weeks-to-widths 45)
-             :large (weeks-to-widths 52)}}))
-
-(defstyles app
-  [:.app])
+                             (:label-width calendar)))
+        width-small (weeks-to-width 17)
+        width-medium (weeks-to-width 32)
+        width-large (weeks-to-width 52)]
+    {:width {:small width-small
+             :medium width-medium
+             :large width-large}
+     :breakpoint {:small (px (+ width-small 18))
+                  :medium (px (+ width-medium 36))
+                  :large (px (+ width-large 72))}}))
 
 (defstyles app-error-notice
   [:.app-error-notice
@@ -82,24 +80,19 @@
     :background-color (-> colours :white :light)}
 
    (at-media
-    {:min-width (-> dimensions :breakpoint :tiny px)}
+    {:min-width (-> page :breakpoint :small px)}
     [:&
      {:display :block
-      :width (-> page :width :tiny px)
+      :width (-> page :width :small px)
       :margin [[(-> dimensions :spacing :x-large px) :auto]]}])
 
    (at-media
-    {:min-width (-> dimensions :breakpoint :small px)}
-    [:&
-     {:width (-> page :width :small px)}])
-
-   (at-media
-    {:min-width (-> dimensions :breakpoint :medium px)}
+    {:min-width (-> page :breakpoint :medium px)}
     [:&
      {:width (-> page :width :medium px)}])
 
    (at-media
-    {:min-width (-> dimensions :breakpoint :large px)}
+    {:min-width (-> page :breakpoint :large px)}
     [:&
      {:width (-> page :width :large px)}])])
 
@@ -241,7 +234,6 @@
 (defstyles app
   normalize
   foundations
-  app
   app-error-notice
   page
   user-details
