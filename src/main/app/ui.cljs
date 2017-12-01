@@ -244,12 +244,11 @@
    (let [{:keys [ui/react-key ui/loading-data current-user]} (om/props this)]
      (dom/div
       #js {:key react-key}
-      ;; TODO - bring this back in
-      #_(dom/div
+      (dom/div
        #js {:className "app-error-notice"}
        "You need to use a wider screen.")
-      (if (or loading-data (empty? current-user))
-        (ui-logo)
-        (dom/div
-         #js {:className "page"}
+      (dom/div
+       #js {:className "page"}
+       (if (or loading-data (empty? current-user))
+         (ui-logo)
          (ui-user current-user)))))))
