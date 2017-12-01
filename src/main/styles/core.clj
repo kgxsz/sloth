@@ -17,10 +17,12 @@
     :padding 0}]
 
   [:html
-   {:overflow :auto}]
+   {:overflow :auto
+    :height (-> c/proportion :100 percent)}]
 
   [:body
-   {:overflow :auto}]
+   {:overflow :auto
+    :height (-> c/proportion :100 percent)}]
 
   ;; fonts
   fonts/icomoon
