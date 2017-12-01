@@ -180,6 +180,17 @@
            :-moz-osx-font-smoothing :grayscale
            :text-decoration :none}
 
+   [:&--heading
+    (u/make-modifiers c/heading :font-size px)]
+
+   [:&--paragraph
+    (u/make-modifiers c/paragraph :font-size px)]
+
+   [:&--colour
+    (u/make-modifiers c/colour :color)]
+
+   [:&--font-weight-bold {:font-weight 800}]
+
    [:&--question-circle:before {:content "'\\e87d'"}]
    [:&--arrow-left:before {:content "'\\e879'"}]
    [:&--moon:before {:content "'\\e808'"}]
@@ -366,7 +377,7 @@
   [:.text {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
            :color (-> c/colour :black-light)
            :font-size (-> c/paragraph :medium px)
-           :font-weight :normal
+           :font-weight 400
            :line-height 1.3
            :font-variant :normal
            :text-transform :none
@@ -374,20 +385,14 @@
            :-moz-osx-font-smoothing :grayscale
            :text-decoration :none}
 
-   ;; TODO - fill this out without generation
    [:&--heading
-    [:&-medium
-     {:font-size (-> c/heading :medium px)}]]
+    (u/make-modifiers c/heading :font-size px)]
 
    [:&--paragraph
-    [:&-small
-     {:font-size (-> c/paragraph :small px)}]]
+    (u/make-modifiers c/paragraph :font-size px)]
 
    [:&--colour
-    [:&-black-light
-     {:color (-> c/colour :black-light)}]
-    [:&-grey-dark
-     {:color (-> c/colour :grey-dark)}]]
+    (u/make-modifiers c/colour :color)]
 
    [:&--ellipsis {:display :block
                   :white-space :nowrap
@@ -396,7 +401,7 @@
 
    [:&--align-center {:text-align :center}]
 
-   [:&--font-weight-bold {:font-weight :bold}]])
+   [:&--font-weight-bold {:font-weight 800}]])
 
 (defstyles app
 
@@ -419,12 +424,6 @@
 
   ;; fonts
   fonts/icomoon
-
-  ;; animations
-
-  ;; utilities
-
-  ;; layouts
 
   ;; components
   icon
