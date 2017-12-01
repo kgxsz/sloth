@@ -256,6 +256,6 @@
        "You need to use a wider screen.")
       (dom/div
        #js {:className "page"}
-       (if true #_(or loading-data (empty? current-user))
+       (if (or loading-data (empty? current-user))
          (ui-logo)
          (ui-user current-user)))))))

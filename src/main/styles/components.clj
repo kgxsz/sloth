@@ -30,18 +30,18 @@
     [:&--animated-b
      {:animation-name :square-b
       :animation-duration (ms 800)
-      :animation-delay (ms 200)
+      :animation-delay (ms 300)
       :animation-timing-function "steps(1)"
       :animation-iteration-count :infinite}]
     [:&--animated-c
      {:animation-name :square-c
-      :animation-duration (ms 1200)
-      :animation-delay (ms 300)
+      :animation-duration (ms 1100)
+      :animation-delay (ms 500)
       :animation-timing-function "steps(1)"
       :animation-iteration-count :infinite}]
     [:&--animated-d
      {:animation-name :square-d
-      :animation-duration (ms 1100)
+      :animation-duration (ms 900)
       :animation-delay (ms 100)
       :animation-timing-function "steps(1)"
       :animation-iteration-count :infinite}]]])
