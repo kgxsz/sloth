@@ -1,5 +1,6 @@
 (ns styles.core
   (:require [styles.constants :as c]
+            [styles.utils :as u]
             [garden.def :refer [defstyles]]
             [garden.stylesheet :refer [at-media]]
             [garden.units :refer [px percent]]
@@ -18,9 +19,7 @@
 
 (defstyles logo
   [:.logo
-   {:width (-> c/dimensions :filling :xx-large px)
-    :margin [[(-> c/dimensions :spacing :xx-huge px)
-              :auto]]}
+   {:width (-> c/dimensions :filling :xx-large px)}
    [:&__square
     [:&--grey-medium
      {:fill (-> c/colours :grey :medium)}]
@@ -29,38 +28,59 @@
 
 (defstyles page
   [:.page
-   {:display :none
+   {:display :flex
+    :flex-direction :column
+    :align-items :center
+    :margin :auto
     :background-color (-> c/colours :white :light)}
 
-   (at-media
-    {:min-width (-> c/page :breakpoint :small px)}
-    [:&
-     {:display :block
-      :width (-> c/page :width :small px)
-      :margin [[(-> c/dimensions :spacing :huge px)
-                :auto]]}])
+   (u/tiny-width
+    {:display :none})
 
-   (at-media
-    {:min-width (-> c/page :breakpoint :medium px)}
-    [:&
-     {:width (-> c/page :width :medium px)}])
+   (u/small-width
+    {:max-width (-> c/dimensions :breakpoint :small :start px)
+     :padding [[(-> c/dimensions :spacing :xx-large px)
+                0]]})
 
-   (at-media
-    {:min-width (-> c/page :breakpoint :large px)}
-    [:&
-     {:width (-> c/page :width :large px)}])])
+   (u/medium-width
+    {:max-width (-> c/dimensions :breakpoint :medium :start px)
+     :padding [[(-> c/dimensions :spacing :xx-large px)
+                (-> c/dimensions :spacing :large px)]]})
+
+   (u/large-width
+    {:max-width (-> c/dimensions :breakpoint :large :start px)
+     :padding [[(-> c/dimensions :spacing :huge px)
+                (-> c/dimensions :spacing :large px)]]})
+
+   (u/huge-width
+    {:max-width (-> c/dimensions :breakpoint :huge :start px)
+     :padding [[(-> c/dimensions :spacing :huge px)
+                 (-> c/dimensions :spacing :large px)]]})])
+
+(defstyles user
+  [:.user
+   (u/small-width
+    {:width (-> c/calendar :width :small px)})
+
+   (u/medium-width
+    {:width (-> c/calendar :width :medium px)})
+
+   (u/large-width
+    {:width (-> c/calendar :width :large px)})
+
+   (u/huge-width
+    {:width (-> c/calendar :width :huge px)})])
 
 (defstyles user-details
   [:.user-details
    {:display :flex
     :flex-direction :row
     :align-items :center
-    :height (-> c/dimensions :filling :medium px)
-    :width (percent 100)}
+    :height (-> c/user-details :height px)}
 
    [:&__avatar
-    {:height (-> user :height px)
-     :width (-> user :height px)
+    {:height (-> c/user-details :height px)
+     :width (-> c/user-details :height px)
      :border-radius (percent 50)
      :background-color (-> c/colours :grey :light)}]
 
@@ -79,7 +99,7 @@
      :margin-left (-> c/dimensions :spacing :x-small px)
      :background-color (-> c/colours :grey :light)}]])
 
-(defstyles c/calendar
+(defstyles calendar
   [:.calendar
    {:margin-top (-> c/dimensions :spacing :huge px)}
 
@@ -101,10 +121,10 @@
    [:&__body
     {:position :relative
      :overflow :hidden
+     :width (percent 100)
      :height (px (+ (* 7 (:item-width c/calendar))
                     (* 6 (:item-gutter c/calendar))
                     (:label-width c/calendar)))
-     :width (percent 100)
      :margin-top (-> c/dimensions :spacing :x-large px)}]
 
    [:&__labels
@@ -191,4 +211,6 @@
   app-error-notice
   logo
   page
+  user
+  user-details
   calendar)

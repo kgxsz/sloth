@@ -163,7 +163,7 @@
    [this]
    (let [{:user/keys [names avatar calendars]} (om/props this)]
      (dom/div
-      nil
+      #js {:className "user"}
       (ui-user-details {:names names :avatar avatar})
       (map ui-calendar calendars)))))
 

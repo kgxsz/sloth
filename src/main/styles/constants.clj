@@ -45,6 +45,11 @@
              :x-huge 150
              :xx-huge 210
              :xxx-huge 270}
+   :breakpoint {:tiny {:end 319}
+                :small {:start 320 :end 479}
+                :medium {:start 480 :end 767}
+                :large {:start 768 :end 1023}
+                :huge {:start 1024}}
    :radius {:tiny 1
             :small 2
             :medium 3
@@ -63,23 +68,22 @@
                :large 16
                :huge 18}})
 
+(def user-details
+  {:height (-> dimensions :filling :medium px)})
+
 (def calendar
-  {:item-width (-> dimensions :filling :x-small)
-   :item-gutter (-> dimensions :spacing :xx-tiny)
-   :label-width (-> dimensions :filling :large)})
+  (let [item-width (-> dimensions :filling :x-small)
+        item-gutter (-> dimensions :spacing :xx-tiny)
+        label-width (-> dimensions :filling :large)
+        weeks-to-width (fn [num-weeks]
+                         (+ (* num-weeks item-width)
+                            (* (dec num-weeks) item-gutter)
+                            label-width))]
 
-(def page
-  (let [weeks-to-width (fn [num-weeks]
-                          (+ (* num-weeks (:item-width calendar))
-                             (* (dec num-weeks) (:item-gutter calendar))
-                             (:label-width calendar)))
-        width-small (weeks-to-width 17)
-        width-medium (weeks-to-width 32)
-        width-large (weeks-to-width 52)]
-    {:width {:small width-small
-             :medium width-medium
-             :large width-large}
-     :breakpoint {:small (+ width-small (* 2 (-> dimensions :spacing :x-small)))
-                  :medium (+ width-medium (* 2 (-> dimensions :spacing :medium)))
-                  :large (+ width-large (* 2 (-> dimensions :spacing :x-large)))}}))
-
+    {:width {:small (weeks-to-width 17)
+             :medium (weeks-to-width 25)
+             :large (weeks-to-width 43)
+             :huge (weeks-to-width 52)}
+     :item-width item-width
+     :item-gutter item-gutter
+     :label-width label-width}))
