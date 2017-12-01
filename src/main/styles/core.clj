@@ -1,8 +1,10 @@
 (ns styles.core
-  (:require [styles.constants :as c]
+  (:require [styles.animations :as animations]
             [styles.components :as components]
+            [styles.constants :as c]
             [styles.fonts :as fonts]
             [garden.def :refer [defstyles]]
+            [garden.stylesheet :refer [at-keyframes]]
             [normalize.core :refer [normalize]]))
 
 (defstyles app
@@ -26,6 +28,9 @@
 
   ;; fonts
   fonts/icomoon
+
+  ;; animations
+  animations/logo
 
   ;; components
   components/icon

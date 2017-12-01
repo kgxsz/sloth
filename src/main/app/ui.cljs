@@ -189,25 +189,25 @@
      (dom/g
       nil
       (dom/rect
-       #js{:className "logo__square logo__square--colour-grey-dark"
+       #js{:className "logo__square logo__square--colour-grey-dark logo__square--animated-a"
            :width "9"
            :height "9"
            :rx "1"
            :transform "translate(55 33)"})
       (dom/rect
-       #js{:className "logo__square logo__square--colour-grey-medium"
+       #js{:className "logo__square logo__square--colour-grey-medium logo__square--animated-b"
            :width "9"
            :height "9"
            :rx "1"
            :transform "translate(44 33)"})
       (dom/rect
-       #js{:className "logo__square logo__square--colour-grey-medium"
+       #js{:className "logo__square logo__square--colour-grey-medium logo__square--animated-c"
            :width "9"
            :height "9"
            :rx "1"
            :transform "translate(55 22)"})
       (dom/rect
-       #js{:className "logo__square logo__square--colour-grey-dark"
+       #js{:className "logo__square logo__square--colour-grey-dark logo__square--animated-d"
            :width "9"
            :height "9"
            :rx "1"
@@ -256,6 +256,6 @@
        "You need to use a wider screen.")
       (dom/div
        #js {:className "page"}
-       (if (or loading-data (empty? current-user))
+       (if true #_(or loading-data (empty? current-user))
          (ui-logo)
          (ui-user current-user)))))))

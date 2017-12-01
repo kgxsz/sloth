@@ -2,7 +2,7 @@
   (:require [styles.constants :as c]
             [styles.utils :as u]
             [garden.def :refer [defstyles]]
-            [garden.units :refer [px percent]]
+            [garden.units :refer [px percent ms]]
             [normalize.core :refer [normalize]]))
 
 (defstyles app-error-notice
@@ -21,7 +21,30 @@
    {:width (-> c/filling :xx-large px)}
    [:&__square
     [:&--colour
-     (u/make-modifiers c/colour :fill)]]])
+     (u/make-modifiers c/colour :fill)]
+    [:&--animated-a
+     {:animation-name :square-a
+      :animation-duration (ms 1000)
+      :animation-timing-function "steps(1)"
+      :animation-iteration-count :infinite}]
+    [:&--animated-b
+     {:animation-name :square-b
+      :animation-duration (ms 800)
+      :animation-delay (ms 200)
+      :animation-timing-function "steps(1)"
+      :animation-iteration-count :infinite}]
+    [:&--animated-c
+     {:animation-name :square-c
+      :animation-duration (ms 1200)
+      :animation-delay (ms 300)
+      :animation-timing-function "steps(1)"
+      :animation-iteration-count :infinite}]
+    [:&--animated-d
+     {:animation-name :square-d
+      :animation-duration (ms 1100)
+      :animation-delay (ms 100)
+      :animation-timing-function "steps(1)"
+      :animation-iteration-count :infinite}]]])
 
 (defstyles page
   [:.page
