@@ -12,14 +12,14 @@
     :left 0
     :right 0
     :z-index -1
-    :padding [[(-> c/dimensions :spacing :x-large px)
-               (-> c/dimensions :spacing :x-small px)]]
+    :padding [[(-> c/spacing :x-large px)
+               (-> c/spacing :x-small px)]]
     :text-align :center
     :color (-> c/colours :grey :dark)}])
 
 (defstyles logo
   [:.logo
-   {:width (-> c/dimensions :filling :xx-large px)}
+   {:width (-> c/filling :xx-large px)}
    [:&__square
     [:&--grey-medium
      {:fill (-> c/colours :grey :medium)}]
@@ -38,24 +38,24 @@
     {:display :none})
 
    (u/small-width
-    {:max-width (-> c/dimensions :breakpoint :small :start px)
-     :padding [[(-> c/dimensions :spacing :xx-large px)
+    {:max-width (-> c/breakpoint :small :start px)
+     :padding [[(-> c/spacing :xx-large px)
                 0]]})
 
    (u/medium-width
-    {:max-width (-> c/dimensions :breakpoint :medium :start px)
-     :padding [[(-> c/dimensions :spacing :xx-large px)
-                (-> c/dimensions :spacing :large px)]]})
+    {:max-width (-> c/breakpoint :medium :start px)
+     :padding [[(-> c/spacing :xx-large px)
+                (-> c/spacing :large px)]]})
 
    (u/large-width
-    {:max-width (-> c/dimensions :breakpoint :large :start px)
-     :padding [[(-> c/dimensions :spacing :huge px)
-                (-> c/dimensions :spacing :large px)]]})
+    {:max-width (-> c/breakpoint :large :start px)
+     :padding [[(-> c/spacing :huge px)
+                (-> c/spacing :large px)]]})
 
    (u/huge-width
-    {:max-width (-> c/dimensions :breakpoint :huge :start px)
-     :padding [[(-> c/dimensions :spacing :huge px)
-                 (-> c/dimensions :spacing :large px)]]})])
+    {:max-width (-> c/breakpoint :huge :start px)
+     :padding [[(-> c/spacing :huge px)
+                 (-> c/spacing :large px)]]})])
 
 (defstyles user
   [:.user
@@ -81,51 +81,51 @@
    [:&__avatar
     {:height (-> c/user-details :height px)
      :width (-> c/user-details :height px)
-     :border-radius (percent 50)
+     :border-radius (-> c/proportion :50 percent)
      :background-color (-> c/colours :grey :light)}]
 
    [:&__first-name
-    {:margin-left (-> c/dimensions :spacing :x-small px)
+    {:margin-left (-> c/spacing :x-small px)
      :font-size (-> text :heading :medium px)
      :font-weight :bold
-     :max-width (percent 40)
+     :max-width (-> c/proportion :40 percent)
      :text-overflow :ellipsis
      :white-space :nowrap
      :overflow :hidden}]
 
    [:&__divider
     {:flex-grow 1
-     :height (-> c/dimensions :filling :xx-tiny px)
-     :margin-left (-> c/dimensions :spacing :x-small px)
+     :height (-> c/filling :xx-tiny px)
+     :margin-left (-> c/spacing :x-small px)
      :background-color (-> c/colours :grey :light)}]])
 
 (defstyles calendar
   [:.calendar
-   {:margin-top (-> c/dimensions :spacing :huge px)}
+   {:margin-top (-> c/spacing :huge px)}
 
    [:&__header
     [:&__title
-     {:font-size (-> text :heading :medium px)
+     {:font-size (-> c/heading :medium px)
       :font-weight :bold
       :color (-> c/colours :black :light)}]
     [:&__separator
-     {:padding [[0 (-> c/dimensions :spacing :x-small px)]]
-      :font-size (-> text :heading :medium px)
+     {:padding [[0 (-> c/spacing :x-small px)]]
+      :font-size (-> c/heading :medium px)
       :font-weight :normal
       :color (-> c/colours :grey :dark)}]
     [:&__subtitle
-     {:font-size (-> text :heading :medium px)
+     {:font-size (-> c/heading :medium px)
       :font-weight :normal
       :color (-> c/colours :grey :dark)}]]
 
    [:&__body
     {:position :relative
      :overflow :hidden
-     :width (percent 100)
+     :width (-> c/proportion :100 percent)
      :height (px (+ (* 7 (:item-width c/calendar))
                     (* 6 (:item-gutter c/calendar))
                     (:label-width c/calendar)))
-     :margin-top (-> c/dimensions :spacing :x-large px)}]
+     :margin-top (-> c/spacing :x-large px)}]
 
    [:&__labels
     {:position :absolute
@@ -143,7 +143,7 @@
 
    [:&__label
     {:display :block
-     :font-size (-> text :paragraph :small px)
+     :font-size (-> c/paragraph :small px)
      :font-weight :bold}
     [:&--hidden
      {:visibility :hidden}]
@@ -164,7 +164,7 @@
      :grid-auto-flow :column
      :grid-gap (-> c/calendar :item-gutter px)}
     [:&__item
-     {:border-radius (-> c/dimensions :radius :tiny px)
+     {:border-radius (-> c/radius :tiny px)
       :cursor :pointer}
      [:&--green
       {:background-color (-> c/colours :green :dark)}]
@@ -182,9 +182,9 @@
       {:background-color (-> c/colours :grey :light)}]]]
 
    [:&__footer
-    {:margin-top (-> c/dimensions :spacing :x-large px)
+    {:margin-top (-> c/spacing :x-large px)
      :border-bottom-style :solid
-     :border-bottom-width (-> c/dimensions :filling :xx-tiny px)
+     :border-bottom-width (-> c/filling :xx-tiny px)
      :border-bottom-color (-> c/colours :grey :light)}]])
 
 (defstyles foundations
@@ -195,13 +195,13 @@
 
   [:html
    {:overflow :auto
-    :height (percent 100)}]
+    :height (-> c/proportion :100 percent)}]
 
   [:body
    {:overflow :auto
-    :height (percent 100)
+    :height (-> c/proportion :100 percent)
     :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
-    :font-size (-> text :paragraph :medium px)
+    :font-size (-> c/paragraph :medium px)
     :line-height 1.3
     :color (-> c/colours :black :light)}])
 
