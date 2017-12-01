@@ -1,5 +1,5 @@
 (ns cljs.user
-  (:require [app.ui :as ui]
+  (:require [app.components.root :refer [Root]]
             [app.core :as core]
             [fulcro.client.core :as fc]))
 
@@ -15,6 +15,6 @@
 (defn refresh
   "A function for Figwheel to refresh the app when files are edited."
   []
-  (swap! core/app fc/mount ui/App "app-container"))
+  (swap! core/app fc/mount Root "root"))
 
 (refresh)

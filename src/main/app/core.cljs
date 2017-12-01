@@ -1,10 +1,10 @@
 (ns app.core
-  (:require [fulcro.client.core :as fc]
-            [fulcro.client.data-fetch :as df]
-            [app.ui :as ui]))
+  (:require [app.components.user :refer [User]]
+            [fulcro.client.core :as fc]
+            [fulcro.client.data-fetch :as df]))
 
 (defonce app (atom (fc/new-fulcro-client
                     :started-callback (fn [app]
-                                        (df/load app :current-user ui/User)))))
+                                        (df/load app :current-user User)))))
 
 
