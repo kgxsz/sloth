@@ -146,20 +146,8 @@
     [:&__item
      {:border-radius (-> c/radius :tiny px)
       :cursor :pointer}
-     [:&--green
-      {:background-color (-> c/colour :green-dark)}]
-     [:&--yellow
-      {:background-color (-> c/colour :yellow-dark)}]
-     [:&--green
-      {:background-color (-> c/colour :green-dark)}]
-     [:&--purple
-      {:background-color (-> c/colour :purple-dark)}]
-     [:&--blue
-      {:background-color (-> c/colour :blue-dark)}]
-     [:&--grey-medium
-      {:background-color (-> c/colour :grey-medium)}]
-     [:&--grey-light
-      {:background-color (-> c/colour :grey-light)}]]]
+     [:&--colour
+      (u/make-modifiers c/colour :background-color)]]]
 
    [:&__footer
     {:margin-top (-> c/spacing :x-large px)

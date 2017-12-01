@@ -92,9 +92,9 @@
                    :title label
                    ;; TODO - time to use utils for BEM
                    :className (str "calendar__items__item"
-                                   " calendar__items__item--"
+                                   " calendar__items__item--colour-"
                                    (cond
-                                     checked? (name colour)
+                                     checked? (str (name colour) "-dark")
                                      shaded? "grey-medium"
                                      :else "grey-light"))
                    :onClick #(if checked?
