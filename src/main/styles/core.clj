@@ -87,12 +87,7 @@
 
    [:&__first-name
     {:margin-left (-> c/spacing :x-small px)
-     :font-size (-> text :heading :medium px)
-     :font-weight :bold
-     :max-width (-> c/proportion :40 percent)
-     :text-overflow :ellipsis
-     :white-space :nowrap
-     :overflow :hidden}]
+     :max-width (-> c/proportion :40 percent)}]
 
    [:&__divider
     {:flex-grow 1
@@ -105,19 +100,8 @@
    {:margin-top (-> c/spacing :huge px)}
 
    [:&__header
-    [:&__title
-     {:font-size (-> c/heading :medium px)
-      :font-weight :bold
-      :color (-> c/colours :black :light)}]
     [:&__separator
-     {:padding [[0 (-> c/spacing :x-small px)]]
-      :font-size (-> c/heading :medium px)
-      :font-weight :normal
-      :color (-> c/colours :grey :dark)}]
-    [:&__subtitle
-     {:font-size (-> c/heading :medium px)
-      :font-weight :normal
-      :color (-> c/colours :grey :dark)}]]
+     {:padding [[0 (-> c/spacing :x-small px)]]}]]
 
    [:&__body
     {:position :relative
@@ -143,9 +127,6 @@
       :background-color (-> c/colours :white :light)}]]
 
    [:&__label
-    {:display :block
-     :font-size (-> c/paragraph :small px)
-     :font-weight :bold}
     [:&--hidden
      {:visibility :hidden}]
     [:&--horizontal
@@ -189,10 +170,10 @@
      :border-bottom-color (-> c/colours :grey :light)}]])
 
 
-(def icon
+(defstyles icon
   [:.icon {:font-family "'icomoon'"
            :font-style :normal
-           :font-weight : bold
+           :font-weight 400
            :font-variant :normal
            :text-transform :none
            :-webkit-font-smoothing :antialiased
@@ -381,6 +362,41 @@
    [:&--users:before {:content "'\\e82b'"}]
    [:&--sort-amount-asc:before {:content "'\\e8a4'"}]])
 
+(defstyles text
+  [:.text {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
+           :color (-> c/colours :black :light)
+           :font-size (-> c/paragraph :medium px)
+           :font-weight :normal
+           :line-height 1.3
+           :font-variant :normal
+           :text-transform :none
+           :-webkit-font-smoothing :antialiased
+           :-moz-osx-font-smoothing :grayscale
+           :text-decoration :none}
+
+   ;; TODO - fill this out without generation
+   [:&--heading
+    [:&-medium
+     {:font-size (-> c/heading :medium px)}]]
+
+   [:&--paragraph
+    [:&-small
+     {:font-size (-> c/paragraph :small px)}]]
+
+   [:&--colour
+    [:&-black-light
+     {:color (-> c/colour :black-light)}]
+    [:&-grey-dark
+     {:color (-> c/colour :grey-dark)}]]
+
+   [:&--ellipsis {:display :block
+                  :white-space :nowrap
+                  :overflow :hidden
+                  :text-overflow :ellipsis}]
+
+   [:&--align-center {:text-align :center}]
+
+   [:&--font-weight-bold {:font-weight :bold}]])
 
 (defstyles app
 
@@ -399,11 +415,7 @@
 
   [:body
    {:overflow :auto
-    :height (-> c/proportion :100 percent)
-    :font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
-    :font-size (-> c/paragraph :medium px)
-    :line-height 1.3
-    :color (-> c/colours :black :light)}]
+    :height (-> c/proportion :100 percent)}]
 
   ;; fonts
   fonts/icomoon
@@ -414,8 +426,9 @@
 
   ;; layouts
 
-  ;; custom
+  ;; components
   icon
+  text
   app-error-notice
   logo
   page

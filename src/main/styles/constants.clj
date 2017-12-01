@@ -1,5 +1,6 @@
 (ns styles.constants)
 
+;; TODO - kill thes ein favour of flat
 (def colours
   {:white {:light "#FFFFFF"}
    :black {:light "#333333"}
@@ -10,6 +11,17 @@
    :yellow {:dark "#FADA6E"}
    :purple {:dark "#D4A3E3"}
    :blue {:dark "#58A1F5"}})
+
+;; TODO - move all these over
+(def colour
+  {:white-light "#FFFFFF"
+   :black-light "#333333"
+   :grey-light "#F2F2F2"
+   :grey-medium "#EAEAEA"
+   :grey-dark "#BBBBBB"
+
+
+   })
 
 (def spacing
   {:xxx-tiny 1
@@ -100,7 +112,7 @@
    :huge 18})
 
 (def user-details
-  {:height (-> dimensions :filling :medium px)})
+  {:height (-> dimensions :filling :medium)})
 
 (def calendar
   (let [item-width (-> dimensions :filling :x-small)

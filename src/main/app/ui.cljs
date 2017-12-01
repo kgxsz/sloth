@@ -69,19 +69,20 @@
       (dom/div
        #js {:className "calendar__header"}
        (dom/span
-        #js {:className "calendar__header__title"}
+        #js {:className "text text--heading-medium text--font-weight-bold text--colour-black-light"}
         title)
        (dom/span
         #js {:className "calendar__header__separator"}
-        "—")
+        (dom/span
+         #js {:className "text text--heading-medium text--colour-grey-dark"}
+         "—"))
        (dom/span
-        #js {:className "calendar__header__subtitle"}
+        #js {:className "text text--heading-medium text--colour-grey-dark"}
         subtitle))
 
       (dom/div
        #js {:className "calendar__body"}
        (dom/div
-        ;; TODO - change the css to items
         #js {:className "calendar__items"}
         (doall
          (for [{:keys [date label shaded?]} (make-items (t/today))]
@@ -104,21 +105,25 @@
         #js {:className "calendar__labels calendar__labels--horizontal"}
         (doall
          (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
-           (dom/span
+           (dom/div
             #js {:key date
                  :className "calendar__label calendar__label--vertical"}
             (when visible?
-              label)))))
+              (dom/span
+               #js {:className "text text--paragraph-small text--font-weight-bold"}
+               label))))))
 
        (dom/div
         #js {:className "calendar__labels calendar__labels--vertical"}
         (doall
          (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
-           (dom/span
+           (dom/div
             #js {:key date
                  :className "calendar__label calendar__label--horizontal"}
             (when visible?
-              label))))))
+              (dom/span
+               #js {:className "text text--paragraph-small text--font-weight-bold"}
+               label)))))))
 
       (dom/div
        #js {:className "calendar__footer"})))))
@@ -137,9 +142,11 @@
        #js {:className "user-details__avatar"
             :alt "user-details-avatar"
             :src url})
-      (dom/span
+      (dom/div
        #js {:className "user-details__first-name"}
-       first-name)
+       (dom/span
+        #js {:className "text text--font-weight-bold text--heading-medium text--ellipsis"}
+        first-name))
       (dom/div
        #js {:className "user-details__divider"})))))
 
