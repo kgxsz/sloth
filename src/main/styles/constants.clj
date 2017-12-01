@@ -1,27 +1,15 @@
 (ns styles.constants)
 
-;; TODO - kill thes ein favour of flat
-(def colours
-  {:white {:light "#FFFFFF"}
-   :black {:light "#333333"}
-   :grey {:light "#F2F2F2"
-          :medium "#EAEAEA"
-          :dark "#BBBBBB"}
-   :green {:dark "#8ACA55"}
-   :yellow {:dark "#FADA6E"}
-   :purple {:dark "#D4A3E3"}
-   :blue {:dark "#58A1F5"}})
-
-;; TODO - move all these over
 (def colour
   {:white-light "#FFFFFF"
    :black-light "#333333"
    :grey-light "#F2F2F2"
    :grey-medium "#EAEAEA"
    :grey-dark "#BBBBBB"
-
-
-   })
+   :green-dark "#8ACA55"
+   :yellow-dark "#FADA6E"
+   :purple-dark "#D4A3E3"
+   :blue-dark "#58A1F5"})
 
 (def spacing
   {:xxx-tiny 1

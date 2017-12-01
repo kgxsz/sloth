@@ -16,16 +16,16 @@
     :padding [[(-> c/spacing :x-large px)
                (-> c/spacing :x-small px)]]
     :text-align :center
-    :color (-> c/colours :grey :dark)}])
+    :color (-> c/colour :grey-dark)}])
 
 (defstyles logo
   [:.logo
    {:width (-> c/filling :xx-large px)}
    [:&__square
     [:&--grey-medium
-     {:fill (-> c/colours :grey :medium)}]
+     {:fill (-> c/colour :grey-medium)}]
     [:&--grey-dark
-     {:fill (-> c/colours :grey :dark)}]]])
+     {:fill (-> c/colour :grey-dark)}]]])
 
 (defstyles page
   [:.page
@@ -33,7 +33,7 @@
     :flex-direction :column
     :align-items :center
     :margin :auto
-    :background-color (-> c/colours :white :light)}
+    :background-color (-> c/colour :white-light)}
 
    (u/tiny-width
     {:display :none})
@@ -83,7 +83,7 @@
     {:height (-> c/user-details :height px)
      :width (-> c/user-details :height px)
      :border-radius (-> c/proportion :50 percent)
-     :background-color (-> c/colours :grey :light)}]
+     :background-color (-> c/colour :grey-light)}]
 
    [:&__first-name
     {:margin-left (-> c/spacing :x-small px)
@@ -93,7 +93,7 @@
     {:flex-grow 1
      :height (-> c/filling :xx-tiny px)
      :margin-left (-> c/spacing :x-small px)
-     :background-color (-> c/colours :grey :light)}]])
+     :background-color (-> c/colour :grey-light)}]])
 
 (defstyles calendar
   [:.calendar
@@ -124,7 +124,7 @@
      {:top 0
       :left 0
       :width (-> c/calendar :label-width px)
-      :background-color (-> c/colours :white :light)}]]
+      :background-color (-> c/colour :white-light)}]]
 
    [:&__label
     [:&--hidden
@@ -149,25 +149,25 @@
      {:border-radius (-> c/radius :tiny px)
       :cursor :pointer}
      [:&--green
-      {:background-color (-> c/colours :green :dark)}]
+      {:background-color (-> c/colour :green-dark)}]
      [:&--yellow
-      {:background-color (-> c/colours :yellow :dark)}]
+      {:background-color (-> c/colour :yellow-dark)}]
      [:&--green
-      {:background-color (-> c/colours :green :dark)}]
+      {:background-color (-> c/colour :green-dark)}]
      [:&--purple
-      {:background-color (-> c/colours :purple :dark)}]
+      {:background-color (-> c/colour :purple-dark)}]
      [:&--blue
-      {:background-color (-> c/colours :blue :dark)}]
+      {:background-color (-> c/colour :blue-dark)}]
      [:&--grey-medium
-      {:background-color (-> c/colours :grey :medium)}]
+      {:background-color (-> c/colour :grey-medium)}]
      [:&--grey-light
-      {:background-color (-> c/colours :grey :light)}]]]
+      {:background-color (-> c/colour :grey-light)}]]]
 
    [:&__footer
     {:margin-top (-> c/spacing :x-large px)
      :border-bottom-style :solid
      :border-bottom-width (-> c/filling :xx-tiny px)
-     :border-bottom-color (-> c/colours :grey :light)}]])
+     :border-bottom-color (-> c/colour :grey-light)}]])
 
 
 (defstyles icon
@@ -364,7 +364,7 @@
 
 (defstyles text
   [:.text {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
-           :color (-> c/colours :black :light)
+           :color (-> c/colour :black-light)
            :font-size (-> c/paragraph :medium px)
            :font-weight :normal
            :line-height 1.3
