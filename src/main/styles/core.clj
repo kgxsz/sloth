@@ -22,10 +22,8 @@
   [:.logo
    {:width (-> c/filling :xx-large px)}
    [:&__square
-    [:&--grey-medium
-     {:fill (-> c/colour :grey-medium)}]
-    [:&--grey-dark
-     {:fill (-> c/colour :grey-dark)}]]])
+    [:&--colour
+     (u/make-modifiers c/colour :fill)]]])
 
 (defstyles page
   [:.page
