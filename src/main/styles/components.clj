@@ -5,6 +5,7 @@
             [garden.units :refer [px percent ms]]
             [normalize.core :refer [normalize]]))
 
+;; TODO - kill this when notifications is done
 (defstyles app-error-notice
   [:.app-error-notice
    {:position :absolute
@@ -45,6 +46,17 @@
       :animation-delay (ms 100)
       :animation-timing-function "steps(1)"
       :animation-iteration-count :infinite}]]])
+
+(defstyles notification
+  [:.notification
+   {:position :absolute
+    :left 0
+    :right 0
+    :z-index -1
+    :padding [[(-> c/spacing :x-large px)
+               (-> c/spacing :x-small px)]]
+    :text-align :center
+    :color (-> c/colour :grey-dark)}])
 
 (defstyles page
   [:.page
