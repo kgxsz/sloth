@@ -111,7 +111,7 @@
          (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
            (dom/div
             #js {:key date
-                 :className (u/bem [:calendar__labels :vertical])}
+                 :className (u/bem [:calendar__label :vertical])}
             (when visible?
               (dom/span
                #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
