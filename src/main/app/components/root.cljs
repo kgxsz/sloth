@@ -1,7 +1,7 @@
 (ns app.components.root
   (:require [app.operations :as ops]
-            [app.components.logo :as logo]
-            [app.components.user :as user]
+            [app.components.logo :refer [ui-logo]]
+            [app.components.user :refer [ui-user User]]
             [app.utils :as u]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
@@ -12,7 +12,7 @@
    [_]
    [:ui/react-key
     :ui/loading-data
-    {:current-user (om/get-query user/User)}])
+    {:current-user (om/get-query User)}])
 
   Object
   (render
@@ -27,5 +27,5 @@
       (dom/div
        #js {:className (u/bem [:page])}
        (if (or loading-data (empty? current-user))
-         (logo/ui-logo)
-         (user/ui-user current-user)))))))
+         (ui-logo)
+         (ui-user current-user)))))))
