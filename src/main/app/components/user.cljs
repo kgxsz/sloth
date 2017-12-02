@@ -1,6 +1,7 @@
 (ns app.components.user
   (:require [app.components.user-details :refer [ui-user-details]]
             [app.components.calendar :refer [ui-calendar Calendar]]
+            [app.utils :as u]
             [om.dom :as dom]
             [om.next :as om :refer [defui]]))
 
@@ -21,7 +22,7 @@
    [this]
    (let [{:user/keys [names avatar calendars]} (om/props this)]
      (dom/div
-      #js {:className "user"}
+      #js {:className (u/bem [:user])}
       (ui-user-details {:names names :avatar avatar})
       (map ui-calendar calendars)))))
 

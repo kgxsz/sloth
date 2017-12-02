@@ -100,12 +100,12 @@
    :huge 18})
 
 (def user-details
-  {:height (-> dimensions :filling :medium)})
+  {:height (-> filling :medium)})
 
 (def calendar
-  (let [item-width (-> dimensions :filling :x-small)
-        item-gutter (-> dimensions :spacing :xx-tiny)
-        label-width (-> dimensions :filling :large)
+  (let [item-width (-> filling :x-small)
+        item-gutter (-> spacing :xx-tiny)
+        label-width (-> filling :large)
         weeks-to-width (fn [num-weeks]
                          (+ (* num-weeks item-width)
                             (* (dec num-weeks) item-gutter)

@@ -1,5 +1,6 @@
 (ns app.components.calendar
   (:require [app.operations :as ops]
+            [app.utils :as u]
             [cljs-time.core :as t]
             [cljs-time.format :as tf]
             [cljs-time.periodic :as tpc]
@@ -43,6 +44,12 @@
         :label (tf/unparse day-label-formatter date)
         :visible? (odd? (t/day date))}))))
 
+(def colour-options
+  {:a :colour-green-dark
+   :b :colour-yellow-dark
+   :c :colour-purple-dark
+   :d :colour-blue-dark})
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; component
 
@@ -56,75 +63,73 @@
    [:calendar/id
     :calendar/title
     :calendar/subtitle
-    :calendar/colour
+    :calendar/colour-option
     :calendar/checked-dates])
 
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour checked-dates]} (om/props this)]
+   (let [{:calendar/keys [id title subtitle colour-option checked-dates]} (om/props this)]
      (dom/div
-      #js {:className "calendar"}
+      #js {:className (u/bem [:calendar])}
       (dom/div
-       #js {:className "calendar__header"}
+       #js {:className (u/bem [:calendar__header])}
        (dom/span
-        #js {:className "text text--heading-medium text--font-weight-bold text--colour-black-light"}
+        #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
         title)
        (dom/span
-        #js {:className "calendar__header__separator"}
+        #js {:className (u/bem [:calendar__header__separator])}
         (dom/span
-         #js {:className "text text--heading-medium text--colour-grey-dark"}
+         #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
          "—"))
        (dom/span
-        #js {:className "text text--heading-medium text--colour-grey-dark"}
+        #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
         subtitle))
 
       (dom/div
-       #js {:className "calendar__body"}
+       #js {:className (u/bem [:calendar__body])}
        (dom/div
-        #js {:className "calendar__items"}
+        #js {:className (u/bem [:calendar__items])}
         (doall
          (for [{:keys [date label shaded?]} (make-items (t/today))]
            (let [checked? (contains? checked-dates date)]
              (dom/div
               #js {:key date
                    :title label
-                   ;; TODO - time to use utils for BEM
-                   :className (str "calendar__items__item"
-                                   " calendar__items__item--colour-"
-                                   (cond
-                                     checked? (str (name colour) "-dark")
-                                     shaded? "grey-medium"
-                                     :else "grey-light"))
+                   :className (u/bem [:calendar__items__item
+                                      (cond
+                                        checked? (get colour-options colour-option)
+                                        shaded? :colour-grey-medium
+                                        :else :colour-grey-light)])
                    :onClick #(if checked?
                                (om/transact! this `[(ops/remove-checked-date! {:id ~id :date ~date})])
                                (om/transact! this `[(ops/add-checked-date! {:id ~id :date ~date})]))})))))
 
        (dom/div
-        #js {:className "calendar__labels calendar__labels--horizontal"}
+        #js {:className (u/bem [:calendar__labels :horizontal])}
         (doall
          (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
            (dom/div
             #js {:key date
-                 :className "calendar__label calendar__label--vertical"}
+                 :className (u/bem [:calendar__labels :vertical])}
             (when visible?
               (dom/span
-               #js {:className "text text--paragraph-small text--font-weight-bold"}
+               #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
                label))))))
 
        (dom/div
-        #js {:className "calendar__labels calendar__labels--vertical"}
+        #js {:className (u/bem [:calendar__labels :vertical])}
         (doall
          (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
            (dom/div
             #js {:key date
-                 :className "calendar__label calendar__label--horizontal"}
+                 :className (u/bem [:calendar__label :horizontal])}
             (when visible?
               (dom/span
-               #js {:className "text text--paragraph-small text--font-weight-bold"}
+               #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
                label)))))))
 
       (dom/div
-       #js {:className "calendar__footer"})))))
+       #js {:className (u/bem [:calendar__footer])})))))
 
 (def ui-calendar (om/factory Calendar {:keyfn :calendar/id}))

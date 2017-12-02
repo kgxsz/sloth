@@ -19,7 +19,7 @@
                                 #:calendar{:id #uuid "67eb2269-35f1-4477-8061-60193cd4709e"
                                            :title "Some title"
                                            :subtitle "some subtitle"
-                                           :colour :green
+                                           :colour-option :a
                                            :checked-dates #{"20171125"
                                                             "20171126"
                                                             "20171127"
@@ -28,7 +28,7 @@
                                 #:calendar{:id #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"
                                            :title "Some other title"
                                            :subtitle "some other subtitle"
-                                           :colour :yellow
+                                           :colour-option :b
                                            :checked-dates #{"20171125"
                                                             "20171126"
                                                             "20171127"
@@ -37,7 +37,7 @@
                                 #:calendar{:id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"
                                            :title "Another really long title"
                                            :subtitle "another really really really long subtitle"
-                                           :colour :blue
+                                           :colour-option :c
                                            :checked-dates #{"20171008"
                                                             "20171101"
                                                             "20171122"
