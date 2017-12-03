@@ -6,10 +6,15 @@
    :grey-light "#F2F2F2"
    :grey-medium "#EAEAEA"
    :grey-dark "#BBBBBB"
+   :green-light"#FBFDF8"
    :green-dark "#8ACA55"
+   :yellow-light "#FEFCF8"
    :yellow-dark "#FADA6E"
    :purple-dark "#D4A3E3"
-   :blue-dark "#58A1F5"})
+   :blue-light "#F9FBFF"
+   :blue-dark "#58A1F5"
+   :red-light "#FFFAFB"
+   :red-dark "#EB5468"})
 
 (def spacing
   {:xxx-tiny 1
