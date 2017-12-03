@@ -14,11 +14,12 @@
                                    :avatar {:url "images/avatar.jpg"}
                                    :calendars [[:calendar/by-id #uuid "67eb2269-35f1-4477-8061-60193cd4709e"]
                                                [:calendar/by-id #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"]
-                                               [:calendar/by-id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"]]}}
+                                               [:calendar/by-id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"]
+                                               [:calendar/by-id #uuid "95092451-9af4-4052-9965-063a94d153d7"]]}}
                :calendar/by-id {#uuid "67eb2269-35f1-4477-8061-60193cd4709e"
                                 #:calendar{:id #uuid "67eb2269-35f1-4477-8061-60193cd4709e"
-                                           :title "Some title"
-                                           :subtitle "some subtitle"
+                                           :title "Cardio Training"
+                                           :subtitle "freeletics or running"
                                            :colour-option :a
                                            :checked-dates #{"20171125"
                                                             "20171126"
@@ -26,8 +27,8 @@
                                                             "20171128"}}
                                 #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"
                                 #:calendar{:id #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"
-                                           :title "Some other title"
-                                           :subtitle "some other subtitle"
+                                           :title "Weight Training"
+                                           :subtitle "traditional or calesthenics"
                                            :colour-option :b
                                            :checked-dates #{"20171125"
                                                             "20171126"
@@ -35,9 +36,18 @@
                                                             "20171128"}}
                                 #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"
                                 #:calendar{:id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"
-                                           :title "Another really long title"
-                                           :subtitle "another really really really long subtitle"
+                                           :title "Coding"
+                                           :subtitle "at least one commit"
                                            :colour-option :c
+                                           :checked-dates #{"20171008"
+                                                            "20171101"
+                                                            "20171122"
+                                                            "20171128"}}
+                                #uuid "95092451-9af4-4052-9965-063a94d153d7"
+                                #:calendar{:id #uuid "95092451-9af4-4052-9965-063a94d153d7"
+                                           :title "Writing"
+                                           :subtitle "a few journal entries"
+                                           :colour-option :d
                                            :checked-dates #{"20171008"
                                                             "20171101"
                                                             "20171122"
