@@ -36,8 +36,8 @@
   ;; components
   components/icon
   components/text
-  components/app-error-notice
   components/logo
+  components/notification
   components/page
   components/user
   components/user-details
