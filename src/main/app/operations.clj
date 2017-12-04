@@ -15,7 +15,8 @@
                                    :calendars [[:calendar/by-id #uuid "67eb2269-35f1-4477-8061-60193cd4709e"]
                                                [:calendar/by-id #uuid "b7f261e6-02b3-4b84-ab73-932b9d33f159"]
                                                [:calendar/by-id #uuid "1db32759-5fba-477f-bcf7-3b9f1831b7cf"]
-                                               [:calendar/by-id #uuid "95092451-9af4-4052-9965-063a94d153d7"]]}}
+                                               [:calendar/by-id #uuid "95092451-9af4-4052-9965-063a94d153d7"]
+                                               [:calendar/by-id #uuid "9ace7d20-3d3c-4d9a-be84-9023b5957f1c"]]}}
                :calendar/by-id {#uuid "67eb2269-35f1-4477-8061-60193cd4709e"
                                 #:calendar{:id #uuid "67eb2269-35f1-4477-8061-60193cd4709e"
                                            :title "Cardio Training"
@@ -51,6 +52,14 @@
                                            :checked-dates #{"20171008"
                                                             "20171101"
                                                             "20171122"
+                                                            "20171128"}}
+
+                                #uuid "9ace7d20-3d3c-4d9a-be84-9023b5957f1c"
+                                #:calendar{:id #uuid "9ace7d20-3d3c-4d9a-be84-9023b5957f1c"
+                                           :title "Meditation"
+                                           :subtitle "ten minute session"
+                                           :colour-option :a
+                                           :checked-dates #{"20171008"
                                                             "20171128"}}}}))
 
 (defquery-root :current-user
