@@ -25,10 +25,6 @@
       (ui-notification {:title "Your screen is too narrow"
                         :paragraph "This application needs a wider screen size to work properly."
                         :only-visible-on-tiny-width? true})
-      ;; TODO - kill this when notifications is done
-      #_(dom/div
-       #js {:className (u/bem [:app-error-notice])}
-       "You need to use a wider screen.")
       (dom/div
        #js {:className (u/bem [:page])}
        (if (or loading-data (empty? current-user))
