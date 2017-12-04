@@ -1,6 +1,7 @@
 (ns app.components.root
   (:require [app.operations :as ops]
             [app.components.logo :refer [ui-logo]]
+            [app.components.notification :refer [ui-notification]]
             [app.components.user :refer [ui-user User]]
             [app.utils :as u]
             [om.dom :as dom]
@@ -21,7 +22,11 @@
      (dom/div
       #js {:key react-key
            :className (u/bem [:app])}
-      (dom/div
+      (ui-notification {:title "Your screen is too narrow"
+                        :paragraph "This application needs a wider screen size to work properly."
+                        :only-visible-on-tiny-width? true})
+      ;; TODO - kill this when notifications is done
+      #_(dom/div
        #js {:className (u/bem [:app-error-notice])}
        "You need to use a wider screen.")
       (dom/div

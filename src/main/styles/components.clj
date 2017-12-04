@@ -5,18 +5,6 @@
             [garden.units :refer [px percent ms]]
             [normalize.core :refer [normalize]]))
 
-;; TODO - kill this when notifications is done
-(defstyles app-error-notice
-  [:.app-error-notice
-   {:position :absolute
-    :left 0
-    :right 0
-    :z-index -1
-    :padding [[(-> c/spacing :x-large px)
-               (-> c/spacing :x-small px)]]
-    :text-align :center
-    :color (-> c/colour :grey-dark)}])
-
 (defstyles logo
   [:.logo
    {:width (-> c/filling :xx-large px)}
@@ -52,11 +40,56 @@
    {:position :absolute
     :left 0
     :right 0
-    :z-index -1
+    :z-index 1
+    :display :flex
+    :flex-direction :row
+    :justify-content :center
     :padding [[(-> c/spacing :x-large px)
-               (-> c/spacing :x-small px)]]
-    :text-align :center
-    :color (-> c/colour :grey-dark)}])
+               (-> c/spacing :small px)]]}
+
+   [:&--only-visible-on-tiny-width
+    {:display :none}
+    (u/tiny-width
+     {:display :flex})]
+
+   [:&__body
+    {:display :flex
+     :flex-direction :row
+     :overflow :hidden
+     :width (-> c/filling :xxx-huge px)
+     :min-height (-> c/filling :huge px)}
+
+    [:&__lip
+     {:display :flex
+      :flex-direction :column
+      :align-items :center
+      :width (-> c/filling :x-large px)
+      :height (-> c/proportion :100 percent)
+      :padding (-> c/spacing :x-small px)
+      :border-top-left-radius (-> c/radius :medium px)
+      :border-bottom-left-radius (-> c/radius :medium px)
+      :border-top-right-radius 0
+      :border-bottom-right-radius 0
+      :background-color (:red-dark c/colour)}]
+
+    [:&__content
+     {:flex-grow 1
+      :height (-> c/proportion :100 percent)
+      :padding (-> c/spacing :x-small px)
+      :border-width (-> c/filling :xxx-tiny px)
+      :border-style :solid
+      :border-color (:red-dark c/colour)
+      :border-top-right-radius (-> c/radius :medium px)
+      :border-bottom-right-radius (-> c/radius :medium px)
+      :border-top-left-radius 0
+      :border-bottom-left-radius 0
+      :background-color (:red-light c/colour)}
+
+     [:&__title
+      {:padding [[(-> c/spacing :xxx-tiny px)
+                  0
+                  (-> c/spacing :xxx-small px)
+                  0]]}]]]])
 
 (defstyles page
   [:.page

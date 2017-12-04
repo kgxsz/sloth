@@ -7,8 +7,24 @@
   Object
   (render
    [this]
-   (dom/div
-    #js {:className (u/bem [:notification])}
-    "this is a notification")))
+   (let [{:keys [title paragraph only-visible-on-tiny-width?]} (om/props this)]
+     (dom/div
+      #js {:className (u/bem [:notification (when only-visible-on-tiny-width? :only-visible-on-tiny-width)])}
+      (dom/div
+       #js {:className (u/bem [:notification__body])}
+       (dom/div
+        #js {:className (u/bem [:notification__body__lip])}
+        (dom/div
+         #js {:className (u/bem [:icon :warning :heading-medium :colour-white-light])}))
+       (dom/div
+        #js {:className (u/bem [:notification__body__content])}
+        (dom/div
+         #js {:className (u/bem [:notification__body__content__title])}
+         (dom/div
+          #js {:className (u/bem [:text :heading-small :font-weight-bold :colour-red-dark])}
+          title))
+        (dom/div
+         #js {:className (u/bem [:text :paragraph-small])}
+         paragraph)))))))
 
 (def ui-notification (om/factory Notification))
