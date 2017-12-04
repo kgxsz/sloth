@@ -7,9 +7,9 @@
   Object
   (render
    [this]
-   (let [{:keys [title paragraph only-visible-on-tiny-width?]} (om/props this)]
+   (let [{:keys [title paragraph]} (om/props this)]
      (dom/div
-      #js {:className (u/bem [:notification (when only-visible-on-tiny-width? :only-visible-on-tiny-width)])}
+      #js {:className (u/bem [:notification])}
       (dom/div
        #js {:className (u/bem [:notification__body])}
        (dom/div

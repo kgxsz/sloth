@@ -96,11 +96,14 @@
    {:display :flex
     :flex-direction :column
     :align-items :center
+    :min-width (-> c/breakpoint :small :start px)
     :margin :auto
     :background-color (-> c/colour :white-light)}
 
    (u/tiny-width
-    {:display :none})
+    {:max-width (-> c/breakpoint :small :start px)
+     :padding [[(-> c/spacing :xx-large px)
+                0]]})
 
    (u/small-width
     {:max-width (-> c/breakpoint :small :start px)
@@ -124,6 +127,9 @@
 
 (defstyles user
   [:.user
+   (u/tiny-width
+    {:width (-> c/calendar :width :small px)})
+
    (u/small-width
     {:width (-> c/calendar :width :small px)})
 

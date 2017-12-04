@@ -24,7 +24,8 @@
     :height (-> c/proportion :100 percent)}]
 
   [:body
-   {:overflow :auto
+   {:overflow-x :hidden
+    :overflow-y :auto
     :height (-> c/proportion :100 percent)}]
 
   ;; fonts
