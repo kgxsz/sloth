@@ -17,6 +17,8 @@
                                     "target"
                                     ".nrepl-port"]
 
+  :min-lein-version "2.0.0"
+
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-garden "0.3.0"]]
 
