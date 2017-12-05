@@ -64,10 +64,12 @@
                        :prep-tasks ["compile"
                                     ["cljsbuild" "once" "uberjar"]
                                     ["garden" "once"]]
+
                        :garden {:builds [{:source-paths ["src/main"]
                                           :stylesheet styles.core/app
                                           :compiler {:output-to "resources/public/css/app.css"
                                                      :pretty-print? false}}]}
+
                        :cljsbuild  {:builds [{:id "uberjar"
                                               :source-paths ["src/main"]
                                               :compiler {:main app.main
