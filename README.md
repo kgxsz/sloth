@@ -1,6 +1,6 @@
 # Sloth
 
-##### The repository backing habitrack.keigo.io
+##### The repository backing gridr.io
 
 ## Local development setup
 - To get a clj/cljs repl running, from `dev/user.clj`, do `cider-jack-in-clojurescript` via Cider.
