@@ -1,8 +1,27 @@
 (ns app.operations
   (:require [clj-time.core :as t]
+            [datomic.api :as d]
             [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]
             [fulcro.client.impl.application :as app]
             [om.next :as om]))
+
+;; TODO - somehow shoehorn this db stuff somewhere
+(comment
+
+  ;; make a db-uri when running transactor
+  (def db-uri "datomic:dev://localhost:4334/core")
+
+  ;; make a db-uri when not running a transactor
+  (def db-uri "datomic:mem://core")
+
+  ;; create the database
+  (d/create-database db-uri)
+
+  ;; create the connection to the db
+  (def conn (d/connect db-uri))
+
+  )
+
 
 ;; TODO - use sessions to avoid this
 (def current-user-id #uuid "d1cce9c9-171c-4616-ad61-d2990150dae2")
