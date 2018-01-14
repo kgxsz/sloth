@@ -4,6 +4,7 @@
 
   :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.908"]
+                 [com.datomic/datomic-pro "0.9.5656" :exclusions [com.google.guava/guava]]
                  [org.omcljs/om "1.0.0-beta1"]
                  [fulcrologic/fulcro "1.0.0-beta10"]
                  [com.stuartsierra/component "0.3.2"]
@@ -28,7 +29,7 @@
             [lein-garden "0.3.0"]]
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.4"]
-                                  [com.cemerick/piggieback "0.2.1"]
+                                  [com.cemerick/piggieback "0.2.2"]
                                   [org.clojure/tools.namespace "0.3.0-alpha4"]
                                   [figwheel-sidecar "0.5.13"]
                                   [org.clojure/tools.nrepl "0.2.13"]]
@@ -36,6 +37,10 @@
                    :source-paths ["src/main" "src/dev"]
 
                    :prep-tasks [["garden" "once"]]
+
+                   :figwheel {:css-dirs ["resources/public/css"]
+                              :server-logfile "target/figwheel_temp/logs/figwheel_server.log"}
+
 
                    :cljsbuild {:builds [{:id "dev"
                                          :source-paths ["src/main" "src/dev"]
@@ -46,9 +51,6 @@
                                                     :preloads [devtools.preload]
                                                     :asset-path "js/app"
                                                     :optimizations :none}}]}
-
-                   :figwheel {:css-dirs ["resources/public/css"]
-                              :server-logfile "target/figwheel_temp/logs/figwheel_server.log"}
 
                    :garden {:builds [{:source-paths ["src/main"]
                                       :stylesheet styles.core/app
