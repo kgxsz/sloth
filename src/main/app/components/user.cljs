@@ -13,17 +13,18 @@
   (query
    [_]
    [:user/id
-    {:user/names [:first-name :last-name]}
-    {:user/avatar [:url]}
+    :user/first-name
+    :user/last-name
+    :user/avatar-url
     {:user/calendars (om/get-query Calendar)}])
 
   Object
   (render
    [this]
-   (let [{:user/keys [names avatar calendars]} (om/props this)]
+   (let [{:user/keys [first-name last-name avatar-url calendars]} (om/props this)]
      (dom/div
       #js {:className (u/bem [:user])}
-      (ui-user-details {:names names :avatar avatar})
+      (ui-user-details {:first-name first-name :last-name last-name :avatar-url avatar-url})
       (map ui-calendar calendars)))))
 
 (def ui-user (om/factory User))

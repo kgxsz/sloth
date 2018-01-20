@@ -7,13 +7,13 @@
   Object
   (render
    [this]
-   (let [{{:keys [first-name]} :names {:keys [url]} :avatar} (om/props this)]
+   (let [{:keys [first-name last-name avatar-url]} (om/props this)]
      (dom/div
       #js {:className (u/bem [:user-details])}
       (dom/img
        #js {:className (u/bem [:user-details__avatar])
             :alt "user-details-avatar"
-            :src url})
+            :src avatar-url})
       (dom/div
        #js {:className (u/bem [:user-details__first-name])}
        (dom/span
