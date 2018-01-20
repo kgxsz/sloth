@@ -7,12 +7,12 @@
 
 (defui ^:once User
   static om/Ident
-  (ident [_ props] [:user/by-id (:user/id props)])
+  (ident [_ props] [:user/by-id (:db/id props)])
 
   static om/IQuery
   (query
    [_]
-   [:user/id
+   [:db/id
     :user/first-name
     :user/last-name
     :user/avatar-url

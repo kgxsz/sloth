@@ -55,12 +55,12 @@
 
 (defui ^:once Calendar
   static om/Ident
-  (ident [_ props] [:calendar/by-id (:calendar/id props)])
+  (ident [_ props] [:calendar/by-id (:db/id props)])
 
   static om/IQuery
   (query
    [_]
-   [:calendar/id
+   [:db/id
     :calendar/title
     :calendar/subtitle
     :calendar/colour-option
