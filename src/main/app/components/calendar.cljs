@@ -69,7 +69,7 @@
   Object
   (render
    [this]
-   (let [{:calendar/keys [id title subtitle colour-option checked-dates]} (om/props this)]
+   (let [{:keys [db/id] :calendar/keys [title subtitle colour-option checked-dates]} (om/props this)]
      (dom/div
       #js {:className (u/bem [:calendar])}
       (dom/div
@@ -92,7 +92,7 @@
         #js {:className (u/bem [:calendar__items])}
         (doall
          (for [{:keys [date label shaded?]} (make-items (t/today))]
-           (let [checked? (contains? checked-dates date)]
+           (let [checked? (contains? (set checked-dates) date)]
              (dom/div
               #js {:key date
                    :title label
