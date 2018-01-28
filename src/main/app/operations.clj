@@ -4,6 +4,12 @@
             [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]
             [fulcro.client.impl.application :as app]))
 
+;; TODO - get mutations working end to end
+;; TODO - get datomic free in place
+;; TODO - deploy the in memory setup to Heroku
+;; TODO - setup the database as part of a system start up
+;; TODO - deploy the postgres backed transactor setup to Heroku
+
 (def db-uri "datomic:mem://core")
 
 (defn create-dummy-db
@@ -56,18 +62,22 @@
                  :db/cardinality :db.cardinality/many
                  :db/id #db/id [:db.part/db]
                  :db.install/_attribute :db.part/db}]
-        temp-calendar-id (d/tempid :db.part/user)
-        temp-user-id (d/tempid :db.part/user)
-        entities [{:db/id temp-calendar-id
+        temp-ids (take 3 (repeatedly #(d/tempid :db.part/user)))
+        entities [{:db/id (nth temp-ids 0)
                    :calendar/title "Some Title"
                    :calendar/subtitle "some subtitle"
                    :calendar/colour-option :a
                    :calendar/checked-dates #{"20180110" "20180114" "20180122"}}
-                  {:db/id temp-user-id
+                  {:db/id (nth temp-ids 1)
+                   :calendar/title "Another Title"
+                   :calendar/subtitle "some other subtitle"
+                   :calendar/colour-option :b
+                   :calendar/checked-dates #{"20180101" "20180114" "20180122"}}
+                  {:db/id (nth temp-ids 2)
                    :user/first-name "Keigo"
                    :user/last-name "Suzukawa"
                    :user/avatar-url "images/avatar.jpg"
-                   :user/calendars #{temp-calendar-id}}]]
+                   :user/calendars #{(nth temp-ids 0) (nth temp-ids 1)}}]]
 
     (d/delete-database db-uri)
     (d/create-database db-uri)
@@ -98,47 +108,38 @@
                              :calendar/subtitle
                              :calendar/colour-option
                              :calendar/checked-dates]}]
-          17592186045419)
+          17592186045420)
 
-  ;; TODO - make this part of the system startup
-  (create-dummy-db)
+  )
 
-  #_(om.next/db->tree [:db/id
-                       :user/first-name
-                       :user/last-name
-                       :user/avatar-url
-                       {:user/calendars [:db/id
-                                         :calendar/title
-                                         :calendar/subtitle
-                                         :calendar/colour-option
-                                         :calendar/checked-dates]}]
-                      (get (:user/by-id @db) current-user-id)
-                      @db)
+;; TODO - make this part of the system startup
+(create-dummy-db)
 
-  (defn get-current-user-id []
-    (->> (d/db (d/connect db-uri))
-         (d/q '[:find ?e
-                :where [?e
-                        :user/first-name "Keigo"]])
-         (ffirst)))
+(defn get-current-user-id []
+  (->> (d/db (d/connect db-uri))
+       (d/q '[:find ?e
+              :where [?e
+                      :user/first-name "Keigo"]])
+       (ffirst)))
 
-  (defquery-root :current-user
-    (value [{:keys [query]} params]
-           (let [db (d/db (d/connect db-uri))
-                 current-user-id (get-current-user-id)]
-             (d/pull db query current-user-id)
-             #_(om.next/db->tree query (get (:user/by-id db) current-user-id) db)))))
+(defquery-root :current-user
+  (value [{:keys [query]} params]
+         (let [db (d/db (d/connect db-uri))
+               current-user-id (get-current-user-id)]
+           (d/pull db query current-user-id))))
 
-;; TODO - get some real mutations going on
-#_(defmutation add-checked-date!
+(defmutation add-checked-date!
   [{:keys [id date]}]
   (action [_]
-          (swap! db update-in [:calendar/by-id id :calendar/checked-dates] conj date)))
+          @(d/transact (d/connect db-uri)
+                       [[:db/add id :calendar/checked-dates date]])
+          {}))
 
-;; TODO - get some real mutations going on
-#_(defmutation remove-checked-date!
+(defmutation remove-checked-date!
   [{:keys [id date]}]
   (action [_]
-          (swap! db update-in [:calendar/by-id id :calendar/checked-dates] disj date)))
+          @(d/transact (d/connect db-uri)
+                      [[:db/retract id :calendar/checked-dates date]])
+          {}))
 
 
