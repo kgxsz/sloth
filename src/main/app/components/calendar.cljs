@@ -132,4 +132,4 @@
       (dom/div
        #js {:className (u/bem [:calendar__footer])})))))
 
-(def ui-calendar (om/factory Calendar {:keyfn :calendar/id}))
+(def ui-calendar (om/factory Calendar))
