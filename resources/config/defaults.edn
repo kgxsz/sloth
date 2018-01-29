@@ -1,1 +1,2 @@
-{:port 4050}
+{:port 4050
+ :db-uri "datomic:mem://core"}
