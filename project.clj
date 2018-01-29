@@ -4,9 +4,7 @@
 
   :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.908"]
-                 [com.datomic/datomic-pro "0.9.5656" :exclusions [com.google.guava/guava]]
-                 ;; TODO - figure out how to get the free version in using the correct repository
-                 #_[com.datomic/datomic-free "0.95661"]
+                 [com.datomic/datomic-free "0.9.5656" :exclusions [com.google.guava/guava]]
                  [org.omcljs/om "1.0.0-beta1"]
                  [fulcrologic/fulcro "1.0.0-beta10"]
                  [com.stuartsierra/component "0.3.2"]
