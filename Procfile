@@ -1,1 +1,1 @@
-web: java -Ddatomic.objectCacheMax=32m -jar target/sloth-standalone.jar
+web: java -Ddatomic.objectCacheMax=128m -jar target/sloth-standalone.jar
