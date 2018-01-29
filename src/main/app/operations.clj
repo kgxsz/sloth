@@ -6,6 +6,7 @@
 
 ;; TODO - deploy the in memory setup to Heroku
 ;; TODO - setup the database as part of a system start up
+;; TODO - get meaningful calendars in place
 ;; TODO - deploy the postgres backed transactor setup to Heroku
 ;; TODO - figure out this set to vector business
 ;; TODO - get authentication in place
