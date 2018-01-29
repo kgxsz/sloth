@@ -7,7 +7,7 @@
           (swap! state
                  update-in
                  [:calendar/by-id id :calendar/checked-dates]
-                 #(-> (set %) (conj date) vec)))
+                 #(-> % set (conj date) vec)))
   (remote [env] true))
 
 (defmutation remove-checked-date!
@@ -16,6 +16,6 @@
           (swap! state
                  update-in
                  [:calendar/by-id id :calendar/checked-dates]
-                 #(-> (set %) (disj date) vec)))
+                 #(-> % set (disj date) vec)))
   (remote [env] true))
 
