@@ -10,7 +10,7 @@
   component/Lifecycle
   (start [component]
     (log/info "starting database.")
-    (let [db-uri (get-in config [:value :datomic-dev-uri])
+    (let [db-uri (get-in config [:value :db-uri])
           conn (do (d/create-database db-uri)
                    (d/connect db-uri))
           migrations [:sloth/user-schema
