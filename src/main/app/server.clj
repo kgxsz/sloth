@@ -9,7 +9,7 @@
 (defrecord Db [config]
   component/Lifecycle
   (start [component]
-    (log/info "starting database.")
+    (log/info "starting database." (str "datomic:sql://core?jdbc:" (get-in config [:value :jdbc-url])))
     (let [db-uri (str "datomic:sql://core?jdbc:" (get-in config [:value :jdbc-url]))
           conn (do (d/create-database db-uri)
                    (d/connect db-uri))
