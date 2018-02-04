@@ -1,2 +1,3 @@
 {:port :env.edn/PORT
- :db-uri "datomic:mem://core"}
+ :jdbc-url :env/JDBC_DATABASE_URL}
+
