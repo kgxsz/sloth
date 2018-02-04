@@ -9,7 +9,7 @@
 (defrecord Db [config]
   component/Lifecycle
   (start [component]
-    (log/info "starting database.")
+    (log/info "starting db.")
     (let [db-uri (str "datomic:sql://core?" (get-in config [:value :jdbc-db-url]))
           conn (do (d/create-database db-uri)
                    (d/connect db-uri))
@@ -19,7 +19,7 @@
       (c/ensure-conforms conn (c/read-resource "migrations.edn") migrations)
       (assoc component :conn conn)))
   (stop [component]
-    (log/info "stopping database.")
+    (log/info "stopping db.")
     (assoc component :conn nil)))
 
 (defn make-system [config-path]
