@@ -4,13 +4,26 @@
             [fulcro.client.impl.application :as app]))
 
 ;; TODO - get persistence locally
+;; TODO - get persistence remotely
+;; TODO - get a console up and running
+;; TODO - document local development setup
 ;; TODO - figure out this set to vector business
 ;; TODO - get authentication in place
 ;; TODO - fix day label bug
 
 #_(comment
 
-  (create-dummy-db)
+  (def db-uri "datomic:sql://core?jdbc:postgresql://localhost:5432/datomic?user=datomic&password=datomic")
+
+  (d/create-database db-uri)
+  (d/delete-database db-uri)
+
+  (def conn (d/connect db-uri))
+
+  (let [migrations [:sloth/user-schema
+                    :sloth/calendar-schema
+                    :sloth/entities]]
+    (io.rkn.conformity/ensure-conforms conn (io.rkn.conformity/read-resource "migrations.edn") migrations))
 
   (d/q '[:find ?e
          :where [?e :user/first-name "Keigo"]]
