@@ -10,7 +10,6 @@
 ;; TODO - get authentication in place
 ;; TODO - fix day label bug
 
-
 #_(comment
 
   (def db-uri "datomic:sql://core?jdbc:postgresql://localhost:5432/datomic?user=datomic&password=datomic")
