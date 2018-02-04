@@ -1,3 +1,1 @@
-{:port 4050
- :datomic-mem-uri "datomic:mem://core"
- :datomic-dev-uri "datomic:dev://localhost:4334/core"}
+{}

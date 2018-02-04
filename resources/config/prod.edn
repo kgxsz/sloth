@@ -1,1 +1,2 @@
-{:port :env.edn/PORT}
+{:port :env.edn/PORT
+ :db-uri "datomic:mem://core"}
