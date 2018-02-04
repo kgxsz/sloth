@@ -14,7 +14,12 @@
                  [garden "1.3.3"]
                  [com.powernoodle/normalize "7.0.0"]
                  [clj-time "0.14.2"]
-                 [com.andrewmcveigh/cljs-time "0.5.2"]]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [org.postgresql/postgresql "9.3-1102-jdbc41"]]
+
+  :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
+                                   :username [:gpg :env/datomic_username]
+                                   :password [:gpg :env/datomic_password]}}
 
   :source-paths ["src/main"]
 
