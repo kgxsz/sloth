@@ -3,7 +3,6 @@
             [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]
             [fulcro.client.impl.application :as app]))
 
-;; TODO - get persistence locally
 ;; TODO - get persistence remotely
 ;; TODO - get a console up and running
 ;; TODO - document local development setup
