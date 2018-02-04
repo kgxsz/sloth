@@ -3,12 +3,10 @@
             [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]
             [fulcro.client.impl.application :as app]))
 
-;; TODO - setup the database as part of a system start up
-;; TODO - setup proper logging
-;; TODO - get meaningful calendars in place
-;; TODO - deploy the postgres backed transactor setup to Heroku
+;; TODO - get persistence locally
 ;; TODO - figure out this set to vector business
 ;; TODO - get authentication in place
+;; TODO - fix day label bug
 
 #_(comment
 

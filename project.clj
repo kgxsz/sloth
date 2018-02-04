@@ -4,7 +4,10 @@
 
   :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.908"]
-                 [com.datomic/datomic-free "0.9.5656" :exclusions [com.google.guava/guava]]
+                 [com.taoensso/timbre "4.10.0"]
+                 [com.datomic/datomic-pro "0.9.5656"
+                  :exclusions [com.google.guava/guava]]
+                 [io.rkn/conformity "0.5.1"]
                  [org.omcljs/om "1.0.0-beta1"]
                  [fulcrologic/fulcro "1.0.0-beta10"]
                  [com.stuartsierra/component "0.3.2"]
