@@ -18,8 +18,8 @@
                  [org.postgresql/postgresql "9.3-1102-jdbc41"]]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
-                                   :username [:gpg :env]
-                                   :password [:gpg :env]}}
+                                   :username [:gpg :env/datomic-license-user]
+                                   :password [:gpg :env/datomic-license-password]}}
 
   :source-paths ["src/main"]
 
