@@ -15,7 +15,7 @@
                  [com.powernoodle/normalize "7.0.0"]
                  [clj-time "0.14.2"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
-                 [org.postgresql/postgresql "9.3-1102-jdbc41"]]
+                 [com.amazonaws/aws-java-sdk-dynamodb "1.11.273"]]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
                                    :username [:gpg :env/datomic-license-user]
