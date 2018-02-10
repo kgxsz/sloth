@@ -1,2 +1,2 @@
 {:port :env.edn/PORT
- :jdbc-db-url :env/JDBC_DATABASE_URL}
+ :db-uri :env/DB_URI}

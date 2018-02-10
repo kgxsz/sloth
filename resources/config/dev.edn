@@ -1,2 +1,2 @@
 {:port 4050
- :jdbc-db-url "jdbc:postgresql://localhost:5432/datomic?user=datomic&password=datomic"}
+ :db-uri "datomic:dev://localhost:4334/core"}

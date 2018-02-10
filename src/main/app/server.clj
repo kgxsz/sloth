@@ -9,17 +9,23 @@
 (defrecord Db [config]
   component/Lifecycle
   (start [component]
-    (log/info "starting db.")
-    (let [db-uri (str "datomic:sql://core?" (get-in config [:value :jdbc-db-url]))
-          conn (do (d/create-database db-uri)
-                   (d/connect db-uri))
-          migrations [:sloth/user-schema
-                      :sloth/calendar-schema
-                      :sloth/entities]]
-      (c/ensure-conforms conn (c/read-resource "migrations.edn") migrations)
-      (assoc component :conn conn)))
+    (try
+      (log/info "starting db")
+      (let [db-uri (get-in config [:value :db-uri])
+           conn (do (d/create-database db-uri)
+                     (d/connect db-uri))
+            migrations [:sloth/user-schema
+                        :sloth/calendar-schema
+                        :sloth/entities]]
+        (c/ensure-conforms conn (c/read-resource "migrations.edn") migrations)
+        (assoc component :conn conn))
+
+      (catch Exception e
+        (log/error "unable to start db")
+        (throw e))))
+
   (stop [component]
-    (log/info "stopping db.")
+    (log/info "stopping db")
     (assoc component :conn nil)))
 
 (defn make-system [config-path]
@@ -27,3 +33,4 @@
    :config-path config-path
    :parser-injections #{:config :db}
    :components {:db (component/using (map->Db {}) [:config])}))
+
