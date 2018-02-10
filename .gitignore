@@ -8,6 +8,7 @@ pom.xml.asc
 /resources/public/js
 /resources/public/css
 /checkouts/
+profiles.clj
 .lein-deps-sum
 .lein-repl-history
 .lein-plugins/
