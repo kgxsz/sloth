@@ -1,19 +1,32 @@
 {:sloth/entities
  {:txes [[{:db/id #db/id [:db.part/user -1]
-           :calendar/title "Some Title"
-           :calendar/subtitle "some subtitle"
+           :calendar/title "Exercise"
+           :calendar/subtitle "weights or cardio, half hour at least"
            :calendar/colour-option :a
-           :calendar/checked-dates #{"20180110" "20180114" "20180122"}}
+           :calendar/checked-dates #{}}
           {:db/id #db/id [:db.part/user -2]
-           :calendar/title "Another Title"
-           :calendar/subtitle "some other subtitle"
+           :calendar/title "Meditation"
+           :calendar/subtitle "at least ten minutes"
            :calendar/colour-option :b
-           :calendar/checked-dates #{"20180101" "20180114" "20180122"}}
+           :calendar/checked-dates #{}}
           {:db/id #db/id [:db.part/user -3]
+           :calendar/title "Coding"
+           :calendar/subtitle "at least one commit"
+           :calendar/colour-option :c
+           :calendar/checked-dates #{}}
+          {:db/id #db/id [:db.part/user -4]
+           :calendar/title "Journaling"
+           :calendar/subtitle "at least on entry"
+           :calendar/colour-option :d
+           :calendar/checked-dates #{}}
+          {:db/id #db/id [:db.part/user -5]
            :user/first-name "Keigo"
            :user/last-name "Suzukawa"
            :user/avatar-url "images/avatar.jpg"
-           :user/calendars #{#db/id [:db.part/user -1] #db/id [:db.part/user -2]}}]]}
+           :user/calendars #{#db/id [:db.part/user -1]
+                             #db/id [:db.part/user -2]
+                             #db/id [:db.part/user -3]
+                             #db/id [:db.part/user -4]}}]]}
 
  :sloth/calendar-schema
  {:txes [[{:db/doc "A user's calendars"
