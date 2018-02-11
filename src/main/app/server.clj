@@ -12,7 +12,7 @@
     (try
       (log/info "starting db")
       (let [db-uri (get-in config [:value :db-uri])
-           conn (do (d/create-database db-uri)
+            conn (do (d/create-database db-uri)
                      (d/connect db-uri))
             migrations [:sloth/user-schema
                         :sloth/calendar-schema
