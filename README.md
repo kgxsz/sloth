@@ -3,9 +3,9 @@
 ##### The repository backing [gridr.io](https://gridr.io)
 
 ## Local development setup
+- Get a local transactor running from the `datomic` directory: `bin/transactor config/sloth-dev-transactor.properties`.
 - To get a clj/cljs repl running, from `dev/user.clj`, do `cider-jack-in-clojurescript` via Cider.
 - Run `lein garden auto` to update styles automatically.
-- To build, run `lein build`.
 
 ## Development workflow
 - Start a repl, and do `(go)`.
