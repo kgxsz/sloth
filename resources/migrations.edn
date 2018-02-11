@@ -1,7 +1,7 @@
 {:sloth/entities
  {:txes [[{:db/id #db/id [:db.part/user -1]
            :calendar/title "Exercise"
-           :calendar/subtitle "weights or cardio, half hour at least"
+           :calendar/subtitle "weights or cardio, at least half an hour"
            :calendar/colour-option :a
            :calendar/checked-dates #{}}
           {:db/id #db/id [:db.part/user -2]
@@ -11,12 +11,12 @@
            :calendar/checked-dates #{}}
           {:db/id #db/id [:db.part/user -3]
            :calendar/title "Coding"
-           :calendar/subtitle "at least one commit"
+           :calendar/subtitle "personal projects, at least one commit"
            :calendar/colour-option :c
            :calendar/checked-dates #{}}
           {:db/id #db/id [:db.part/user -4]
            :calendar/title "Journaling"
-           :calendar/subtitle "at least on entry"
+           :calendar/subtitle "writing or drawing, at least one entry"
            :calendar/colour-option :d
            :calendar/checked-dates #{}}
           {:db/id #db/id [:db.part/user -5]
