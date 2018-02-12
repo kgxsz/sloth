@@ -42,7 +42,7 @@
                                   (t/days 1))]
        {:date (tf/unparse basic-formatter date)
         :label (tf/unparse day-label-formatter date)
-        :visible? (even? (t/day date))}))))
+        :visible? (even? (t/day-of-week date))}))))
 
 (def colour-options
   {:a :colour-green-dark
