@@ -1,6 +1,6 @@
 (ns app.client
   (:require [app.components.user :refer [User]]
-            [fulcro.client.core :as fc]
+            [fulcro.client :as fc]
             [fulcro.client.data-fetch :as df]))
 
 (defonce app (atom (fc/new-fulcro-client

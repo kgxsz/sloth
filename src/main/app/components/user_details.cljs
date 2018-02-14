@@ -1,25 +1,21 @@
 (ns app.components.user-details
   (:require [app.utils :as u]
-            [om.dom :as dom]
-            [om.next :as om :refer [defui]]))
+            [fulcro.client.dom :as dom]
+            [fulcro.client.primitives :refer [defsc factory]]))
 
-(defui ^:once UserDetails
-  Object
-  (render
-   [this]
-   (let [{:keys [first-name last-name avatar-url]} (om/props this)]
-     (dom/div
-      #js {:className (u/bem [:user-details])}
-      (dom/img
-       #js {:className (u/bem [:user-details__avatar])
-            :alt "user-details-avatar"
-            :src avatar-url})
-      (dom/div
-       #js {:className (u/bem [:user-details__first-name])}
-       (dom/span
-        #js {:className (u/bem [:text :font-weight-bold :heading-medium :ellipsis])}
-        first-name))
-      (dom/div
-       #js {:className (u/bem [:user-details__divider])})))))
+(defsc UserDetails [this {:keys [first-name last-name avatar-url]}]
+  (dom/div
+   #js {:className (u/bem [:user-details])}
+   (dom/img
+    #js {:className (u/bem [:user-details__avatar])
+         :alt "user-details-avatar"
+         :src avatar-url})
+   (dom/div
+    #js {:className (u/bem [:user-details__first-name])}
+    (dom/span
+     #js {:className (u/bem [:text :font-weight-bold :heading-medium :ellipsis])}
+     first-name))
+   (dom/div
+    #js {:className (u/bem [:user-details__divider])})))
 
-(def ui-user-details (om/factory UserDetails))
+(def ui-user-details (factory UserDetails))

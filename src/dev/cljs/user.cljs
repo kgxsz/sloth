@@ -1,20 +1,28 @@
 (ns cljs.user
   (:require [app.components.root :refer [Root]]
             [app.client :as client]
-            [fulcro.client.core :as fc]))
+            [fulcro.client :as fc]
+            [cljs.pprint :as pprint]
+            [fulcro.client.logging :as log]
+            ))
+
+(enable-console-print!)
+
+(log/set-level :all)
+
 
 (defn dump
   "A function for printing the client db via the cljs repl."
   [& keys]
-  (let [state-map @(om.next/app-state (-> client/app deref :reconciler))
+  (let [state-map (-> client/app deref :reconciler deref)
         data-of-interest (if (seq keys)
                            (get-in state-map keys)
                            state-map)]
     data-of-interest))
 
-(defn refresh
-  "A function for Figwheel to refresh the app when files are edited."
-  []
-  (swap! client/app fc/mount Root "root"))
 
-(refresh)
+(defn mount []
+  (reset! client/app (fc/mount @client/app Root "root")))
+
+
+(mount)

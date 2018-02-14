@@ -4,8 +4,8 @@
             [cljs-time.core :as t]
             [cljs-time.format :as tf]
             [cljs-time.periodic :as tpc]
-            [om.dom :as dom]
-            [om.next :as om :refer [defui]]))
+            [fulcro.client.dom :as dom]
+            [fulcro.client.primitives :refer [defsc transact! factory]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; helpers
 
@@ -53,83 +53,73 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; component
 
-(defui ^:once Calendar
-  static om/Ident
-  (ident [_ props] [:calendar/by-id (:db/id props)])
+(defsc Calendar [this {:keys [db/id] :calendar/keys [title subtitle colour-option checked-dates]}]
+  {:ident [:calendar/by-id :db/id]
+   :query [:db/id
+           :calendar/title
+           :calendar/subtitle
+           :calendar/colour-option
+           :calendar/checked-dates]}
+  (dom/div
+   #js {:className (u/bem [:calendar])}
+   (dom/div
+    #js {:className (u/bem [:calendar__header])}
+    (dom/span
+     #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
+     title)
+    (dom/span
+     #js {:className (u/bem [:calendar__header__separator])}
+     (dom/span
+      #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
+      "—"))
+    (dom/span
+     #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
+     subtitle))
 
-  static om/IQuery
-  (query
-   [_]
-   [:db/id
-    :calendar/title
-    :calendar/subtitle
-    :calendar/colour-option
-    :calendar/checked-dates])
+   (dom/div
+    #js {:className (u/bem [:calendar__body])}
+    (dom/div
+     #js {:className (u/bem [:calendar__items])}
+     (doall
+      (for [{:keys [date label shaded?]} (make-items (t/today))]
+        (let [checked? (contains? (set checked-dates) date)]
+          (dom/div
+           #js {:key date
+                :title label
+                :className (u/bem [:calendar__items__item
+                                   (cond
+                                     checked? (get colour-options colour-option)
+                                     shaded? :colour-grey-medium
+                                     :else :colour-grey-light)])
+                :onClick #(if checked?
+                            (transact! this `[(ops/remove-checked-date! {:id ~id :date ~date})])
+                            (transact! this `[(ops/add-checked-date! {:id ~id :date ~date})]))})))))
 
-  Object
-  (render
-   [this]
-   (let [{:keys [db/id] :calendar/keys [title subtitle colour-option checked-dates]} (om/props this)]
-     (dom/div
-      #js {:className (u/bem [:calendar])}
-      (dom/div
-       #js {:className (u/bem [:calendar__header])}
-       (dom/span
-        #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
-        title)
-       (dom/span
-        #js {:className (u/bem [:calendar__header__separator])}
-        (dom/span
-         #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
-         "—"))
-       (dom/span
-        #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
-        subtitle))
+    (dom/div
+     #js {:className (u/bem [:calendar__labels :horizontal])}
+     (doall
+      (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
+        (dom/div
+         #js {:key date
+              :className (u/bem [:calendar__label :vertical])}
+         (when visible?
+           (dom/span
+            #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
+            label))))))
 
-      (dom/div
-       #js {:className (u/bem [:calendar__body])}
-       (dom/div
-        #js {:className (u/bem [:calendar__items])}
-        (doall
-         (for [{:keys [date label shaded?]} (make-items (t/today))]
-           (let [checked? (contains? (set checked-dates) date)]
-             (dom/div
-              #js {:key date
-                   :title label
-                   :className (u/bem [:calendar__items__item
-                                      (cond
-                                        checked? (get colour-options colour-option)
-                                        shaded? :colour-grey-medium
-                                        :else :colour-grey-light)])
-                   :onClick #(if checked?
-                               (om/transact! this `[(ops/remove-checked-date! {:id ~id :date ~date})])
-                               (om/transact! this `[(ops/add-checked-date! {:id ~id :date ~date})]))})))))
+    (dom/div
+     #js {:className (u/bem [:calendar__labels :vertical])}
+     (doall
+      (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
+        (dom/div
+         #js {:key date
+              :className (u/bem [:calendar__label :horizontal])}
+         (when visible?
+           (dom/span
+            #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
+            label)))))))
 
-       (dom/div
-        #js {:className (u/bem [:calendar__labels :horizontal])}
-        (doall
-         (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
-           (dom/div
-            #js {:key date
-                 :className (u/bem [:calendar__label :vertical])}
-            (when visible?
-              (dom/span
-               #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
-               label))))))
+   (dom/div
+    #js {:className (u/bem [:calendar__footer])})))
 
-       (dom/div
-        #js {:className (u/bem [:calendar__labels :vertical])}
-        (doall
-         (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
-           (dom/div
-            #js {:key date
-                 :className (u/bem [:calendar__label :horizontal])}
-            (when visible?
-              (dom/span
-               #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
-               label)))))))
-
-      (dom/div
-       #js {:className (u/bem [:calendar__footer])})))))
-
-(def ui-calendar (om/factory Calendar))
+(def ui-calendar (factory Calendar {:keyfn :db/id}))

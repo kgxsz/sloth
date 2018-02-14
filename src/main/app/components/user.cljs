@@ -2,29 +2,19 @@
   (:require [app.components.user-details :refer [ui-user-details]]
             [app.components.calendar :refer [ui-calendar Calendar]]
             [app.utils :as u]
-            [om.dom :as dom]
-            [om.next :as om :refer [defui]]))
+            [fulcro.client.dom :as dom]
+            [fulcro.client.primitives :as prim :refer [defsc get-query factory]]))
 
-(defui ^:once User
-  static om/Ident
-  (ident [_ props] [:user/by-id (:db/id props)])
+(defsc User [this {:keys [db/id] :user/keys [first-name last-name avatar-url calendars]}]
+  {:ident [:user/by-id :db/id]
+   :query [:db/id
+           :user/first-name
+           :user/last-name
+           :user/avatar-url
+           {:user/calendars (get-query Calendar)}]}
+  (dom/div
+   #js {:className (u/bem [:user])}
+   (ui-user-details {:first-name first-name :last-name last-name :avatar-url avatar-url})
+   (map ui-calendar calendars)))
 
-  static om/IQuery
-  (query
-   [_]
-   [:db/id
-    :user/first-name
-    :user/last-name
-    :user/avatar-url
-    {:user/calendars (om/get-query Calendar)}])
-
-  Object
-  (render
-   [this]
-   (let [{:user/keys [first-name last-name avatar-url calendars]} (om/props this)]
-     (dom/div
-      #js {:className (u/bem [:user])}
-      (ui-user-details {:first-name first-name :last-name last-name :avatar-url avatar-url})
-      (map ui-calendar calendars)))))
-
-(def ui-user (om/factory User))
+(def ui-user (factory User {:keyfn :db/id}))

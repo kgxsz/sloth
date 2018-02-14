@@ -1,7 +1,8 @@
 (ns app.operations
   (:require [datomic.api :as d]
             [fulcro.server :as server :refer [defquery-root defquery-entity defmutation]]
-            [fulcro.client.impl.application :as app]))
+            [fulcro.client.impl.application :as app]
+            [taoensso.timbre :as log]))
 
 (defn get-current-user-id [current-db]
   (->> current-db

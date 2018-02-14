@@ -2,14 +2,17 @@
 
   :min-lein-version "2.0.0"
 
-  :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
-                 [org.clojure/clojurescript "1.9.908"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [org.clojure/clojurescript "1.9.946"]
                  [com.taoensso/timbre "4.10.0"]
                  [com.datomic/datomic-pro "0.9.5656"
                   :exclusions [com.google.guava/guava]]
                  [io.rkn/conformity "0.5.1"]
-                 [org.omcljs/om "1.0.0-beta1"]
-                 [fulcrologic/fulcro "1.0.0-beta10"]
+                 [org.omcljs/om "1.0.0-beta1"
+                  :exclusions [cljsjs/react]]
+                 [fulcrologic/fulcro "2.2.0"
+                  :exclusions [org.clojure/tools.reader
+                               com.taoensso/encore]]
                  [com.stuartsierra/component "0.3.2"]
                  [garden "1.3.3"]
                  [com.powernoodle/normalize "7.0.0"]
@@ -52,7 +55,7 @@
 
                    :cljsbuild {:builds [{:id "dev"
                                          :source-paths ["src/main" "src/dev"]
-                                         :figwheel {:on-jsload "cljs.user/refresh"}
+                                         :figwheel {:on-jsload "cljs.user/mount"}
                                          :compiler {:main cljs.user
                                                     :output-to "resources/public/js/app.js"
                                                     :output-dir "resources/public/js/app"
