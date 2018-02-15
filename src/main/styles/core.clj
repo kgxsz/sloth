@@ -1,6 +1,5 @@
 (ns styles.core
-  (:require [styles.animations :as animations]
-            [styles.components :as components]
+  (:require [styles.components :as components]
             [styles.constants :as c]
             [styles.fonts :as fonts]
             [garden.def :refer [defstyles]]
@@ -21,9 +20,6 @@
 
   ;; fonts
   fonts/icomoon
-
-  ;; animations
-  animations/logo
 
   ;; components
   components/icon

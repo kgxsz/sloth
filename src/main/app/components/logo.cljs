@@ -12,25 +12,25 @@
     (dom/g
      nil
      (dom/rect
-      #js{:className (u/bem [:logo__square :colour-grey-dark :animated-a])
+      #js{:className (u/bem [:logo__square :colour-grey-dark])
           :width "9"
           :height "9"
           :rx "1"
           :transform "translate(55 33)"})
      (dom/rect
-      #js{:className (u/bem [:logo__square :colour-grey-medium :animated-b])
+      #js{:className (u/bem [:logo__square :colour-grey-medium])
           :width "9"
           :height "9"
           :rx "1"
           :transform "translate(44 33)"})
      (dom/rect
-      #js{:className (u/bem [:logo__square :colour-grey-medium :animated-c])
+      #js{:className (u/bem [:logo__square :colour-grey-medium])
           :width "9"
           :height "9"
           :rx "1"
           :transform "translate(55 22)"})
      (dom/rect
-      #js{:className (u/bem [:logo__square :colour-grey-dark :animated-d])
+      #js{:className (u/bem [:logo__square :colour-grey-dark])
           :width "9"
           :height "9"
           :rx "1"
