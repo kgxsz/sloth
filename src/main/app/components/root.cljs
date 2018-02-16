@@ -23,28 +23,28 @@
   (ui-user current-user))
 
 
-(defrouter Router :router
-  (ident [this props] [(:page props) :main])
+(defrouter Pages :pages
+  (ident [this props] [(:page props) :page])
   :home-page HomePage
   :keigo-page KeigoPage)
 
 
-(def ui-router (factory Router))
+(def ui-pages (factory Pages))
 
 
 (def routing-tree
   (r/routing-tree
-    (r/make-route :home-page [(r/router-instruction :router [:home-page :main])])
-    (r/make-route :keigo-page [(r/router-instruction :router [:keigo-page :main])])))
+    (r/make-route :home-page [(r/router-instruction :pages [:home-page :page])])
+    (r/make-route :keigo-page [(r/router-instruction :pages [:keigo-page :page])])))
 
 
-(defsc Root [this {:keys [ui/react-key ui/loading-data router current-user]}]
-  {:initial-state (fn [params]
-                    (merge routing-tree {:router (prim/get-initial-state Router {})}))
+(defsc Root [this {:keys [ui/react-key ui/loading-data pages current-user]}]
+  {:initial-state (fn [_] (merge routing-tree {:pages (prim/get-initial-state Pages {})}))
    :query [:ui/react-key
            :ui/loading-data
-           {:router (prim/get-query Router)}
-           {:current-user (get-query User)}]}
+           :current-user
+           {:pages (get-query Pages)}
+           ]}
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
@@ -52,4 +52,4 @@
     #js {:className (u/bem [:page])}
     (if (or loading-data (empty? current-user))
       (ui-logo)
-      (ui-router router)))))
+      (ui-pages pages)))))
