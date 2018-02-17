@@ -2,13 +2,7 @@
   (:require [app.components.root :refer [Root]]
             [app.client :as client]
             [fulcro.client :as fc]
-            [cljs.pprint :as pprint]
-            [fulcro.client.logging :as log]
             ))
-
-(enable-console-print!)
-
-(log/set-level :all)
 
 
 (defn dump
