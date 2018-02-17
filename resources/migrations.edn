@@ -22,7 +22,7 @@
           {:db/id #db/id [:db.part/user -5]
            :user/first-name "Keigo"
            :user/last-name "Suzukawa"
-           :user/avatar-url "images/avatar.jpg"
+           :user/avatar-url "/images/avatar.jpg"
            :user/calendars #{#db/id [:db.part/user -1]
                              #db/id [:db.part/user -2]
                              #db/id [:db.part/user -3]
