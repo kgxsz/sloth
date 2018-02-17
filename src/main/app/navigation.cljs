@@ -2,7 +2,7 @@
   (:require [bidi.bidi :as bidi]
             [fulcro.client.routing :as routing]
             [pushy.core :as pushy]
-            [fulcro.client.primitives :as :fulcro]))
+            [fulcro.client.primitives :as fulcro]))
 
 
 (defonce navigation (atom nil))
@@ -10,6 +10,12 @@
 
 (def routes ["/" {"" :home-page
                   "user/" {[:first-name ""] :user-page}}])
+
+
+(def routing-tree
+  (routing/routing-tree
+   (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
+   (routing/make-route :user-page [(routing/router-instruction :pages [:user-page :page])])))
 
 
 (defn navigate [{:keys [handler route-params]}]
