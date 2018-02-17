@@ -15,6 +15,8 @@
                                com.taoensso/encore]]
                  [com.stuartsierra/component "0.3.2"]
                  [garden "1.3.3"]
+                 [bidi "2.1.3"]
+                 [kibu/pushy "0.3.8"]
                  [com.powernoodle/normalize "7.0.0"]
                  [clj-time "0.14.2"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
