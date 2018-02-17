@@ -28,6 +28,5 @@
   (reset! navigation (pushy/pushy
                       (fn [location]
                         (fulcro/transact! reconciler `[(routing/route-to ~location)]))
-
                       (partial bidi/match-route routes)))
   (pushy/start! @navigation))

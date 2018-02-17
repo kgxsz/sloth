@@ -18,7 +18,6 @@
                         :sloth/calendar-schema
                         :sloth/entities]]
         (c/ensure-conforms conn (c/read-resource "migrations.edn") migrations)
-        (d/delete-database db-uri)
         (assoc component :conn conn))
 
       (catch Exception e
