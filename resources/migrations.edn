@@ -3,17 +3,17 @@
            :calendar/title "Exercise"
            :calendar/subtitle "weights or cardio, at least half an hour"
            :calendar/colour-option :a
-           :calendar/checked-dates #{}}
+           :calendar/checked-dates #{"20180103" "20180104" "20180105" "20180108" "20180109" "20180110" "20180111" "20180112" "20180115" "20180116" "20180117" "20180118" "20180123" "20180124" "20180126" "20180127" "20180129" "20180130" "20180131" "20180201" "20180202" "20180205" "20180206" "20180207" "20180208" "20180209" "20180210" "20180212" "20180213" "20180214" "20180215" "20180216" "20180217"}}
           {:db/id #db/id [:db.part/user -2]
            :calendar/title "Meditation"
            :calendar/subtitle "at least ten minutes"
            :calendar/colour-option :b
-           :calendar/checked-dates #{}}
+           :calendar/checked-dates #{"20180111" "20180112" "20180115" "20180117" "20180118" "20180125" "20180129" "20180130" "20180131" "20180201" "20180202" "20180205" "20180206" "20180208" "20180212" "20180213" "20180214" "20180215" "20180216" "20180217"}}
           {:db/id #db/id [:db.part/user -3]
            :calendar/title "Coding"
            :calendar/subtitle "personal projects, at least one commit"
            :calendar/colour-option :c
-           :calendar/checked-dates #{}}
+           :calendar/checked-dates #{"20180114" "20180120" "20180127" "20180128" "20180129" "20180204" "20180207" "20180210" "20180211" "20180212" "20180213" "20180214" "20180215" "20180216" "20180217"}}
           {:db/id #db/id [:db.part/user -4]
            :calendar/title "Journaling"
            :calendar/subtitle "writing or drawing, at least one entry"
