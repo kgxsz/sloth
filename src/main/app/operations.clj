@@ -4,19 +4,19 @@
             [fulcro.client.impl.application :as app]
             [taoensso.timbre :as log]))
 
-(defn get-current-user-id [current-db]
+(defn get-user-id [current-db first-name]
   (->> current-db
-       (d/q '[:find ?e
+       (d/q `[:find ?e
               :where [?e
-                      :user/first-name "Keigo"]])
+                      :user/first-name ~first-name]])
        (ffirst)))
 
-(defquery-root :current-user
-  (value [{:keys [config db query]} params]
+(defquery-root :user
+  (value [{:keys [config db query]} {:keys [first-name]}]
          (let [{:keys [conn]} db
                current-db (d/db conn)
-               current-user-id (get-current-user-id current-db)]
-           (d/pull current-db query current-user-id))))
+               user-id (get-user-id current-db first-name)]
+           (d/pull current-db query user-id))))
 
 (defmutation add-checked-date!
   [{:keys [id date]}]

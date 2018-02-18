@@ -1,6 +1,7 @@
 (ns app.operations
   (:require [fulcro.client.mutations :as m :refer [defmutation]]))
 
+
 (defmutation add-checked-date!
   [{:keys [id date]}]
   (action [{:keys [state]}]
@@ -18,4 +19,3 @@
                  [:calendar/by-id id :calendar/checked-dates]
                  #(-> % set (disj date) vec)))
   (remote [env] true))
-
