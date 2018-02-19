@@ -9,13 +9,15 @@
 
 
 (def routes ["/" {"" :home-page
-                  "user/" {[:first-name ""] :user-page}}])
+                  "user/" {[:first-name ""] :user-page}
+                  true :unknown-page}])
 
 
 (def routing-tree
   (routing/routing-tree
    (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
-   (routing/make-route :user-page [(routing/router-instruction :pages [:user-page :page])])))
+   (routing/make-route :user-page [(routing/router-instruction :pages [:user-page :page])])
+   (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
 (defn navigate [{:keys [handler route-params]}]

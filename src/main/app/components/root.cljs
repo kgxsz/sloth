@@ -38,10 +38,19 @@
     (ui-user user)))
 
 
+(defsc UnknownPage [this {:keys []}]
+  {:initial-state {:page :unknown-page}
+   :query [:page]}
+  (dom/div
+   nil
+   "You're lost :("))
+
+
 (defrouter Pages :pages
   (ident [this props] [(:page props) :page])
   :home-page HomePage
-  :user-page UserPage)
+  :user-page UserPage
+  :unknown-page UnknownPage)
 
 
 (def ui-pages (factory Pages))
