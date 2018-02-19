@@ -31,5 +31,3 @@
           @(d/transact (:conn db)
                       [[:db/retract id :calendar/checked-dates date]])
           {}))
-
-
