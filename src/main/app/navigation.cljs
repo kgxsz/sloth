@@ -8,9 +8,9 @@
 (defonce navigation (atom nil))
 
 
-(def routes ["/" {"" :home-page
-                  "user/" {[:first-name ""] :user-page}
-                  true :unknown-page}])
+(def routes ["/" [["" :home-page]
+                  [["user/" :first-name] :user-page]
+                  [true :unknown-page]]])
 
 
 (def routing-tree
