@@ -14,8 +14,11 @@
                   :exclusions [org.clojure/tools.reader
                                com.taoensso/encore]]
                  [com.stuartsierra/component "0.3.2"]
+                 [http-kit "2.2.0"]
                  [garden "1.3.3"]
                  [bidi "2.1.3"]
+                 [ring/ring-core "1.6.3"]
+                 [hiccup "1.0.5"]
                  [kibu/pushy "0.3.8"]
                  [com.powernoodle/normalize "7.0.0"]
                  [clj-time "0.14.2"]
