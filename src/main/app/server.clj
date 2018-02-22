@@ -7,6 +7,7 @@
             [taoensso.timbre :as log]
 
             ;; TODO - clean this up
+            [clojure.java.io :as io]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.gzip :refer [wrap-gzip]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
@@ -21,13 +22,14 @@
   (fn [req]
     {:status  200
      :headers {"Content-Type" "text/html"}
-     :body    (slurp "resources/public/index.html")}))
+     :body (io/file (io/resource "public/index.html"))}))
 
 (def parser (server/fulcro-parser))
 
 (defn wrap-api [handler uri]
   (fn [request]
     (if (= uri (:uri request))
+      ;; TODO - put env in the second param
       (server/handle-api-request parser {} (:transit-params request))
       (handler request))))
 
