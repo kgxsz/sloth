@@ -10,11 +10,12 @@
             [fulcro.client.routing :refer-macros [defrouter]]))
 
 
-;; TODO
-;; Ensure that you can hit a frontend route on a page reload
-;; Load user related data from route-params url being set manually
+;; TODO -
+;; Load user related data when route-params url is updated
 ;; Intorduce an unknown-page handler and route
 ;; Look at loading states and good feedback
+;; Clean ns
+;; Clean exclusions
 
 
 (defsc HomePage [this {:keys []}]
@@ -41,6 +42,7 @@
 (defsc UnknownPage [this {:keys []}]
   {:initial-state {:page :unknown-page}
    :query [:page]}
+  ;; TODO - make this page look good
   (dom/div
    nil
    "You're lost :("))
@@ -66,4 +68,3 @@
    (dom/div
     #js {:className (u/bem [:page])}
     (ui-pages pages))))
- 
