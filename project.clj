@@ -65,7 +65,7 @@
                                                     :output-to "resources/public/js/app.js"
                                                     :output-dir "resources/public/js/app"
                                                     :preloads [devtools.preload]
-                                                    :asset-path "js/app"
+                                                    :asset-path "/js/app"
                                                     :optimizations :none}}]}
 
                    :garden {:builds [{:source-paths ["src/main"]
