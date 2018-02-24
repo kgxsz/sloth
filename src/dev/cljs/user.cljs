@@ -1,8 +1,7 @@
 (ns cljs.user
   (:require [app.components.root :refer [Root]]
             [app.client :as client]
-            [fulcro.client :as fc]
-            ))
+            [fulcro.client :as fc]))
 
 
 (defn dump
