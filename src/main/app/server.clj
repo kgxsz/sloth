@@ -13,49 +13,60 @@
             [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.util.response :as rsp :refer [response file-response resource-response]]
-            [org.httpkit.server]
-            [hiccup.page :as page]
-            ))
+            [org.httpkit.server :as http.server]
+            [hiccup.page :as page]))
 
 
-(defn not-found-handler []
+(defn default-handler []
   (fn [req]
     {:status  200
      :headers {"Content-Type" "text/html"}
      :body (io/file (io/resource "public/index.html"))}))
 
+
 (def parser (server/fulcro-parser))
 
-(defn wrap-api [handler uri]
+
+(defn wrap-api [handler env]
   (fn [request]
-    (if (= uri (:uri request))
-      ;; TODO - put env in the second param
-      (server/handle-api-request parser {} (:transit-params request))
+    (if (= "/api" (:uri request))
+      (server/handle-api-request parser
+                                 env
+                                 (:transit-params request))
       (handler request))))
 
-(defn my-tiny-server []
-  (let [port       9002
-        ring-stack (-> (not-found-handler)
-                       (wrap-api "/api")
-                       (server/wrap-transit-params)
-                       (server/wrap-transit-response)
-                       (wrap-resource "public")
-                       (wrap-content-type)
-                       (wrap-not-modified))
-        (wrap-gzip)
-        (org.httpkit.server/run-server ring-stack {:port port})]))
 
-
-
-
-
-
-
-
-
-(defrecord Db [config]
+(defrecord HttpServer []
   component/Lifecycle
-  (start [component]
+  (start [{:keys [db config] :as component}]
+    (try
+      (log/info "starting http-server")
+      (let [port       (get-in config [:value :port])
+            ring-stack (-> (default-handler)
+                           (wrap-api {:db db :config config})
+                           (server/wrap-transit-params)
+                           (server/wrap-transit-response)
+                           (wrap-resource "public")
+                           (wrap-content-type)
+                           (wrap-not-modified)
+                           (wrap-gzip))
+            stop-http-server (http.server/run-server ring-stack {:port port})]
+        (assoc component :stop-http-server stop-http-server))
+
+      (catch Exception e
+        (log/error "unable to start http-server")
+        (throw e))))
+
+  (stop [component]
+    (log/info "stopping http-server")
+    (when-let [stop-http-server (:stop-http-server component)]
+      (stop-http-server))
+    (assoc component :stop-http-server nil)))
+
+
+(defrecord Db []
+  component/Lifecycle
+  (start [{:keys [config] :as component}]
     (try
       (log/info "starting db")
       (let [db-uri (get-in config [:value :db-uri])
@@ -75,9 +86,10 @@
     (log/info "stopping db")
     (assoc component :conn nil)))
 
+
 (defn make-system [config-path]
-  (easy-server/make-fulcro-server
-   :config-path config-path
-   :parser-injections #{:config :db}
-   :components {:db (component/using (map->Db {}) [:config])}))
+  (component/system-map
+   :config (server/new-config config-path)
+   :db (component/using (map->Db {}) [:config])
+   :http-server (component/using (map->HttpServer {}) [:config :db])))
 
