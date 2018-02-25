@@ -1,5 +1,6 @@
 (ns app.navigation
-  (:require [bidi.bidi :as bidi]
+  (:require [app.operations :as ops]
+            [bidi.bidi :as bidi]
             [fulcro.client.routing :as routing]
             [pushy.core :as pushy]
             [fulcro.client.primitives :as fulcro]))
@@ -29,6 +30,9 @@
 (defn start-navigation [reconciler]
   (reset! navigation (pushy/pushy
                       (fn [location]
-                        (fulcro/transact! reconciler `[(routing/route-to ~location)]))
+                        ;; TODO - find out why on startup it doesn't route
+                        (js/console.warn "found a match!" location)
+                        (fulcro/transact! reconciler `[(ops/route-to! ~location)
+                                                       (routing/route-to ~location)]))
                       (partial bidi/match-route routes)))
   (pushy/start! @navigation))

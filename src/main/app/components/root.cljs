@@ -22,11 +22,9 @@
   {:initial-state {:page :home-page}
    :query [:page]}
   (dom/div
-   #js {:onClick (fn []
-                   (data/load this :user User {:params {:first-name "Keigo"}
-                                               :target [:user-page :page :user]})
-                   (navigation/navigate {:handler :user-page
-                                         :route-params {:first-name "Keigo"}}))}
+   #js {:onClick #(navigation/navigate {:handler :user-page
+                                        :route-params {:first-name "Keigo"}})}
+   "home-page"
    (ui-logo)))
 
 
@@ -46,6 +44,7 @@
   (dom/div
    nil
    "You're lost :("))
+
 
 
 (defrouter Pages :pages
