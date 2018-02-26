@@ -21,7 +21,7 @@
   (fn [req]
     {:status  200
      :headers {"Content-Type" "text/html"}
-     :body (io/file (io/resource "public/index.html"))}))
+     :body (io/file "resources/public/index.html")}))
 
 
 (def parser (server/fulcro-parser))
