@@ -1,6 +1,5 @@
 (ns app.navigation
-  (:require [app.operations :as ops]
-            [bidi.bidi :as bidi]
+  (:require [bidi.bidi :as bidi]
             [fulcro.client.routing :as routing]
             [pushy.core :as pushy]
             [fulcro.client.primitives :as fulcro]))
@@ -27,11 +26,13 @@
     (pushy/set-token! @navigation path)))
 
 
+(defn route-params []
+  (:route-params (bidi/match-route routes (pushy/get-token @navigation))))
+
+
 (defn start-navigation [reconciler]
   (reset! navigation (pushy/pushy
                       (fn [location]
-                        (fulcro/transact! reconciler `[(ops/route-to! ~location)
-                                                       (routing/route-to ~location)
-                                                       :page]))
+                        (fulcro/transact! reconciler `[(routing/route-to ~location) :page]))
                       (partial bidi/match-route routes)))
   (pushy/start! @navigation))

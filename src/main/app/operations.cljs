@@ -22,17 +22,3 @@
                  [:calendar/by-id id :calendar/checked-dates]
                  #(-> % set (disj date) vec)))
   (remote [env] true))
-
-
-(defmutation route-to!
-  [{:keys [handler route-params]}]
-  (action [env]
-          (case handler
-            :user-page (data/load-action env
-                                         :user
-                                         app.components.user/User
-                                         {:params (select-keys route-params [:first-name])
-                                          :target [:user-page :page :user]})
-            nil)
-          #_(routing/route-to-impl! env {:handler handler :route-params route-params}))
-  (remote [env] (data/remote-load env)))

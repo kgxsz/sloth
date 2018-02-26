@@ -24,13 +24,15 @@
   (dom/div
    #js {:onClick #(navigation/navigate {:handler :user-page
                                         :route-params {:first-name "Keigo"}})}
-  (ui-logo)))
+   (ui-logo)))
 
 
 (defsc UserPage [this {:keys [user]}]
   {:initial-state {:page :user-page}
    :query [:page
-           {:user (get-query User)}]}
+           {:user (get-query User)}]
+   :componentDidMount #(data/load this :user User {:params (navigation/route-params)
+                                                   :target [:user-page :page :user]})}
   (if (empty? user)
     (ui-logo)
     (ui-user user)))
@@ -43,7 +45,6 @@
   (dom/div
    nil
    "You're lost :("))
-
 
 
 (defrouter Pages :pages
