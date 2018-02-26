@@ -24,8 +24,7 @@
   (dom/div
    #js {:onClick #(navigation/navigate {:handler :user-page
                                         :route-params {:first-name "Keigo"}})}
-   "home-page"
-   (ui-logo)))
+  (ui-logo)))
 
 
 (defsc UserPage [this {:keys [user]}]

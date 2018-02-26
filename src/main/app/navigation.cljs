@@ -30,8 +30,6 @@
 (defn start-navigation [reconciler]
   (reset! navigation (pushy/pushy
                       (fn [location]
-                        ;; TODO - find out why on startup it doesn't route
-                        (js/console.warn "found a match!" location)
                         (fulcro/transact! reconciler `[(ops/route-to! ~location)
                                                        (routing/route-to ~location)
                                                        :page]))
