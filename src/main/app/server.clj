@@ -1,20 +1,17 @@
 (ns app.server
-  (:require [com.stuartsierra.component :as component]
+  (:require [clojure.java.io :as io]
+            [com.stuartsierra.component :as component]
             [datomic.api :as d]
             [fulcro.easy-server :as easy-server]
             [fulcro.server :as server]
-            [io.rkn.conformity :as c]
-            [taoensso.timbre :as log]
-
-            ;; TODO - clean this up
-            [clojure.java.io :as io]
+            [io.rkn.conformity :as conformity]
+            [org.httpkit.server :as http.server]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.gzip :refer [wrap-gzip]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.util.response :as rsp :refer [response file-response resource-response]]
-            [org.httpkit.server :as http.server]
-            [hiccup.page :as page]))
+            [taoensso.timbre :as log]))
 
 
 (defn default-handler []
@@ -75,7 +72,7 @@
             migrations [:sloth/user-schema
                         :sloth/calendar-schema
                         :sloth/entities]]
-        (c/ensure-conforms conn (c/read-resource "migrations.edn") migrations)
+        (conformity/ensure-conforms conn (conformity/read-resource "migrations.edn") migrations)
         (assoc component :conn conn))
 
       (catch Exception e

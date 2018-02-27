@@ -10,14 +10,6 @@
             [fulcro.client.routing :refer-macros [defrouter]]))
 
 
-;; TODO -
-;; Load user related data when route-params url is updated
-;; Intorduce an unknown-page handler and route
-;; Look at loading states and good feedback
-;; Clean ns
-;; Clean exclusions
-
-
 (defsc HomePage [this {:keys []}]
   {:initial-state {:page :home-page}
    :query [:page]}
