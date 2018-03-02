@@ -1,35 +1,34 @@
 (ns app.server
   (:require [clojure.java.io :as io]
             [com.stuartsierra.component :as component]
-            [datomic.api :as d]
-            [fulcro.easy-server :as easy-server]
-            [fulcro.server :as server]
+            [datomic.api :as datomic]
+            [fulcro.server :as fulcro.server]
             [io.rkn.conformity :as conformity]
             [org.httpkit.server :as http.server]
-            [ring.middleware.content-type :refer [wrap-content-type]]
-            [ring.middleware.gzip :refer [wrap-gzip]]
-            [ring.middleware.not-modified :refer [wrap-not-modified]]
-            [ring.middleware.resource :refer [wrap-resource]]
-            [ring.util.response :as rsp :refer [response file-response resource-response]]
+            [ring.middleware.content-type :as middleware.content-type]
+            [ring.middleware.gzip :as middleware.gzip]
+            [ring.middleware.not-modified :as middleware.not-modified]
+            [ring.middleware.resource :as middleware.resource]
             [taoensso.timbre :as log]))
 
 
 (defn default-handler []
   (fn [req]
-    {:status  200
+    {:status 200
      :headers {"Content-Type" "text/html"}
      :body (io/file "resources/public/index.html")}))
 
 
-(def parser (server/fulcro-parser))
+(def parser (fulcro.server/fulcro-parser))
 
 
 (defn wrap-api [handler env]
   (fn [request]
     (if (= "/api" (:uri request))
-      (server/handle-api-request parser
-                                 env
-                                 (:transit-params request))
+      (fulcro.server/handle-api-request
+       parser
+       env
+       (:transit-params request))
       (handler request))))
 
 
@@ -41,12 +40,12 @@
       (let [port       (get-in config [:value :port])
             ring-stack (-> (default-handler)
                            (wrap-api {:db db :config config})
-                           (server/wrap-transit-params)
-                           (server/wrap-transit-response)
-                           (wrap-resource "public")
-                           (wrap-content-type)
-                           (wrap-not-modified)
-                           (wrap-gzip))
+                           (fulcro.server/wrap-transit-params)
+                           (fulcro.server/wrap-transit-response)
+                           (middleware.resource/wrap-resource "public")
+                           (middleware.content-type/wrap-content-type)
+                           (middleware.not-modified/wrap-not-modified)
+                           (middleware.gzip/wrap-gzip))
             stop-http-server (http.server/run-server ring-stack {:port port})]
         (assoc component :stop-http-server stop-http-server))
 
@@ -67,8 +66,8 @@
     (try
       (log/info "starting db")
       (let [db-uri (get-in config [:value :db-uri])
-            conn (do (d/create-database db-uri)
-                     (d/connect db-uri))
+            conn (do (datomic/create-database db-uri)
+                     (datomic/connect db-uri))
             migrations [:sloth/user-schema
                         :sloth/calendar-schema
                         :sloth/entities]]
@@ -86,7 +85,7 @@
 
 (defn make-system [config-path]
   (component/system-map
-   :config (server/new-config config-path)
+   :config (fulcro.server/new-config config-path)
    :db (component/using (map->Db {}) [:config])
    :http-server (component/using (map->HttpServer {}) [:config :db])))
 
