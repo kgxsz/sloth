@@ -1,7 +1,7 @@
 (ns app.components.notification
   (:require [app.utils :as u]
             [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as prim :refer [defsc factory]]))
+            [fulcro.client.primitives :refer [defsc factory]]))
 
 (defsc Notification [this {:keys [title paragraph]}]
   (dom/div

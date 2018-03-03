@@ -1,6 +1,6 @@
 (ns app.main
   (:require [app.components.root :refer [Root]]
             [app.client :as client]
-            [fulcro.client :as fc]))
+            [fulcro.client :as fulcro.client]))
 
-(reset! client/app (fc/mount @client/app Root "root"))
+(reset! client/app (fulcro.client/mount @client/app Root "root"))

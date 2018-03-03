@@ -3,7 +3,7 @@
             [app.components.calendar :refer [ui-calendar Calendar]]
             [app.utils :as u]
             [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as prim :refer [defsc get-query factory]]))
+            [fulcro.client.primitives :as fuclro :refer [defsc get-query factory]]))
 
 (defsc User [this {:keys [db/id] :user/keys [first-name last-name avatar-url calendars]}]
   {:ident [:user/by-id :db/id]

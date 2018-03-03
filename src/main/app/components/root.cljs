@@ -1,12 +1,11 @@
 (ns app.components.root
-  (:require [app.operations :as ops]
-            [app.components.logo :refer [ui-logo]]
+  (:require [app.components.logo :refer [ui-logo]]
             [app.components.user :refer [ui-user User]]
             [app.navigation :as navigation]
             [app.utils :as u]
-            [fulcro.client.data-fetch :as data]
+            [fulcro.client.data-fetch :as data.fetch]
             [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :refer [defsc transact! get-query get-initial-state factory]]
+            [fulcro.client.primitives :refer [defsc get-query get-initial-state factory]]
             [fulcro.client.routing :refer-macros [defrouter]]))
 
 
@@ -23,8 +22,8 @@
   {:initial-state {:page :user-page}
    :query [:page
            {:user (get-query User)}]
-   :componentDidMount #(data/load this :user User {:params (navigation/route-params)
-                                                   :target [:user-page :page :user]})}
+   :componentDidMount #(data.fetch/load this :user User {:params (navigation/route-params)
+                                                         :target [:user-page :page :user]})}
   (if (empty? user)
     (ui-logo)
     (ui-user user)))

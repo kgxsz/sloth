@@ -1,47 +1,47 @@
 (ns app.components.calendar
-  (:require [app.operations :as ops]
+  (:require [app.operations :as operations]
             [app.utils :as u]
             [cljs-time.core :as t]
-            [cljs-time.format :as tf]
-            [cljs-time.periodic :as tpc]
+            [cljs-time.format :as t.format]
+            [cljs-time.periodic :as t.periodic]
             [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :refer [defsc transact! factory]]))
+            [fulcro.client.primitives :as fulcro :refer [defsc factory]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; helpers
 
-(def month-label-formatter (tf/formatter "MMM"))
-(def day-label-formatter (tf/formatter "E"))
-(def date-label-formatter (tf/formatter "EEEE do 'of' MMMM, Y"))
-(def basic-formatter (tf/formatters :basic-date))
+(def month-label-formatter (t.format/formatter "MMM"))
+(def day-label-formatter (t.format/formatter "E"))
+(def date-label-formatter (t.format/formatter "EEEE do 'of' MMMM, Y"))
+(def basic-formatter (t.format/formatters :basic-date))
 
 (def make-items
   (memoize
    (fn [today]
-     (for [date (tpc/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
-                                  (t/plus- today (t/days 1))
-                                  (t/days 1))]
-       {:date (tf/unparse basic-formatter date)
-        :label (tf/unparse date-label-formatter date)
+     (for [date (t.periodic/periodic-seq (t/minus- today (t/days (+ 356 (t/day-of-week today))))
+                                         (t/plus- today (t/days 1))
+                                         (t/days 1))]
+       {:date (t.format/unparse basic-formatter date)
+        :label (t.format/unparse date-label-formatter date)
         :shaded? (odd? (t/month date))}))))
 
 (def make-horizontal-labels
   (memoize
    (fn [today]
-     (for [date (tpc/periodic-seq (t/minus- today (t/days (+ 350 (t/day-of-week today))))
-                                  (t/plus- today (t/days (- 8 (t/day-of-week today))))
-                                  (t/weeks 1))]
-       {:date (tf/unparse basic-formatter date)
-        :label (tf/unparse month-label-formatter date)
+     (for [date (t.periodic/periodic-seq (t/minus- today (t/days (+ 350 (t/day-of-week today))))
+                                         (t/plus- today (t/days (- 8 (t/day-of-week today))))
+                                         (t/weeks 1))]
+       {:date (t.format/unparse basic-formatter date)
+        :label (t.format/unparse month-label-formatter date)
         :visible? (> 8 (t/day date))}))))
 
 (def make-vertical-labels
   (memoize
    (fn [today]
-     (for [date (tpc/periodic-seq (t/minus- today (t/days (- (t/day-of-week today) 1)))
-                                  (t/plus- today (t/days (- 8 (t/day-of-week today))))
-                                  (t/days 1))]
-       {:date (tf/unparse basic-formatter date)
-        :label (tf/unparse day-label-formatter date)
+     (for [date (t.periodic/periodic-seq (t/minus- today (t/days (- (t/day-of-week today) 1)))
+                                         (t/plus- today (t/days (- 8 (t/day-of-week today))))
+                                         (t/days 1))]
+       {:date (t.format/unparse basic-formatter date)
+        :label (t.format/unparse day-label-formatter date)
         :visible? (odd? (t/day-of-week date))}))))
 
 (def colour-options
@@ -92,8 +92,8 @@
                                      shaded? :colour-grey-medium
                                      :else :colour-grey-light)])
                 :onClick #(if checked?
-                            (transact! this `[(ops/remove-checked-date! {:id ~id :date ~date})])
-                            (transact! this `[(ops/add-checked-date! {:id ~id :date ~date})]))})))))
+                            (fulcro/transact! this `[(operations/remove-checked-date! {:id ~id :date ~date})])
+                            (fulcro/transact! this `[(operations/add-checked-date! {:id ~id :date ~date})]))})))))
 
     (dom/div
      #js {:className (u/bem [:calendar__labels :horizontal])}

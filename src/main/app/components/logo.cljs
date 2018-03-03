@@ -1,7 +1,7 @@
 (ns app.components.logo
   (:require [app.utils :as u]
             [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as prim :refer [defsc factory]]))
+            [fulcro.client.primitives :refer [defsc factory]]))
 
 (defsc Logo [this props]
   (dom/div
