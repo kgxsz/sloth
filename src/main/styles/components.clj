@@ -10,30 +10,7 @@
    {:width (-> c/filling :xx-large px)}
    [:&__square
     [:&--colour
-     (u/make-modifiers c/colour :fill)]
-    [:&--animated-a
-     {:animation-name :square-a
-      :animation-duration (ms 1000)
-      :animation-timing-function "steps(1)"
-      :animation-iteration-count :infinite}]
-    [:&--animated-b
-     {:animation-name :square-b
-      :animation-duration (ms 800)
-      :animation-delay (ms 300)
-      :animation-timing-function "steps(1)"
-      :animation-iteration-count :infinite}]
-    [:&--animated-c
-     {:animation-name :square-c
-      :animation-duration (ms 1100)
-      :animation-delay (ms 500)
-      :animation-timing-function "steps(1)"
-      :animation-iteration-count :infinite}]
-    [:&--animated-d
-     {:animation-name :square-d
-      :animation-duration (ms 900)
-      :animation-delay (ms 100)
-      :animation-timing-function "steps(1)"
-      :animation-iteration-count :infinite}]]])
+     (u/make-modifiers c/colour :fill)]]])
 
 (defstyles notification
   [:.notification
@@ -165,6 +142,7 @@
      :margin-left (-> c/spacing :x-small px)
      :background-color (-> c/colour :grey-light)}]])
 
+
 (defstyles calendar
   [:.calendar
    {:margin-top (-> c/spacing :huge px)}
@@ -257,6 +235,12 @@
    [:&--align-center {:text-align :center}]
 
    [:&--font-weight-bold {:font-weight 800}]])
+
+
+(defstyles box
+  [:.box {}
+   [:&--margin
+    (u/make-modifiers c/spacing :margin px)]])
 
 (defstyles icon
   [:.icon {:font-family "'icomoon'"

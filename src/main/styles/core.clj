@@ -23,6 +23,7 @@
 
   ;; components
   components/icon
+  components/box
   components/text
   components/logo
   components/notification
