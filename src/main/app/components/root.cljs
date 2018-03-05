@@ -20,8 +20,7 @@
 
 (defsc UserPage [this {:keys [user]}]
   {:initial-state {:page :user-page}
-   :query [:page
-           {:user (get-query User)}]
+   :query [:page {:user (get-query User)}]
    :componentDidMount #(data.fetch/load this :user User {:params (navigation/route-params)
                                                          :target [:user-page :page :user]})}
   (if (empty? user)
@@ -32,10 +31,16 @@
 (defsc UnknownPage [this {:keys []}]
   {:initial-state {:page :unknown-page}
    :query [:page]}
-  ;; TODO - make this page look good
   (dom/div
    nil
-   "You're lost :("))
+   (dom/div
+    #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-dark :align-center])}
+    ":(")
+   (dom/div
+    #js {:className (u/bem [:box :margin-medium])})
+   (dom/div
+    #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
+    "You're lost")))
 
 
 (defrouter Pages :pages
