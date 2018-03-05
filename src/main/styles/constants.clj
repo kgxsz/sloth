@@ -95,7 +95,7 @@
    :small 14
    :medium 20
    :large 28
-   :huge 36})
+   :huge 40})
 
 (def paragraph
   {:tiny 10
