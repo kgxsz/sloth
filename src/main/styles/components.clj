@@ -5,12 +5,14 @@
             [garden.units :refer [px percent ms]]
             [normalize.core :refer [normalize]]))
 
+
 (defstyles logo
   [:.logo
    {:width (-> c/filling :xx-large px)}
    [:&__square
     [:&--colour
      (u/make-modifiers c/colour :fill)]]])
+
 
 (defstyles notification
   [:.notification
@@ -68,6 +70,7 @@
                   (-> c/spacing :xxx-small px)
                   0]]}]]]])
 
+
 (defstyles page
   [:.page
    {:display :flex
@@ -102,6 +105,7 @@
      :padding [[(-> c/spacing :huge px)
                  (-> c/spacing :large px)]]})])
 
+
 (defstyles user
   [:.user
    (u/tiny-width
@@ -118,6 +122,7 @@
 
    (u/huge-width
     {:width (-> c/calendar :width :huge px)})])
+
 
 (defstyles user-details
   [:.user-details
@@ -241,6 +246,7 @@
   [:.box {}
    [:&--margin
     (u/make-modifiers c/spacing :margin px)]])
+
 
 (defstyles icon
   [:.icon {:font-family "'icomoon'"
