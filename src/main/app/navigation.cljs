@@ -1,5 +1,8 @@
 (ns app.navigation
   (:require [bidi.bidi :as bidi]
+            [cemerick.url :as url]
+            [medley.core :as medley]
+            [clojure.string :as string]
             [fulcro.client.routing :as routing]
             [pushy.core :as pushy]
             [fulcro.client.primitives :as fulcro]))
@@ -9,6 +12,7 @@
 
 
 (def routes ["/" [["" :home-page]
+                  ["auth" :auth-page]
                   [["user/" :first-name] :user-page]
                   [true :unknown-page]]])
 
@@ -16,14 +20,24 @@
 (def routing-tree
   (routing/routing-tree
    (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
+   (routing/make-route :auth-page [(routing/router-instruction :pages [:auth-page :page])])
    (routing/make-route :user-page [(routing/router-instruction :pages [:user-page :page])])
    (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
-(defn navigate [{:keys [handler route-params]}]
-  (let [route-params (-> route-params vec flatten)
-        path (apply bidi/path-for routes handler route-params)]
-    (pushy/set-token! @navigation path)))
+(defn navigate-externally [{:keys [url query-params]}]
+  (let [query-string (when-not (string/blank? (url/map->query query-params))
+                       (str "?" (url/map->query query-params)))]
+    (set! js/window.location (str url query-string))))
+
+
+(defn navigate-internally [{:keys [handler route-params query-params replace?]}]
+  (let [query-string (when-not (string/blank? (url/map->query query-params))
+                       (str "?" (url/map->query query-params)))
+        update-token! (if replace? pushy/replace-token! pushy/set-token!)
+        route-params (-> route-params vec flatten)
+        path (str (apply bidi/path-for routes handler route-params) query-string)]
+    (update-token! @navigation path)))
 
 
 (defn route-params []
