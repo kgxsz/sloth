@@ -245,6 +245,8 @@
 (defstyles box
   [:.box {}
    [:&--margin
+    (u/make-modifiers c/spacing :margin px)]
+   [:&--padding
     (u/make-modifiers c/spacing :margin px)]])
 
 
