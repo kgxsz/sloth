@@ -34,7 +34,7 @@
   (dom/div
    nil
    (dom/div
-    #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-dark :align-center])}
+    #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
     ":(")
    (dom/div
     #js {:className (u/bem [:box :margin-medium])})
