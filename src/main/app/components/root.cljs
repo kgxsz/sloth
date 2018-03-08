@@ -13,8 +13,8 @@
   {:initial-state {:page :home-page}
    :query [:page]}
   (dom/div
-   #js {:onClick #(navigation/navigate {:handler :user-page
-                                        :route-params {:first-name "Keigo"}})}
+   #js {:onClick #(navigation/navigate-internally {:handler :user-page
+                                                   :route-params {:first-name "Keigo"}})}
    (ui-logo)))
 
 
