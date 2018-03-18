@@ -2,6 +2,16 @@
   (:require [fulcro.client.mutations :refer [defmutation]]))
 
 
+(defmutation initialise-auth-attempt!
+  [{:keys [tempid]}]
+  (action [{:keys [state]}]
+          (swap! state
+                 assoc-in
+                 [:home-page :page :auth-attempt-id]
+                 tempid))
+  (remote [env] true))
+
+
 (defmutation add-checked-date!
   [{:keys [id date]}]
   (action [{:keys [state]}]

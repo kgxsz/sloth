@@ -2,19 +2,23 @@
   (:require [app.components.logo :refer [ui-logo]]
             [app.components.user :refer [ui-user User]]
             [app.navigation :as navigation]
+            [app.operations :as operations]
             [app.utils :as u]
             [fulcro.client.data-fetch :as data.fetch]
             [fulcro.client.dom :as dom]
             [fulcro.client.primitives :refer [defsc get-query get-initial-state factory]]
-            [fulcro.client.routing :refer-macros [defrouter]]))
+            [fulcro.client.routing :refer-macros [defrouter]]
+            [fulcro.client.primitives :as fulcro]))
 
 
-(defsc HomePage [this {:keys []}]
+(defsc HomePage [this {:keys [auth-attempt-id]}]
   {:initial-state {:page :home-page}
-   :query [:page]}
+   :query [:page
+           :auth-attempt-id]}
+  (js/console.warn auth-attempt-id)
+  (js/console.warn (uuid? auth-attempt-id))
   (dom/div
-   #js {:onClick #(navigation/navigate-internally {:handler :user-page
-                                                   :route-params {:first-name "Keigo"}})}
+   #js {:onClick #(fulcro/transact! this `[(operations/initialise-auth-attempt! {:tempid ~(fulcro/tempid)})])}
    (ui-logo)))
 
 

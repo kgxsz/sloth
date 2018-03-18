@@ -19,6 +19,14 @@
            (datomic/pull current-db query user-id))))
 
 
+(defmutation initialise-auth-attempt!
+  [{:keys [tempid]}]
+  (action [{:keys [config db]}]
+          (let [auth-attempt-id (java.util.UUID/randomUUID)]
+            ;; TODO - do something with the db and config
+            {:fulcro.client.primitives/tempids {tempid auth-attempt-id}})))
+
+
 (defmutation add-checked-date!
   [{:keys [id date]}]
   (action [{:keys [config db]}]
