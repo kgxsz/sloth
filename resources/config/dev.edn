@@ -1,2 +1,6 @@
 {:port 4050
- :db-uri "datomic:dev://localhost:4334/core"}
+ :db-uri "datomic:dev://localhost:4334/core"
+ :auth {:client-id "dummy-client-id"
+        :redirect-url "http://localhost:3000/auth"
+        :app-secret "dummy-app-secret"
+        :scope :email}}

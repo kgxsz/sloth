@@ -1,6 +1,8 @@
 (ns app.operations
   (:require [datomic.api :as datomic]
-            [fulcro.server :refer [defquery-root defmutation]]))
+            [fulcro.server :refer [defquery-root defmutation]]
+            [clj-time.coerce :as time.coerce]
+            [clj-time.core :as time]))
 
 
 (defn get-user-id [current-db first-name]
@@ -22,8 +24,13 @@
 (defmutation initialise-auth-attempt!
   [{:keys [tempid]}]
   (action [{:keys [config db]}]
-          (let [auth-attempt-id (java.util.UUID/randomUUID)]
-            ;; TODO - do something with the db and config
+          (let [auth-attempt-id (java.util.UUID/randomUUID)
+                auth-attempt {:id auth-attempt-id
+                              :initialised-at (time.coerce/to-date (time/now))
+                              :client-id (get-in config [:auth :client-id])
+                              :redirect-url (get-in config [:auth :redirect-url])
+                              :scope (get-in config [:auth :scope])}]
+            ;; TODO - add this to the db
             {:fulcro.client.primitives/tempids {tempid auth-attempt-id}})))
 
 
