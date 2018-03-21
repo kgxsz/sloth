@@ -70,7 +70,8 @@
                      (datomic/connect db-uri))
             migrations [:sloth/user-schema
                         :sloth/calendar-schema
-                        :sloth/entities]]
+                        :sloth/entities
+                        :sloth/auth-attempt-schema]]
         (conformity/ensure-conforms conn (conformity/read-resource "migrations.edn") migrations)
         (assoc component :conn conn))
 
