@@ -21,17 +21,25 @@
            (datomic/pull current-db query user-id))))
 
 
+(defquery-root :blag
+  (value [{:keys [config db query]} {}]
+         (let [{:keys [conn]} db
+               current-db (datomic/db conn)]
+           ;; 17592186045461
+           {:hi :there}
+           #_(datomic/pull current-db query user-id))))
+
+
 (defmutation initialise-auth-attempt!
   [{:keys [tempid]}]
   (action [{:keys [config db]}]
-          (let [auth-attempt-id (java.util.UUID/randomUUID)
-                auth-attempt {:id auth-attempt-id
-                              :initialised-at (time.coerce/to-date (time/now))
-                              :client-id (get-in config [:auth :client-id])
-                              :redirect-url (get-in config [:auth :redirect-url])
-                              :scope (get-in config [:auth :scope])}]
-            ;; TODO - add this to the db
-            {:fulcro.client.primitives/tempids {tempid auth-attempt-id}})))
+          (let [auth-attempt {:db/id "auth-attempt-id"
+                              :auth-attempt/initialised-at (time.coerce/to-date (time/now))
+                              :auth-attempt/client-id (get-in config [:value :auth :client-id])
+                              :auth-attempt/redirect-url (get-in config [:value :auth :redirect-url])
+                              :auth-attempt/scope (get-in config [:value :auth :scope])}
+                {:keys [tempids]} @(datomic/transact (:conn db) [auth-attempt])]
+            {:fulcro.client.primitives/tempids {tempid (get tempids "auth-attempt-id")}})))
 
 
 (defmutation add-checked-date!
