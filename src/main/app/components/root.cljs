@@ -11,12 +11,25 @@
             [fulcro.client.primitives :as fulcro]))
 
 
+(defsc AuthAttempt [this {:keys []}]
+  {:ident [:auth-attempt/by-id :db/id]
+   :query [:db/id
+           :auth-attempt/scope]}
+  (dom/div nil))
+
 (defsc HomePage [this {:keys [auth-attempt-id]}]
   {:initial-state {:page :home-page}
    :query [:page
-           :auth-attempt-id]}
+           :auth-attempt-id]
+   :componentDidUpdate (fn [{:keys [auth-attempt-id]} _]
+                         ;; TODO - fix this please
+                         (when (and (not (int? auth-attempt-id))
+                                    (int? (:auth-attempt-id (fulcro/props this))))
+                           (data.fetch/load this :auth-attempt AuthAttempt
+                                            {:params (select-keys (fulcro/props this) [:auth-attempt-id])
+                                             :target [:home-page :page :auth-attempt]})))}
   (js/console.warn auth-attempt-id)
-  (js/console.warn (uuid? auth-attempt-id))
+  (js/console.warn (int? auth-attempt-id))
   (dom/div
    #js {:onClick #(fulcro/transact! this `[(operations/initialise-auth-attempt! {:tempid ~(fulcro/tempid)})])}
    (ui-logo)))
