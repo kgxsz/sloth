@@ -21,13 +21,11 @@
            (datomic/pull current-db query user-id))))
 
 
-(defquery-root :blag
-  (value [{:keys [config db query]} {}]
+(defquery-root :auth-attempt
+  (value [{:keys [config db query]} {:keys [auth-attempt-id]}]
          (let [{:keys [conn]} db
                current-db (datomic/db conn)]
-           ;; 17592186045461
-           {:hi :there}
-           #_(datomic/pull current-db query user-id))))
+           (datomic/pull current-db query auth-attempt-id))))
 
 
 (defmutation initialise-auth-attempt!
