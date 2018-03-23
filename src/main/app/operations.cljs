@@ -6,9 +6,9 @@
   [{:keys [tempid]}]
   (action [{:keys [state]}]
           (swap! state
-                 assoc-in
-                 [:home-page :page :auth-attempt-id]
-                 tempid))
+                 #(-> %
+                      (assoc-in [:auth-attempt/by-id] {tempid {:db/id tempid}})
+                      (assoc-in [:home-page :page :auth-attempt] [:auth-attempt/by-id tempid]))))
   (remote [env] true))
 
 

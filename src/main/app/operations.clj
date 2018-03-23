@@ -22,10 +22,10 @@
 
 
 (defquery-root :auth-attempt
-  (value [{:keys [config db query]} {:keys [auth-attempt-id]}]
+  (value [{:keys [config db query]} {:keys [id]}]
          (let [{:keys [conn]} db
                current-db (datomic/db conn)]
-           (datomic/pull current-db query auth-attempt-id))))
+           (datomic/pull current-db query id))))
 
 
 (defmutation initialise-auth-attempt!

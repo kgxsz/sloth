@@ -14,23 +14,35 @@
 (defsc AuthAttempt [this {:keys []}]
   {:ident [:auth-attempt/by-id :db/id]
    :query [:db/id
+           :auth-attempt/client-id
            :auth-attempt/scope]}
   (dom/div nil))
 
-(defsc HomePage [this {:keys [auth-attempt-id]}]
+(defsc HomePage [this {:keys [auth-attempt]}]
   {:initial-state {:page :home-page}
-   :query [:page
-           :auth-attempt-id]
-   :componentDidUpdate (fn [{:keys [auth-attempt-id]} _]
+   :query [:page {:auth-attempt (get-query AuthAttempt)}]
+   :componentDidUpdate (fn [prev-props  _]
                          ;; TODO - fix this please
-                         (when (and (not (int? auth-attempt-id))
-                                    (int? (:auth-attempt-id (fulcro/props this))))
-                           (data.fetch/load this :auth-attempt AuthAttempt
-                                            {:params (select-keys (fulcro/props this) [:auth-attempt-id])
-                                             :target [:home-page :page :auth-attempt]})))}
-  (js/console.warn auth-attempt-id)
-  (js/console.warn (int? auth-attempt-id))
+                         (let [{:keys [prev-auth-attempt]} prev-props
+                               {:keys [auth-attempt] :as props} (fulcro/props this)
+                               prev-auth-attempt-id (get-in prev-props [:auth-attempt :db/id])
+                               current-auth-attempt-id (get-in (fulcro/props this) [:auth-attempt :db/id])]
+
+                           (js/console.warn "previouse" prev-props)
+                           (js/console.warn "currente" props)
+                           (js/console.warn "typee" (type (:db/id auth-attempt)))
+                           (js/console.warn "tempid?" (instance? fulcro.tempid/TempId (:db/id auth-attempt)))
+                           (js/console.warn "int?" (int? (:db/id auth-attempt)))
+
+                           (when (and (instance? fulcro.tempid/TempId prev-auth-attempt-id)
+                                      (int? current-auth-attempt-id))
+                             (data.fetch/load this :auth-attempt AuthAttempt
+                                              {:params {:id current-auth-attempt-id}
+                                               :target [:home-page :page :auth-attempt]}))))}
+  (js/console.warn auth-attempt)
+  (js/console.warn (int? (:db/id auth-attempt)))
   (dom/div
+   ;; TODO - explore making the call directly here to get the goods
    #js {:onClick #(fulcro/transact! this `[(operations/initialise-auth-attempt! {:tempid ~(fulcro/tempid)})])}
    (ui-logo)))
 
