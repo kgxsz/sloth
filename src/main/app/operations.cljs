@@ -1,15 +1,14 @@
 (ns app.operations
-  (:require [fulcro.client.mutations :refer [defmutation]]))
+  (:require [fulcro.client.data-fetch :as data.fetch]
+            [fulcro.client.mutations :refer [defmutation]]))
 
 
 (defmutation initialise-auth-attempt!
-  [{:keys [tempid]}]
-  (action [{:keys [state]}]
-          (swap! state
-                 #(-> %
-                      (assoc-in [:auth-attempt/by-id] {tempid {:db/id tempid}})
-                      (assoc-in [:home-page :page :auth-attempt] [:auth-attempt/by-id tempid]))))
-  (remote [env] true))
+  [_]
+  (action [{:keys [state] :as env}]
+          (data.fetch/load-action env :auth-attempt app.components.root/AuthAttempt
+                                  {:target [:home-page :page :auth-attempt]}))
+  (remote [env] (data.fetch/remote-load env)))
 
 
 (defmutation add-checked-date!
