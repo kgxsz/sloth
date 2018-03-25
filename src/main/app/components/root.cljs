@@ -11,7 +11,6 @@
             [fulcro.client.primitives :as fulcro]))
 
 
-;; TODO - find a home for this guy
 (defsc AuthAttempt [this _]
   {:ident [:auth-attempt/by-id :db/id]
    :query [:db/id
@@ -36,19 +35,18 @@
       (auth-attempt-initialised? auth-attempt)))
 
 (defsc HomePage [this {:keys [auth-attempt]}]
-  {:initial-state (fn [_] {:page :home-page :auth-attempt (get-initial-state AuthAttempt {})})
+  {:initial-state {:page :home-page}
    :query [:page {:auth-attempt (get-query AuthAttempt)}]}
   (dom/div
    nil
    (ui-logo)
    (dom/button
-    #js {:onClick initialise-auth-attempt
-         :disabled cannot-initialise-auth-attempt?}
+    #js {:onClick #(initialise-auth-attempt this)
+         :disabled (cannot-initialise-auth-attempt? auth-attempt)}
     (cond
-      (auth-attempt-initialised?) "authed"
-      (auth-attempt-initialising?) "authing"
+      (auth-attempt-initialised? auth-attempt) "authed"
+      (auth-attempt-initialising? auth-attempt) "authing"
       :else "auth"))))
-
 
 
 (defsc AuthPage [this {:keys []}]
