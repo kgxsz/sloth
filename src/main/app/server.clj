@@ -66,12 +66,12 @@
     (try
       (log/info "starting db")
       (let [db-uri (get-in config [:value :db-uri])
+            _ (datomic/delete-database db-uri)
             conn (do (datomic/create-database db-uri)
                      (datomic/connect db-uri))
-            migrations [:sloth/user-schema
-                        :sloth/calendar-schema
-                        :sloth/entities
-                        :sloth/auth-attempt-schema]]
+            migrations [:sloth/calendar-schema-250318
+                        :sloth/user-schema-250318
+                        :sloth/auth-attempt-schema-250318]]
         (conformity/ensure-conforms conn (conformity/read-resource "migrations.edn") migrations)
         (assoc component :conn conn))
 
@@ -89,4 +89,3 @@
    :config (fulcro.server/new-config config-path)
    :db (component/using (map->Db {}) [:config])
    :http-server (component/using (map->HttpServer {}) [:config :db])))
-

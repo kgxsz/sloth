@@ -18,16 +18,17 @@
                              :scope (:auth-attempt/scope auth-attempt)}}))))
 
 
-(defmutation process-finalise-auth-attempt!
+(defmutation process-finalised-auth-attempt!
   [_]
   (action [{:keys [state] :as env}]
           (let [state @state
                 ident (get-in state [:auth-page :page :finalised-auth-attempt])
                 auth-attempt (get-in state ident)]
-            (navigation/navigate-internally
-             {:handler :user-page
-              :route-params {:user-id (:user-id auth-attempt)}
-              :replace? true}))))
+            (when-not (:failed-at auth-attempt)
+              (navigation/navigate-internally
+               {:handler :user-page
+                :route-params {:user-id (get-in auth-attempt [:auth-attempt/owner :db/id])}
+                :replace? true})))))
 
 
 (defmutation add-checked-date!

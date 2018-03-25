@@ -17,6 +17,10 @@
            :auth-attempt/client-id
            :auth-attempt/redirect-url
            :auth-attempt/scope
+           :auth-attempt/initialised-at
+           :auth-attempt/failed-at
+           :auth-attempt/succeeded-at
+           :auth-attempt/owner
            :ui/fetch-state]})
 
 (defn initialise-auth-attempt [this]
@@ -49,22 +53,43 @@
       :else "auth"))))
 
 
+(defn finalise-auth-attempt [this]
+  (let [{:keys [code state error]} (navigation/query-params)]
+    (when-not error
+      (data.fetch/load this :finalised-auth-attempt AuthAttempt
+                       {:params {:auth-attempt-id (js/parseInt state)
+                                 :code code}
+                        :target [:auth-page :page :finalised-auth-attempt]
+                        :post-mutation `operations/process-finalised-auth-attempt!}))))
+
 (defsc AuthPage [this {:keys []}]
   {:initial-state {:page :auth-page}
    :query [:page]
-   :componentDidMount (fn []
-                        (data.fetch/load this :finalised-auth-attempt AuthAttempt
-                                         {:params (navigation/query-params)
-                                          :target [:auth-page :page :finalised-auth-attempt]
-                                          :post-mutation `operations/process-finalise-auth-attempt!}))}
-  (ui-logo))
+   :componentDidMount #(finalise-auth-attempt this)}
+  (if (:error (navigation/query-params))
+    (dom/div
+     nil
+     (dom/div
+      #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
+      ":(")
+     (dom/div
+      #js {:className (u/bem [:box :margin-medium])})
+     (dom/div
+      #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
+      "Something went wrong!"))
+    (ui-logo)))
 
+
+(defn load-user [this]
+  (let [{:keys [user-id]} (navigation/route-params)]
+    (when user-id
+      (data.fetch/load this :user User {:params {:user-id (js/parseInt user-id)}
+                                        :target [:user-page :page :user]}))))
 
 (defsc UserPage [this {:keys [user]}]
   {:initial-state {:page :user-page}
    :query [:page {:user (get-query User)}]
-   :componentDidMount #(data.fetch/load this :user User {:params (navigation/route-params)
-                                                         :target [:user-page :page :user]})}
+   :componentDidMount #(load-user this)}
   (if (empty? user)
     (ui-logo)
     (ui-user user)))
@@ -82,7 +107,7 @@
     #js {:className (u/bem [:box :margin-medium])})
    (dom/div
     #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
-    "You're lost")))
+    "You're lost!")))
 
 
 (defrouter Pages :pages

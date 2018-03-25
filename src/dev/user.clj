@@ -1,8 +1,9 @@
 (ns user
-  (:require [clojure.tools.namespace.repl :as repl]
+  (:require [app.operations :as operations]
             [app.server :as server]
-            [app.operations :as operations]
-            [com.stuartsierra.component :as component]))
+            [clojure.tools.namespace.repl :as repl]
+            [com.stuartsierra.component :as component]
+            [datomic.api :as datomic]))
 
 (repl/set-refresh-dirs "src/dev" "src/main")
 
