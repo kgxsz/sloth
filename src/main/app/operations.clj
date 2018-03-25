@@ -1,8 +1,9 @@
 (ns app.operations
-  (:require [datomic.api :as datomic]
+  (:require [clj-time.coerce :as time.coerce]
+            [clj-time.core :as time]
+            [datomic.api :as datomic]
             [fulcro.server :refer [defquery-root defmutation]]
-            [clj-time.coerce :as time.coerce]
-            [clj-time.core :as time]))
+            [taoensso.timbre :as log]))
 
 
 (defn get-user-id [current-db first-name]
@@ -14,14 +15,13 @@
 
 
 (defquery-root :user
-  (value [{:keys [config db query]} {:keys [first-name]}]
+  (value [{:keys [config db query]} {:keys [user-id]}]
          (let [{:keys [conn]} db
-               current-db (datomic/db conn)
-               user-id (get-user-id current-db first-name)]
-           (datomic/pull current-db query user-id))))
+               current-db (datomic/db conn)]
+           (datomic/pull current-db query (Long/parseLong user-id)))))
 
 
-(defquery-root :auth-attempt
+(defquery-root :initialised-auth-attempt
   (value [{:keys [config db query]} _]
          (let [auth-attempt {:db/id "auth-attempt-id"
                              :auth-attempt/initialised-at (time.coerce/to-date (time/now))
@@ -30,6 +30,18 @@
                              :auth-attempt/scope (get-in config [:value :auth :scope])}
                {:keys [tempids db-after]} @(datomic/transact (:conn db) [auth-attempt])]
            (datomic/pull db-after query (get tempids "auth-attempt-id")))))
+
+
+(defquery-root :finalised-auth-attempt
+  (value [{:keys [config db query]} {:keys [state]}]
+         (let [{:keys [conn]} db
+               current-db (datomic/db conn)
+               auth-attempt-id (Long/parseLong state)
+               auth-attempt (datomic/pull current-db query auth-attempt-id)
+               ;; TODO - do some real authentication flow here to get the user-id and to set the session
+               user-id (get-user-id current-db "Keigo")]
+           (assoc auth-attempt
+                  :user-id user-id))))
 
 
 (defmutation add-checked-date!
