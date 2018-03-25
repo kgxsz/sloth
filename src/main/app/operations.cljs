@@ -1,14 +1,33 @@
 (ns app.operations
-  (:require [fulcro.client.data-fetch :as data.fetch]
+  (:require [app.navigation :as navigation]
+            [fulcro.client.data-fetch :as data.fetch]
             [fulcro.client.mutations :refer [defmutation]]))
 
 
-(defmutation initialise-auth-attempt!
+(defmutation process-initialised-auth-attempt!
   [_]
   (action [{:keys [state] :as env}]
-          (data.fetch/load-action env :auth-attempt app.components.root/AuthAttempt
-                                  {:target [:home-page :page :auth-attempt]}))
-  (remote [env] (data.fetch/remote-load env)))
+          (let [state @state
+                ident (get-in state [:home-page :page :initialised-auth-attempt])
+                auth-attempt (get-in state ident)]
+            (navigation/navigate-externally
+             {:url "https://www.facebook.com/v2.9/dialog/oauth"
+              :query-params {:client_id (:auth-attempt/client-id auth-attempt)
+                             :state (:db/id auth-attempt)
+                             :redirect_uri (:auth-attempt/redirect-url auth-attempt)
+                             :scope (:auth-attempt/scope auth-attempt)}}))))
+
+
+(defmutation process-finalise-auth-attempt!
+  [_]
+  (action [{:keys [state] :as env}]
+          (let [state @state
+                ident (get-in state [:auth-page :page :finalised-auth-attempt])
+                auth-attempt (get-in state ident)]
+            (navigation/navigate-internally
+             {:handler :user-page
+              :route-params {:user-id (:user-id auth-attempt)}
+              :replace? true}))))
 
 
 (defmutation add-checked-date!
