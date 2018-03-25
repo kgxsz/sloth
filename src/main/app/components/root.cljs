@@ -11,32 +11,56 @@
             [fulcro.client.primitives :as fulcro]))
 
 
-(defsc AuthAttempt [this {:keys [ui/fetch-state]}]
+;; TODO - find a home for this guy
+(defsc AuthAttempt [this {:keys [db/id ui/fetch-state] :auth-attempt/keys [client-id redirect-url scope]}]
   {:ident [:auth-attempt/by-id :db/id]
+   :initial-state (fn [_] {:id '_})
    :query [:db/id
            :auth-attempt/client-id
+           :auth-attempt/redirect-url
            :auth-attempt/scope
-           :ui/fetch-state]}
-  (dom/button
-   #js {:disabled true}
-   (if (some? fetch-state)
-     "authing"
-     "authed")))
+           :ui/fetch-state]
+   :componentDidMount (fn []
+                        ;; TODO - put this in a transaction
+                         (let [{:keys [db/id] :as auth-attempt} (fulcro/props this)]
+                           (when (some? id)
+                             (navigation/navigate-externally
+                              {:url "https://www.facebook.com/v2.9/dialog/oauth"
+                               :query-params {:client_id (:auth-attempt/client-id auth-attempt)
+                                              :state id
+                                              :redirect_uri (:auth-attempt/redirect-url auth-attempt)
+                                              :scope (:auth-attempt/scope auth-attempt)}}))))}
+  (cond
+    id (dom/button
+        #js {:disabled true}
+        "authed")
+    fetch-state (dom/button
+                 #js {:disabled true}
+                 "authing")
+    :else (dom/button
+           #js {:onClick #(fulcro/transact! this `[(operations/initialise-auth-attempt!)])}
+           "auth")))
+
 
 (def ui-auth-attempt (factory AuthAttempt {:keyfn :db/id}))
 
 
 (defsc HomePage [this {:keys [auth-attempt]}]
-  {:initial-state {:page :home-page}
+  {:initial-state (fn [_] {:page :home-page :auth-attempt (get-initial-state AuthAttempt {})})
    :query [:page {:auth-attempt (get-query AuthAttempt)}]}
   (dom/div
    nil
    (ui-logo)
-   (if (empty? auth-attempt)
-     (dom/button
-      #js {:onClick #(fulcro/transact! this `[(operations/initialise-auth-attempt!)])}
-      "auth")
-     (ui-auth-attempt auth-attempt))))
+   (ui-auth-attempt auth-attempt)))
+
+
+(defsc AuthPage [this {:keys []}]
+  {:initial-state {:page :auth-page}
+   :query [:page]}
+  (dom/div
+   nil
+   (ui-logo)
+   "auth!"))
 
 
 (defsc UserPage [this {:keys [user]}]
@@ -67,6 +91,7 @@
 (defrouter Pages :pages
   (ident [this props] [(:page props) :page])
   :home-page HomePage
+  :auth-page AuthPage
   :user-page UserPage
   :unknown-page UnknownPage)
 
