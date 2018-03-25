@@ -13,7 +13,7 @@
 
 (def routes ["/" [["" :home-page]
                   ["auth" :auth-page]
-                  [["user/" :first-name] :user-page]
+                  [["user/" :user-id] :user-page]
                   [true :unknown-page]]])
 
 
@@ -42,6 +42,13 @@
 
 (defn route-params []
   (:route-params (bidi/match-route routes (pushy/get-token @navigation))))
+
+
+(defn query-params []
+  (->> (string/split (pushy/get-token @navigation) "?")
+       (second)
+       (url/query->map)
+       (medley/map-keys keyword)))
 
 
 (defn start-navigation [reconciler]
