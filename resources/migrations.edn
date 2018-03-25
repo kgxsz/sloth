@@ -1,38 +1,14 @@
-{:sloth/entities
- {:txes [[{:db/id #db/id [:db.part/user -1]
-           :calendar/title "Exercise"
-           :calendar/subtitle "weights or cardio, at least half an hour"
-           :calendar/colour-option :a
-           :calendar/checked-dates #{"20180103" "20180104" "20180105" "20180108" "20180109" "20180110" "20180111" "20180112" "20180115" "20180116" "20180117" "20180118" "20180123" "20180124" "20180126" "20180127" "20180129" "20180130" "20180131" "20180201" "20180202" "20180205" "20180206" "20180207" "20180208" "20180209" "20180210" "20180212" "20180213" "20180214" "20180215" "20180216" "20180217"}}
-          {:db/id #db/id [:db.part/user -2]
-           :calendar/title "Meditation"
-           :calendar/subtitle "at least ten minutes"
-           :calendar/colour-option :b
-           :calendar/checked-dates #{"20180111" "20180112" "20180115" "20180117" "20180118" "20180125" "20180129" "20180130" "20180131" "20180201" "20180202" "20180205" "20180206" "20180208" "20180212" "20180213" "20180214" "20180215" "20180216" "20180217"}}
-          {:db/id #db/id [:db.part/user -3]
-           :calendar/title "Coding"
-           :calendar/subtitle "personal projects, at least one commit"
-           :calendar/colour-option :c
-           :calendar/checked-dates #{"20180114" "20180120" "20180127" "20180128" "20180129" "20180204" "20180207" "20180210" "20180211" "20180212" "20180213" "20180214" "20180215" "20180216" "20180217"}}
-          {:db/id #db/id [:db.part/user -4]
-           :calendar/title "Journaling"
-           :calendar/subtitle "writing or drawing, at least one entry"
-           :calendar/colour-option :d
-           :calendar/checked-dates #{}}
-          {:db/id #db/id [:db.part/user -5]
-           :user/first-name "Keigo"
-           :user/last-name "Suzukawa"
-           :user/avatar-url "/images/avatar.jpg"
-           :user/calendars #{#db/id [:db.part/user -1]
-                             #db/id [:db.part/user -2]
-                             #db/id [:db.part/user -3]
-                             #db/id [:db.part/user -4]}}]]}
-
- :sloth/calendar-schema
- {:txes [[{:db/doc "A user's calendars"
-           :db/ident :user/calendars
+{:sloth/calendar-schema-250318
+ {:txes [[{:db/doc "A calendar's creation time"
+           :db/ident :calendar/created-at
+           :db/valueType :db.type/instant
+           :db/cardinality :db.cardinality/one
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "A calendar's owner"
+           :db/ident :calendar/owner
            :db/valueType :db.type/ref
-           :db/cardinality :db.cardinality/many
+           :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}
           {:db/doc "A calendar's title"
@@ -47,9 +23,9 @@
            :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}
-          {:db/doc "A calendar's colour option"
-           :db/ident :calendar/colour-option
-           :db/valueType :db.type/keyword
+          {:db/doc "A calendar's colour"
+           :db/ident :calendar/colour
+           :db/valueType :db.type/string
            :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}
@@ -60,8 +36,26 @@
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}]]}
 
- :sloth/user-schema
- {:txes [[{:db/doc "A user's first name"
+ :sloth/user-schema-250318
+ {:txes [[{:db/doc "A user's creation time"
+           :db/ident :user/created-at
+           :db/valueType :db.type/instant
+           :db/cardinality :db.cardinality/one
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "A user's roles"
+           :db/ident :user/roles
+           :db/valueType :db.type/keyword
+           :db/cardinality :db.cardinality/many
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "A user's Facebook id"
+           :db/ident :user/facebook-id
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "A user's first name"
            :db/ident :user/first-name
            :db/valueType :db.type/string
            :db/cardinality :db.cardinality/one
@@ -78,12 +72,42 @@
            :db/valueType :db.type/string
            :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "A user's calendars"
+           :db/ident :user/calendars
+           :db/valueType :db.type/ref
+           :db/cardinality :db.cardinality/many
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "A user's auth-attempts"
+           :db/ident :user/auth-attempts
+           :db/valueType :db.type/ref
+           :db/cardinality :db.cardinality/many
+           :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}]]}
 
- :sloth/auth-attempt-schema
+ :sloth/auth-attempt-schema-250318
  {:txes [[{:db/doc "An auth attempt's intialisation time"
            :db/ident :auth-attempt/initialised-at
            :db/valueType :db.type/instant
+           :db/cardinality :db.cardinality/one
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "An auth attempt's success time"
+           :db/ident :auth-attempt/succeeded-at
+           :db/valueType :db.type/instant
+           :db/cardinality :db.cardinality/one
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "An auth attempt's failure time"
+           :db/ident :auth-attempt/failed-at
+           :db/valueType :db.type/instant
+           :db/cardinality :db.cardinality/one
+           :db/id #db/id [:db.part/db]
+           :db.install/_attribute :db.part/db}
+          {:db/doc "An auth attempt's owner"
+           :db/ident :auth-attempt/owner
+           :db/valueType :db.type/ref
            :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}
