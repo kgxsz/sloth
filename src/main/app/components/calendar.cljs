@@ -44,21 +44,21 @@
         :label (t.format/unparse day-label-formatter date)
         :visible? (odd? (t/day-of-week date))}))))
 
-(def colour-options
-  {:a :colour-green-dark
-   :b :colour-yellow-dark
-   :c :colour-purple-dark
-   :d :colour-blue-dark})
+(def colours
+  {"#8ACA55" :colour-green-dark
+   "#FADA6E" :colour-yellow-dark
+   "#D4A3E3" :colour-purple-dark
+   "#58A1F5" :colour-blue-dark})
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; component
 
-(defsc Calendar [this {:keys [db/id] :calendar/keys [title subtitle colour-option checked-dates]}]
+(defsc Calendar [this {:keys [db/id] :calendar/keys [title subtitle colour checked-dates]}]
   {:ident [:calendar/by-id :db/id]
    :query [:db/id
            :calendar/title
            :calendar/subtitle
-           :calendar/colour-option
+           :calendar/colour
            :calendar/checked-dates]}
   (dom/div
    #js {:className (u/bem [:calendar])}
@@ -88,7 +88,7 @@
                 :title label
                 :className (u/bem [:calendar__items__item
                                    (cond
-                                     checked? (get colour-options colour-option)
+                                     checked? (get colours colour)
                                      shaded? :colour-grey-medium
                                      :else :colour-grey-light)])
                 :onClick #(if checked?
