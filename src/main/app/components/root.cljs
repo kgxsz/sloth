@@ -12,38 +12,28 @@
 
 
 ;; TODO - find a home for this guy
-(defsc AuthAttempt [this {:keys [db/id ui/fetch-state] :auth-attempt/keys [client-id redirect-url scope]}]
+(defsc AuthAttempt [this _]
   {:ident [:auth-attempt/by-id :db/id]
-   :initial-state (fn [_] {:id '_})
    :query [:db/id
            :auth-attempt/client-id
            :auth-attempt/redirect-url
            :auth-attempt/scope
-           :ui/fetch-state]
-   :componentDidMount (fn []
-                        ;; TODO - put this in a transaction
-                         (let [{:keys [db/id] :as auth-attempt} (fulcro/props this)]
-                           (when (some? id)
-                             (navigation/navigate-externally
-                              {:url "https://www.facebook.com/v2.9/dialog/oauth"
-                               :query-params {:client_id (:auth-attempt/client-id auth-attempt)
-                                              :state id
-                                              :redirect_uri (:auth-attempt/redirect-url auth-attempt)
-                                              :scope (:auth-attempt/scope auth-attempt)}}))))}
-  (cond
-    id (dom/button
-        #js {:disabled true}
-        "authed")
-    fetch-state (dom/button
-                 #js {:disabled true}
-                 "authing")
-    :else (dom/button
-           #js {:onClick #(fulcro/transact! this `[(operations/initialise-auth-attempt!)])}
-           "auth")))
+           :ui/fetch-state]})
 
+(defn initialise-auth-attempt [this]
+  (data.fetch/load this :initialised-auth-attempt AuthAttempt
+                   {:target [:home-page :page :initialised-auth-attempt]
+                    :post-mutation `operations/process-initialised-auth-attempt!}))
 
-(def ui-auth-attempt (factory AuthAttempt {:keyfn :db/id}))
+(defn auth-attempt-initialising? [auth-attempt]
+  (some? (:ui/fetch-state auth-attempt)))
 
+(defn auth-attempt-initialised? [auth-attempt]
+  (some? (:db/id auth-attempt)))
+
+(defn cannot-initialise-auth-attempt? [auth-attempt]
+  (or (auth-attempt-initialising? auth-attempt)
+      (auth-attempt-initialised? auth-attempt)))
 
 (defsc HomePage [this {:keys [auth-attempt]}]
   {:initial-state (fn [_] {:page :home-page :auth-attempt (get-initial-state AuthAttempt {})})
@@ -51,16 +41,25 @@
   (dom/div
    nil
    (ui-logo)
-   (ui-auth-attempt auth-attempt)))
+   (dom/button
+    #js {:onClick initialise-auth-attempt
+         :disabled cannot-initialise-auth-attempt?}
+    (cond
+      (auth-attempt-initialised?) "authed"
+      (auth-attempt-initialising?) "authing"
+      :else "auth"))))
+
 
 
 (defsc AuthPage [this {:keys []}]
   {:initial-state {:page :auth-page}
-   :query [:page]}
-  (dom/div
-   nil
-   (ui-logo)
-   "auth!"))
+   :query [:page]
+   :componentDidMount (fn []
+                        (data.fetch/load this :finalised-auth-attempt AuthAttempt
+                                         {:params (navigation/query-params)
+                                          :target [:auth-page :page :finalised-auth-attempt]
+                                          :post-mutation `operations/process-finalise-auth-attempt!}))}
+  (ui-logo))
 
 
 (defsc UserPage [this {:keys [user]}]
