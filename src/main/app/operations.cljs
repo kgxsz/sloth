@@ -24,11 +24,10 @@
           (let [state @state
                 ident (get-in state [:auth-page :page :finalised-auth-attempt])
                 auth-attempt (get-in state ident)]
-            (when-not (:failed-at auth-attempt)
+            (when-not (:auth-attempt/failed-at auth-attempt)
               (navigation/navigate-internally
                {:handler :user-page
-                :route-params {:user-id (get-in auth-attempt [:auth-attempt/owner :db/id])}
-                :replace? true})))))
+                :route-params {:user-id (get-in auth-attempt [:auth-attempt/owner :db/id])}})))))
 
 
 (defmutation add-checked-date!

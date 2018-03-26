@@ -38,18 +38,18 @@
   (or (auth-attempt-initialising? auth-attempt)
       (auth-attempt-initialised? auth-attempt)))
 
-(defsc HomePage [this {:keys [auth-attempt]}]
+(defsc HomePage [this {:keys [initialised-auth-attempt]}]
   {:initial-state {:page :home-page}
-   :query [:page {:auth-attempt (get-query AuthAttempt)}]}
+   :query [:page {:initialised-auth-attempt (get-query AuthAttempt)}]}
   (dom/div
    nil
    (ui-logo)
    (dom/button
     #js {:onClick #(initialise-auth-attempt this)
-         :disabled (cannot-initialise-auth-attempt? auth-attempt)}
+         :disabled (cannot-initialise-auth-attempt? initialised-auth-attempt)}
     (cond
-      (auth-attempt-initialised? auth-attempt) "authed"
-      (auth-attempt-initialising? auth-attempt) "authing"
+      (auth-attempt-initialised? initialised-auth-attempt) "authed"
+      (auth-attempt-initialising? initialised-auth-attempt) "authing"
       :else "auth"))))
 
 
@@ -62,11 +62,15 @@
                         :target [:auth-page :page :finalised-auth-attempt]
                         :post-mutation `operations/process-finalised-auth-attempt!}))))
 
-(defsc AuthPage [this {:keys []}]
+(defn auth-attempt-failed [auth-attempt]
+  (or (:error (navigation/query-params))
+      (:auth-attempt/failed-at auth-attempt)))
+
+(defsc AuthPage [this {:keys [finalised-auth-attempt]}]
   {:initial-state {:page :auth-page}
-   :query [:page]
+   :query [:page {:finalised-auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(finalise-auth-attempt this)}
-  (if (:error (navigation/query-params))
+  (if (auth-attempt-failed finalised-auth-attempt)
     (dom/div
      nil
      (dom/div
@@ -90,9 +94,11 @@
   {:initial-state {:page :user-page}
    :query [:page {:user (get-query User)}]
    :componentDidMount #(load-user this)}
-  (if (empty? user)
-    (ui-logo)
-    (ui-user user)))
+  (dom/div
+   nil
+   (if (empty? user)
+     (ui-logo)
+     (ui-user user))))
 
 
 (defsc UnknownPage [this {:keys []}]
