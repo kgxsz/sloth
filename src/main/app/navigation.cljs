@@ -54,6 +54,6 @@
 (defn start-navigation [reconciler]
   (reset! navigation (pushy/pushy
                       (fn [location]
-                        (fulcro/transact! reconciler `[(routing/route-to ~location) :page]))
+                        (fulcro/transact! reconciler `[(routing/route-to ~location) :page :ui/react-key]))
                       (partial bidi/match-route routes)))
   (pushy/start! @navigation))
