@@ -10,7 +10,11 @@
    :query [:db/id
            :user/first-name
            :user/last-name
+           :user/created-at
+           :user/facebook-id
+           :user/roles
            :user/avatar-url
+           :user/auth-attempts
            {:user/calendars (get-query Calendar)}]}
   (dom/div
    #js {:className (u/bem [:user])}

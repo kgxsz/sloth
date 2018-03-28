@@ -20,7 +20,7 @@
            :auth-attempt/initialised-at
            :auth-attempt/failed-at
            :auth-attempt/succeeded-at
-           :auth-attempt/owner
+           {:auth-attempt/owner (get-query app.components.user/User)}
            :ui/fetch-state]})
 
 (defn initialise-auth-attempt [this]

@@ -5,7 +5,7 @@
             [cljs-time.format :as t.format]
             [cljs-time.periodic :as t.periodic]
             [fulcro.client.dom :as dom]
-            [fulcro.client.primitives :as fulcro :refer [defsc factory]]))
+            [fulcro.client.primitives :as fulcro :refer [defsc get-query factory]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; helpers
 
@@ -56,6 +56,8 @@
 (defsc Calendar [this {:keys [db/id] :calendar/keys [title subtitle colour checked-dates]}]
   {:ident [:calendar/by-id :db/id]
    :query [:db/id
+           :calendar/created-at
+           :calendar/owner
            :calendar/title
            :calendar/subtitle
            :calendar/colour
