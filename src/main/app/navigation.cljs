@@ -13,7 +13,7 @@
 
 (def routes ["/" [["" :home-page]
                   ["auth" :auth-page]
-                  [["user/" :user-id] :user-page]
+                  [["users/" :user-id] :user-page]
                   [true :unknown-page]]])
 
 
