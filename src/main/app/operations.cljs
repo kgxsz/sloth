@@ -22,12 +22,15 @@
   [_]
   (action [{:keys [state] :as env}]
           (let [state @state
-                ident (get-in state [:auth-page :page :finalised-auth-attempt])
-                auth-attempt (get-in state ident)]
+                auth-attempt-ident (get-in state [:auth-page :page :finalised-auth-attempt])
+                auth-attempt (get-in state auth-attempt-ident)
+                user-ident (:auth-attempt/owner auth-attempt)
+                user (get-in state user-ident)]
             (when-not (:auth-attempt/failed-at auth-attempt)
               (navigation/navigate-internally
                {:handler :user-page
-                :route-params {:user-id (get-in auth-attempt [:auth-attempt/owner :db/id])}})))))
+                :route-params {:user-id (:db/id user)}
+                :replace true})))))
 
 
 (defmutation add-checked-date!

@@ -9,8 +9,7 @@
             [taoensso.timbre :as log]))
 
 
-;; TODO - rename this
-(defn get-user-id [current-db facebook-id]
+(defn facebook-id->user-id [current-db facebook-id]
   (->> current-db
        (datomic/q `[:find ?e
                     :where [?e
@@ -74,7 +73,7 @@
 
                        (log/infof "auth attempt %s succeeded for facebook-id %s" auth-attempt-id facebook-id)
 
-                       (if-let [user-id (get-user-id current-db facebook-id)]
+                       (if-let [user-id (facebook-id->user-id current-db facebook-id)]
                          (do
                            (log/infof "updating existing user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
                            @(datomic/transact conn [[:db/add user-id :user/first-name first-name]
@@ -90,8 +89,15 @@
                                                     [:db/add #db/id [:db.part/user -1] :user/facebook-id facebook-id]
                                                     [:db/add #db/id [:db.part/user -1] :user/first-name first-name]
                                                     [:db/add #db/id [:db.part/user -1] :user/last-name last-name]
+                                                    [:db/add #db/id [:db.part/user -1] :user/roles :user.roles/admin]
                                                     [:db/add #db/id [:db.part/user -1] :user/avatar-url (get-in picture [:data :url])]
                                                     [:db/add #db/id [:db.part/user -1] :user/auth-attempts auth-attempt-id]
+                                                    [:db/add #db/id [:db.part/user -1] :user/calendars #db/id [:db.part/user -2]]
+                                                    [:db/add #db/id [:db.part/user -2] :calendar/created-at (time.coerce/to-date (time/now))]
+                                                    [:db/add #db/id [:db.part/user -2] :calendar/owner #db/id [:db.part/user -1]]
+                                                    [:db/add #db/id [:db.part/user -2] :calendar/title "Exercise"]
+                                                    [:db/add #db/id [:db.part/user -2] :calendar/subtitle "weights or cardio, at least half an hour"]
+                                                    [:db/add #db/id [:db.part/user -2] :calendar/colour "#8ACA55"]
                                                     [:db/add auth-attempt-id :auth-attempt/owner #db/id [:db.part/user -1]]
                                                     [:db/add auth-attempt-id :auth-attempt/succeeded-at (time.coerce/to-date (time/now))]])
                            (datomic/pull (datomic/db conn) query auth-attempt-id)))
