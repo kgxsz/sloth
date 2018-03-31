@@ -9,6 +9,7 @@
             [ring.middleware.gzip :as middleware.gzip]
             [ring.middleware.not-modified :as middleware.not-modified]
             [ring.middleware.resource :as middleware.resource]
+            [ring.middleware.session :as middleware.session]
             [taoensso.timbre :as log]))
 
 
@@ -40,6 +41,7 @@
       (let [port       (get-in config [:value :port])
             ring-stack (-> (default-handler)
                            (wrap-api {:db db :config config})
+                           (middleware.session/wrap-session)
                            (fulcro.server/wrap-transit-params)
                            (fulcro.server/wrap-transit-response)
                            (middleware.resource/wrap-resource "public")
