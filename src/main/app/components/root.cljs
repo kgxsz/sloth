@@ -20,37 +20,58 @@
            :auth-attempt/initialised-at
            :auth-attempt/failed-at
            :auth-attempt/succeeded-at
-           {:auth-attempt/owner (get-query app.components.user/User)}
            :ui/fetch-state]})
+
 
 (defn initialise-auth-attempt [this]
   (data.fetch/load this :initialised-auth-attempt AuthAttempt
-                   {:target [:home-page :page :initialised-auth-attempt]
+                   {:target [:home-page :page :auth-attempt]
                     :post-mutation `operations/process-initialised-auth-attempt!}))
 
-(defn auth-attempt-initialising? [auth-attempt]
-  (some? (:ui/fetch-state auth-attempt)))
 
-(defn auth-attempt-initialised? [auth-attempt]
-  (some? (:db/id auth-attempt)))
+(defn fetch-session-user [this]
+  (data.fetch/load this :session-user User
+                   {:target [:home-page :page :session-user]
+                    :post-mutation `operations/process-fetched-session-user!}))
 
-(defn cannot-initialise-auth-attempt? [auth-attempt]
-  (or (auth-attempt-initialising? auth-attempt)
-      (auth-attempt-initialised? auth-attempt)))
 
-(defsc HomePage [this {:keys [initialised-auth-attempt]}]
-  {:initial-state {:page :home-page}
-   :query [:page {:initialised-auth-attempt (get-query AuthAttempt)}]}
-  (dom/div
-   nil
-   (ui-logo)
-   (dom/button
-    #js {:onClick #(initialise-auth-attempt this)
-         :disabled (cannot-initialise-auth-attempt? initialised-auth-attempt)}
-    (cond
-      (auth-attempt-initialised? initialised-auth-attempt) "authed"
-      (auth-attempt-initialising? initialised-auth-attempt) "authing"
-      :else "auth"))))
+(defn invitation-code-invalid? []
+  (let [{:keys [invitation-code]} (navigation/query-params)]
+    (not= "188923" invitation-code)))
+
+
+(defsc HomePage [this {:keys [loading auth-attempt session-user]}]
+  {:initial-state (fn [_] {:page :home-page
+                           :loading true})
+   :query [:page
+           :loading
+           {:auth-attempt (get-query AuthAttempt)}
+           {:session-user (get-query User)}]
+   :componentDidMount #(fetch-session-user this)}
+
+  (if loading
+    (dom/div
+     #js {:className (u/bem [:page])}
+     (ui-logo))
+
+    (dom/div
+     #js {:className (u/bem [:page])}
+     (if (some? session-user)
+       (ui-user session-user)
+
+       (dom/div
+        nil
+        (ui-logo)
+
+        (dom/button
+         #js {:onClick #(initialise-auth-attempt this)
+              :disabled (or (invitation-code-invalid?) (some? auth-attempt))}
+         "auth")
+
+        (when (invitation-code-invalid?)
+          (dom/div
+           nil
+           "no invite, no entry")))))))
 
 
 (defn finalise-auth-attempt [this]
@@ -59,20 +80,24 @@
       (data.fetch/load this :finalised-auth-attempt AuthAttempt
                        {:params {:auth-attempt-id (js/parseInt state)
                                  :code code}
-                        :target [:auth-page :page :finalised-auth-attempt]
+                        :target [:auth-page :page :auth-attempt]
                         :post-mutation `operations/process-finalised-auth-attempt!}))))
 
-(defn auth-attempt-failed [auth-attempt]
+
+(defn auth-attempt-failed? [auth-attempt]
   (or (:error (navigation/query-params))
       (:auth-attempt/failed-at auth-attempt)))
 
-(defsc AuthPage [this {:keys [finalised-auth-attempt]}]
-  {:initial-state {:page :auth-page}
-   :query [:page {:finalised-auth-attempt (get-query AuthAttempt)}]
+
+(defsc AuthPage [this {:keys [auth-attempt]}]
+  {:initial-state (fn [_] {:page :auth-page})
+   :query [:page {:auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(finalise-auth-attempt this)}
-  (if (auth-attempt-failed finalised-auth-attempt)
+
+  (if (auth-attempt-failed? auth-attempt)
+
     (dom/div
-     nil
+     #js {:className (u/bem [:page])}
      (dom/div
       #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
       ":(")
@@ -81,31 +106,17 @@
      (dom/div
       #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
       "Something went wrong!"))
-    (ui-logo)))
 
-
-(defn load-user [this]
-  (let [{:keys [user-id]} (navigation/route-params)]
-    (when user-id
-      (data.fetch/load this :user User {:params {:user-id (js/parseInt user-id)}
-                                        :target [:user-page :page :user]}))))
-
-(defsc UserPage [this {:keys [user]}]
-  {:initial-state {:page :user-page}
-   :query [:page {:user (get-query User)}]
-   :componentDidMount #(load-user this)}
-  (dom/div
-   nil
-   (if (empty? user)
-     (ui-logo)
-     (ui-user user))))
+    (dom/div
+     #js {:className (u/bem [:page])}
+     (ui-logo))))
 
 
 (defsc UnknownPage [this {:keys []}]
-  {:initial-state {:page :unknown-page}
+  {:initial-state (fn [_] {:page :unknown-page})
    :query [:page]}
   (dom/div
-   nil
+   #js {:className (u/bem [:page])}
    (dom/div
     #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
     ":(")
@@ -120,7 +131,6 @@
   (ident [this props] [(:page props) :page])
   :home-page HomePage
   :auth-page AuthPage
-  :user-page UserPage
   :unknown-page UnknownPage)
 
 
@@ -134,6 +144,4 @@
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
-   (dom/div
-    #js {:className (u/bem [:page])}
-    (ui-pages pages))))
+   (ui-pages pages)))

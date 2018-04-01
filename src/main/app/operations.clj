@@ -1,28 +1,18 @@
-(ns app.operations
+ (ns app.operations
   (:require [clj-time.coerce :as time.coerce]
             [clj-time.core :as time]
             [clojure.data.json :as json]
             [datomic.api :as datomic]
-            [fulcro.server :refer [defquery-root defmutation]]
+            [fulcro.server :refer [defquery-root defmutation augment-response]]
             [org.httpkit.client :as http]
             [camel-snake-kebab.core :as camel-snake-kebab]
             [taoensso.timbre :as log]))
 
 
-(defn facebook-id->user-id [current-db facebook-id]
-  (->> current-db
-       (datomic/q `[:find ?e
-                    :where [?e
-                            :user/facebook-id ~facebook-id]])
-       (ffirst)))
-
-
-(defquery-root :user
-  (value [{:keys [config db query]} {:keys [user-id]}]
-         (let [{:keys [conn]} db
-               current-db (datomic/db conn)]
-           ;; TODO - check if user exists first
-           (datomic/pull current-db query user-id))))
+(defquery-root :session-user
+  (value [{:keys [config db query session] :as env} {:keys [user-id]}]
+         (let [{:keys [db/id] :as session-user} (datomic/pull (datomic/db (:conn db)) query (:user-id session))]
+           (when (some? id) session-user))))
 
 
 (defquery-root :initialised-auth-attempt
@@ -73,47 +63,49 @@
 
                        (log/infof "auth attempt %s succeeded for facebook-id %s" auth-attempt-id facebook-id)
 
-                       (if-let [user-id (facebook-id->user-id current-db facebook-id)]
+                       (if-let [user-id (ffirst (datomic/q `[:find ?e :where [?e :user/facebook-id ~facebook-id]] current-db))]
                          (do
                            (log/infof "updating existing user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
-                           @(datomic/transact conn [[:db/add user-id :user/first-name first-name]
-                                                    [:db/add user-id :user/last-name last-name]
-                                                    [:db/add user-id :user/avatar-url (get-in picture [:data :url])]
-                                                    [:db/add user-id :user/auth-attempts auth-attempt-id]
-                                                    [:db/add auth-attempt-id :auth-attempt/owner user-id]
-                                                    [:db/add auth-attempt-id :auth-attempt/succeeded-at (time.coerce/to-date (time/now))]])
-                           (datomic/pull (datomic/db conn) query auth-attempt-id))
+                           (let [data [[:db/add user-id :user/first-name first-name]
+                                       [:db/add user-id :user/last-name last-name]
+                                       [:db/add user-id :user/avatar-url (get-in picture [:data :url])]
+                                       [:db/add user-id :user/auth-attempts auth-attempt-id]
+                                       [:db/add auth-attempt-id :auth-attempt/succeeded-at (time.coerce/to-date (time/now))]]
+                                 {:keys [db-after]} @(datomic/transact conn data)]
+                                (augment-response
+                                 (datomic/pull db-after query auth-attempt-id)
+                                 #(assoc-in % [:session :user-id] user-id))))
                          (do
                            (log/infof "creating new user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
-                           @(datomic/transact conn [[:db/add #db/id [:db.part/user -1] :user/created-at (time.coerce/to-date (time/now))]
-                                                    [:db/add #db/id [:db.part/user -1] :user/facebook-id facebook-id]
-                                                    [:db/add #db/id [:db.part/user -1] :user/first-name first-name]
-                                                    [:db/add #db/id [:db.part/user -1] :user/last-name last-name]
-                                                    [:db/add #db/id [:db.part/user -1] :user/roles :user.roles/admin]
-                                                    [:db/add #db/id [:db.part/user -1] :user/avatar-url (get-in picture [:data :url])]
-                                                    [:db/add #db/id [:db.part/user -1] :user/auth-attempts auth-attempt-id]
-                                                    [:db/add #db/id [:db.part/user -1] :user/calendars #db/id [:db.part/user -2]]
-                                                    [:db/add #db/id [:db.part/user -2] :calendar/created-at (time.coerce/to-date (time/now))]
-                                                    [:db/add #db/id [:db.part/user -2] :calendar/owner #db/id [:db.part/user -1]]
-                                                    [:db/add #db/id [:db.part/user -2] :calendar/title "Exercise"]
-                                                    [:db/add #db/id [:db.part/user -2] :calendar/subtitle "weights or cardio, at least half an hour"]
-                                                    [:db/add #db/id [:db.part/user -2] :calendar/colour "#8ACA55"]
-                                                    [:db/add auth-attempt-id :auth-attempt/owner #db/id [:db.part/user -1]]
-                                                    [:db/add auth-attempt-id :auth-attempt/succeeded-at (time.coerce/to-date (time/now))]])
-                           (datomic/pull (datomic/db conn) query auth-attempt-id)))
-
-                       ;; TODO - get stuff into the session store here
-                       #_(swap! sessions assoc (:session-key request) {:user-id user-id}))
+                           (let [data [[:db/add "user-id" :user/created-at (time.coerce/to-date (time/now))]
+                                       [:db/add "user-id" :user/facebook-id facebook-id]
+                                       [:db/add "user-id" :user/first-name first-name]
+                                       [:db/add "user-id" :user/last-name last-name]
+                                       [:db/add "user-id" :user/roles :user.roles/admin]
+                                       [:db/add "user-id" :user/avatar-url (get-in picture [:data :url])]
+                                       [:db/add "user-id" :user/auth-attempts auth-attempt-id]
+                                       [:db/add "user-id" :user/calendars "calendar-id"]
+                                       [:db/add "calendar-id" :calendar/created-at (time.coerce/to-date (time/now))]
+                                       [:db/add "calendar-id" :calendar/title "Exercise"]
+                                       [:db/add "calendar-id" :calendar/subtitle "weights or cardio, at least half an hour"]
+                                       [:db/add "calendar-id" :calendar/colour "#8ACA55"]
+                                       [:db/add auth-attempt-id :auth-attempt/succeeded-at (time.coerce/to-date (time/now))]]
+                                 {:keys [db-after tempids]} @(datomic/transact conn data)]
+                             (augment-response
+                              (datomic/pull db-after query auth-attempt-id)
+                              #(assoc-in % [:session :user-id] (get tempids "user-id")))))))
 
                      (do
                        (log/infof "api request failed for auth attempt %s, with status %s, and error %s " auth-attempt-id status body)
-                       @(datomic/transact conn [[:db/add auth-attempt-id :auth-attempt/failed-at (time.coerce/to-date (time/now))]])
-                       (datomic/pull (datomic/db conn) query auth-attempt-id))))
+                       (let [data [[:db/add auth-attempt-id :auth-attempt/failed-at (time.coerce/to-date (time/now))]]
+                             {:keys [db-after]} @(datomic/transact conn data)]
+                         (datomic/pull db-after query auth-attempt-id)))))
 
                  (do
                    (log/infof "access token request failed for auth attempt %s, with status %s, and error %s " auth-attempt-id status body)
-                   @(datomic/transact conn [[:db/add auth-attempt-id :auth-attempt/failed-at (time.coerce/to-date (time/now))]])
-                   (datomic/pull (datomic/db conn) query auth-attempt-id))))
+                   (let [data [[:db/add auth-attempt-id :auth-attempt/failed-at (time.coerce/to-date (time/now))]]
+                         {:keys [db-after]} @(datomic/transact conn data)]
+                     (datomic/pull db-after query auth-attempt-id)))))
 
              (do
                (log/info "unable to match auth attempt" auth-attempt-id)
@@ -122,16 +114,22 @@
 
 
 (defmutation add-checked-date!
-  [{:keys [id date]}]
-  (action [{:keys [config db]}]
-          @(datomic/transact (:conn db)
-                             [[:db/add id :calendar/checked-dates date]])
+  [{:keys [calendar-id date]}]
+  (action [{:keys [config db session]}]
+          (let [conn (:conn db)
+                {:keys [user/calendars]} (datomic/pull (datomic/db conn) [:user/calendars] (:user-id session))]
+           (when (some #{calendar-id} (map :db/id calendars))
+             @(datomic/transact conn
+                                [[:db/add calendar-id :calendar/checked-dates date]])))
           {}))
 
 
 (defmutation remove-checked-date!
-  [{:keys [id date]}]
-  (action [{:keys [config db]}]
-          @(datomic/transact (:conn db)
-                             [[:db/retract id :calendar/checked-dates date]])
+  [{:keys [calendar-id date]}]
+  (action [{:keys [config db session]}]
+          (let [conn (:conn db)
+                {:keys [user/calendars]} (datomic/pull (datomic/db conn) [:user/calendars] (:user-id session))]
+            (when (some #{calendar-id} (map :db/id calendars))
+              @(datomic/transact (:conn db)
+                                 [[:db/retract calendar-id :calendar/checked-dates date]])))
           {}))

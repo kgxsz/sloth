@@ -6,9 +6,9 @@
 
 (defmutation process-initialised-auth-attempt!
   [_]
-  (action [{:keys [state] :as env}]
+  (action [{:keys [state]}]
           (let [state @state
-                ident (get-in state [:home-page :page :initialised-auth-attempt])
+                ident (get-in state [:home-page :page :auth-attempt])
                 auth-attempt (get-in state ident)]
             (navigation/navigate-externally
              {:url "https://www.facebook.com/v2.9/dialog/oauth"
@@ -20,34 +20,39 @@
 
 (defmutation process-finalised-auth-attempt!
   [_]
-  (action [{:keys [state] :as env}]
+  (action [{:keys [state]}]
           (let [state @state
-                auth-attempt-ident (get-in state [:auth-page :page :finalised-auth-attempt])
-                auth-attempt (get-in state auth-attempt-ident)
-                user-ident (:auth-attempt/owner auth-attempt)
-                user (get-in state user-ident)]
+                auth-attempt-ident (get-in state [:auth-page :page :auth-attempt])
+                auth-attempt (get-in state auth-attempt-ident)]
             (when-not (:auth-attempt/failed-at auth-attempt)
               (navigation/navigate-internally
-               {:handler :user-page
-                :route-params {:user-id (:db/id user)}
-                :replace true})))))
+               {:handler :home-page})))))
+
+
+(defmutation process-fetched-session-user!
+  [_]
+  (action [{:keys [state]}]
+          (swap! state
+                 assoc-in
+                 [:home-page :page :loading]
+                 false)))
 
 
 (defmutation add-checked-date!
-  [{:keys [id date]}]
+  [{:keys [calendar-id date]}]
   (action [{:keys [state]}]
           (swap! state
                  update-in
-                 [:calendar/by-id id :calendar/checked-dates]
+                 [:calendar/by-id calendar-id :calendar/checked-dates]
                  #(-> % set (conj date) vec)))
   (remote [env] true))
 
 
 (defmutation remove-checked-date!
-  [{:keys [id date]}]
+  [{:keys [calendar-id date]}]
   (action [{:keys [state]}]
           (swap! state
                  update-in
-                 [:calendar/by-id id :calendar/checked-dates]
+                 [:calendar/by-id calendar-id :calendar/checked-dates]
                  #(-> % set (disj date) vec)))
   (remote [env] true))
