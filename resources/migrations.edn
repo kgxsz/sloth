@@ -5,12 +5,6 @@
            :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}
-          {:db/doc "A calendar's owner"
-           :db/ident :calendar/owner
-           :db/valueType :db.type/ref
-           :db/cardinality :db.cardinality/one
-           :db/id #db/id [:db.part/db]
-           :db.install/_attribute :db.part/db}
           {:db/doc "A calendar's title"
            :db/ident :calendar/title
            :db/valueType :db.type/string
@@ -102,12 +96,6 @@
           {:db/doc "An auth attempt's failure time"
            :db/ident :auth-attempt/failed-at
            :db/valueType :db.type/instant
-           :db/cardinality :db.cardinality/one
-           :db/id #db/id [:db.part/db]
-           :db.install/_attribute :db.part/db}
-          {:db/doc "An auth attempt's owner"
-           :db/ident :auth-attempt/owner
-           :db/valueType :db.type/ref
            :db/cardinality :db.cardinality/one
            :db/id #db/id [:db.part/db]
            :db.install/_attribute :db.part/db}
