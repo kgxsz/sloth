@@ -94,8 +94,8 @@
                                      shaded? :colour-grey-medium
                                      :else :colour-grey-light)])
                 :onClick #(if checked?
-                            (fulcro/transact! this `[(operations/remove-checked-date! {:id ~id :date ~date})])
-                            (fulcro/transact! this `[(operations/add-checked-date! {:id ~id :date ~date})]))})))))
+                            (fulcro/transact! this `[(operations/remove-checked-date! {:calendar-id ~id :date ~date})])
+                            (fulcro/transact! this `[(operations/add-checked-date! {:calendar-id ~id :date ~date})]))})))))
 
     (dom/div
      #js {:className (u/bem [:calendar__labels :horizontal])}
