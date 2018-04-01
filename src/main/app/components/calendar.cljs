@@ -48,7 +48,8 @@
   {"#8ACA55" :colour-green-dark
    "#FADA6E" :colour-yellow-dark
    "#D4A3E3" :colour-purple-dark
-   "#58A1F5" :colour-blue-dark})
+   "#58A1F5" :colour-blue-dark
+   "#EB5468" :colour-red-dark})
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; component
