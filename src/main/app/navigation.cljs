@@ -13,7 +13,6 @@
 
 (def routes ["/" [["" :home-page]
                   ["auth" :auth-page]
-                  [["users/" :user-id] :user-page]
                   [true :unknown-page]]])
 
 
@@ -21,7 +20,6 @@
   (routing/routing-tree
    (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
    (routing/make-route :auth-page [(routing/router-instruction :pages [:auth-page :page])])
-   (routing/make-route :user-page [(routing/router-instruction :pages [:user-page :page])])
    (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
