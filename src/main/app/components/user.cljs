@@ -15,7 +15,8 @@
            :user/roles
            :user/avatar-url
            :user/auth-attempts
-           {:user/calendars (get-query Calendar)}]}
+           {:user/calendars (get-query Calendar)}
+           :ui/fetch-state]}
   (dom/div
    #js {:className (u/bem [:user])}
    (ui-user-details {:first-name first-name :last-name last-name :avatar-url avatar-url})
