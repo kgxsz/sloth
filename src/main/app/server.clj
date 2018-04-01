@@ -23,12 +23,12 @@
 (def parser (fulcro.server/fulcro-parser))
 
 
-(defn wrap-api [handler env]
+(defn wrap-api [handler config db]
   (fn [request]
     (if (= "/api" (:uri request))
       (fulcro.server/handle-api-request
        parser
-       env
+       {:config config :db db :session (:session request)}
        (:transit-params request))
       (handler request))))
 
@@ -40,7 +40,7 @@
       (log/info "starting http-server")
       (let [port       (get-in config [:value :port])
             ring-stack (-> (default-handler)
-                           (wrap-api {:db db :config config})
+                           (wrap-api config db)
                            (middleware.session/wrap-session)
                            (fulcro.server/wrap-transit-params)
                            (fulcro.server/wrap-transit-response)
