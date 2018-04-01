@@ -34,8 +34,8 @@
   (action [{:keys [state]}]
           (swap! state
                  assoc-in
-                 [:home-page :page :loading]
-                 false)))
+                 [:home-page :page :page-initialised]
+                 true)))
 
 
 (defmutation add-checked-date!

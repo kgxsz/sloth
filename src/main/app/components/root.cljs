@@ -40,16 +40,17 @@
     (not= "188923" invitation-code)))
 
 
-(defsc HomePage [this {:keys [loading auth-attempt session-user]}]
+(defsc HomePage [this {:keys [page-initialised auth-attempt session-user]}]
   {:initial-state (fn [_] {:page :home-page
-                           :loading true})
+                           :page-initialised false})
    :query [:page
-           :loading
+           :page-initialised
            {:auth-attempt (get-query AuthAttempt)}
            {:session-user (get-query User)}]
    :componentDidMount #(fetch-session-user this)}
 
-  (if loading
+  (if (or (false? page-initialised)
+          (some? (:ui/fetch-state session-user)))
     (dom/div
      #js {:className (u/bem [:page])}
      (ui-logo))
