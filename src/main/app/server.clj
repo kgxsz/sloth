@@ -83,7 +83,6 @@
     (try
       (log/info "starting db")
       (let [db-uri (get-in config [:db-uri])
-            _ (datomic/delete-database db-uri)
             conn (do (datomic/create-database db-uri)
                      (datomic/connect db-uri))
             migrations [:sloth/calendar-schema-250318
