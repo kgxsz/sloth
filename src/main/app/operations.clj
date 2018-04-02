@@ -19,9 +19,9 @@
   (value [{:keys [config db query]} _]
          (let [auth-attempt {:db/id "auth-attempt-id"
                              :auth-attempt/initialised-at (time.coerce/to-date (time/now))
-                             :auth-attempt/client-id (get-in config [:value :auth :client-id])
-                             :auth-attempt/redirect-url (get-in config [:value :auth :redirect-url])
-                             :auth-attempt/scope (get-in config [:value :auth :scope])}
+                             :auth-attempt/client-id (get-in config [:auth :client-id])
+                             :auth-attempt/redirect-url (get-in config [:auth :redirect-url])
+                             :auth-attempt/scope (get-in config [:auth :scope])}
                {:keys [tempids db-after]} @(datomic/transact (:conn db) [auth-attempt])]
            (datomic/pull db-after query (get tempids "auth-attempt-id")))))
 
@@ -39,7 +39,7 @@
                                                                :method :get
                                                                :headers {"Accept" "application/json"}
                                                                :query-params {"client_id" (:auth-attempt/client-id auth-attempt)
-                                                                              "client_secret" (get-in config [:value :auth :client-secret])
+                                                                              "client_secret" (get-in config [:auth :client-secret])
                                                                               "redirect_uri" (:auth-attempt/redirect-url auth-attempt)
                                                                               "code" code}
                                                                :timeout 7000})]

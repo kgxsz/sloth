@@ -7,7 +7,6 @@ pom.xml.asc
 /target/
 /resources/public/js
 /resources/public/css
-/resources/config/dev.edn
 /checkouts/
 profiles.clj
 .lein-deps-sum

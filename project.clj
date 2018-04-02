@@ -18,6 +18,7 @@
                  [garden "1.3.3"]
                  [bidi "2.1.3"]
                  [medley "0.7.1"]
+                 [aero "1.1.3"]
                  [com.cemerick/url "0.1.1"]
                  [camel-snake-kebab "0.3.2"]
                  [ring/ring-core "1.6.3"]

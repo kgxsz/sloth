@@ -1,6 +1,0 @@
-{:port :env.edn/PORT
- :db-uri :env/DB_URI
- :auth {:client-id :env/AUTH_CLIENT_ID
-        :client-secret :env/AUTH_CLIENT_SECRET
-        :redirect-url :env/AUTH_REDIRECT_URL
-        :scope :env/AUTH_SCOPE}}

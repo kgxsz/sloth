@@ -1,5 +1,7 @@
 (ns app.server
-  (:require [clojure.java.io :as io]
+  (:require [aero.core :as aero]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [com.stuartsierra.component :as component]
             [datomic.api :as datomic]
             [fulcro.server :as fulcro.server]
@@ -13,24 +15,21 @@
             [taoensso.timbre :as log]))
 
 
-(defn default-handler []
-  (fn [req]
-    {:status 200
-     :headers {"Content-Type" "text/html"}
-     :body (io/file "resources/public/index.html")}))
+(defrecord Config []
+  component/Lifecycle
+  (start [component]
+    (try
+      (log/info "starting config")
+      (let [config (aero/read-config "resources/config.edn")]
+        (merge component config))
 
+      (catch Exception e
+        (log/error "unable to start config")
+        (throw e))))
 
-(def parser (fulcro.server/fulcro-parser))
-
-
-(defn wrap-api [handler config db]
-  (fn [request]
-    (if (= "/api" (:uri request))
-      (fulcro.server/handle-api-request
-       parser
-       {:config config :db db :session (:session request)}
-       (:transit-params request))
-      (handler request))))
+  (stop [component]
+    (log/info "stopping config")
+    component))
 
 
 (defrecord HttpServer []
@@ -38,10 +37,27 @@
   (start [{:keys [db config] :as component}]
     (try
       (log/info "starting http-server")
-      (let [port       (get-in config [:value :port])
-            ring-stack (-> (default-handler)
+      (let [port       (get-in config [:port])
+            session-config {:cookie-name (get-in config [:session-cookie :name])
+                            :cookie-attrs {:max-age (get-in config [:session-cookie :max-age])
+                                           :secure (edn/read-string (get-in config [:session-cookie :secure]))
+                                           :http-only (edn/read-string (get-in config [:session-cookie :http-only]))
+                                           :same-site (edn/read-string (get-in config [:session-cookie :same-site]))}}
+            default-handler (fn [req]
+                              {:status 200
+                               :headers {"Content-Type" "text/html"}
+                               :body (io/file "resources/public/index.html")})
+            wrap-api (fn [handler config db]
+                       (fn [request]
+                         (if (= "/api" (:uri request))
+                           (fulcro.server/handle-api-request
+                            (fulcro.server/fulcro-parser)
+                            {:config config :db db :session (:session request)}
+                            (:transit-params request))
+                           (handler request))))
+            ring-stack (-> default-handler
                            (wrap-api config db)
-                           (middleware.session/wrap-session)
+                           (middleware.session/wrap-session session-config)
                            (fulcro.server/wrap-transit-params)
                            (fulcro.server/wrap-transit-response)
                            (middleware.resource/wrap-resource "public")
@@ -67,7 +83,7 @@
   (start [{:keys [config] :as component}]
     (try
       (log/info "starting db")
-      (let [db-uri (get-in config [:value :db-uri])
+      (let [db-uri (get-in config [:db-uri])
             _ (datomic/delete-database db-uri)
             conn (do (datomic/create-database db-uri)
                      (datomic/connect db-uri))
@@ -86,8 +102,8 @@
     (assoc component :conn nil)))
 
 
-(defn make-system [config-path]
+(defn make-system [profile]
   (component/system-map
-   :config (fulcro.server/new-config config-path)
+   :config (component/using (map->Config {}) [])
    :db (component/using (map->Db {}) [:config])
    :http-server (component/using (map->HttpServer {}) [:config :db])))
