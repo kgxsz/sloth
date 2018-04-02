@@ -40,21 +40,22 @@
     (not= "188923" invitation-code)))
 
 
-(defn show-logo? [page-initialised session-user]
-  (or (false? page-initialised)
-      (some? (:ui/fetch-state session-user))))
+(defn page-ready? [data-fetch-dispatched session-user]
+  (and (true? data-fetch-dispatched)
+       (nil? (:ui/fetch-state session-user))))
 
 
-(defsc HomePage [this {:keys [page-initialised auth-attempt session-user]}]
+(defsc HomePage [this {:keys [data-fetch-dispatched auth-attempt session-user]}]
   {:initial-state (fn [_] {:page :home-page
+                           :data-fetch-dispatched false
                            :page-initialised false})
    :query [:page
-           :page-initialised
+           :data-fetch-dispatched
            {:auth-attempt (get-query AuthAttempt)}
            {:session-user (get-query User)}]
    :componentDidMount #(fetch-session-user this)}
 
-  (if (show-logo? page-initialised session-user)
+  (if-not (page-ready? data-fetch-dispatched session-user)
     (dom/div
      #js {:className (u/bem [:page])}
      (ui-logo))

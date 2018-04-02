@@ -34,7 +34,7 @@
   (action [{:keys [state]}]
           (swap! state
                  assoc-in
-                 [:home-page :page :page-initialised]
+                 [:home-page :page :data-fetch-dispatched]
                  true)))
 
 
