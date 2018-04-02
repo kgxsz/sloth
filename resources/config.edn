@@ -1,12 +1,12 @@
 {:secrets #include #join [#env HOME "/.lein/sloth/secrets.edn"]
- :port #or [#env PORT 4050]
+ :port #or [#env PORT "4050"]
  :db-uri #or [#env DB_URI "datomic:dev://localhost:4334/core"]
  :auth {:client-id #or [#env AUTH_CLIENT_ID "227474631135220"]
         :client-secret #or [#env AUTH_CLIENT_SECRET #ref [:secrets :client-secret]]
         :redirect-url #or [#env AUTH_REDIRECT_URL "https://tolocalhost.com/auth"]
         :scope #or [#env :AUTH_SCOPE ""]}
  :session-cookie {:name #or [#env :SESSION_COOKIE_NAME "session"]
-                  :max-age #or [#env :SESSION_COOKIE_MAX_AGE 604800]
+                  :max-age #or [#env :SESSION_COOKIE_MAX_AGE "604800"]
                   :secure #or [#env :SESSION_COOKIE_SECURE "false"]
                   :http-only #or [#env :SESSION_COOKIE_HTTP_ONLY "true"]
                   :same-site #or [#env :SESSION_COOKIE_SAME_SITE ":strict"]}}

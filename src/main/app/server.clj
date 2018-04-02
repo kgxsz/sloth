@@ -37,9 +37,8 @@
   (start [{:keys [db config] :as component}]
     (try
       (log/info "starting http-server")
-      (let [port       (get-in config [:port])
-            session-config {:cookie-name (get-in config [:session-cookie :name])
-                            :cookie-attrs {:max-age (get-in config [:session-cookie :max-age])
+      (let [session-config {:cookie-name (get-in config [:session-cookie :name])
+                            :cookie-attrs {:max-age (edn/read-string (get-in config [:session-cookie :max-age]))
                                            :secure (edn/read-string (get-in config [:session-cookie :secure]))
                                            :http-only (edn/read-string (get-in config [:session-cookie :http-only]))
                                            :same-site (edn/read-string (get-in config [:session-cookie :same-site]))}}
@@ -64,7 +63,7 @@
                            (middleware.content-type/wrap-content-type)
                            (middleware.not-modified/wrap-not-modified)
                            (middleware.gzip/wrap-gzip))
-            stop-http-server (http.server/run-server ring-stack {:port port})]
+            stop-http-server (http.server/run-server ring-stack {:port (edn/read-string (get-in config [:port]))})]
         (assoc component :stop-http-server stop-http-server))
 
       (catch Exception e
