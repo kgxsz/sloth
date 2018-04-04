@@ -16,8 +16,16 @@
 
 (defstyles button
   [:.button
-   {:width (-> c/filling :xx-huge px)
-    :height (-> c/filling :large px)}])
+   {:width (px 200)
+    :height (px 40)
+    :text-decoration :none
+    :border-width (px 2)
+    :border-radius (px 4)
+    :border-color "#333"
+    :background-color "#FAFAFA"
+    :margin-top (px 30)
+    :cursor :pointer
+    :font-size (px 14)}])
 
 
 (defstyles notification

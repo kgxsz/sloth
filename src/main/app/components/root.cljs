@@ -81,7 +81,7 @@
            #js {:className (u/bem [:button])
                 :onClick #(initialise-auth-attempt this)
                 :disabled (some? auth-attempt)}
-           "auth")))))))
+           "continue with Facebook")))))))
 
 
 (defn finalise-auth-attempt [this]
