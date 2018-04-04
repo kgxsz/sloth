@@ -26,6 +26,7 @@
   components/box
   components/text
   components/logo
+  components/button
   components/notification
   components/page
   components/user

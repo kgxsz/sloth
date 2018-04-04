@@ -59,22 +59,27 @@
   (if-not (page-ready? data-fetch-dispatched session-user)
     (dom/div
      #js {:className (u/bem [:page])}
-     (ui-logo))
+     (dom/div
+      #js {:className (u/bem [:page__content])}
+      (ui-logo)))
 
     (dom/div
      #js {:className (u/bem [:page])}
      (if (some? session-user)
-       (ui-user session-user)
+       (dom/div
+        #js {:className (u/bem [:page__content])}
+        (ui-user session-user))
 
        (dom/div
-        nil
+        #js {:className (u/bem [:page__content])}
         (ui-logo)
 
         (if (invitation-code-invalid?)
           (ui-notification {:title "Warning"
                             :paragraph "You need an invitation code to proceed."})
           (dom/button
-           #js {:onClick #(initialise-auth-attempt this)
+           #js {:className (u/bem [:button])
+                :onClick #(initialise-auth-attempt this)
                 :disabled (some? auth-attempt)}
            "auth")))))))
 
@@ -104,17 +109,21 @@
     (dom/div
      #js {:className (u/bem [:page])}
      (dom/div
-      #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
-      ":(")
-     (dom/div
-      #js {:className (u/bem [:box :margin-medium])})
-     (dom/div
-      #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
-      "Something went wrong!"))
+      #js {:className (u/bem [:page__content])}
+      (dom/div
+       #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
+       ":(")
+      (dom/div
+       #js {:className (u/bem [:box :margin-medium])})
+      (dom/div
+       #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
+       "Something went wrong!")))
 
     (dom/div
      #js {:className (u/bem [:page])}
-     (ui-logo))))
+     (dom/div
+      #js {:className (u/bem [:page__content])}
+      (ui-logo)))))
 
 
 (defsc UnknownPage [this {:keys []}]
@@ -123,13 +132,15 @@
   (dom/div
    #js {:className (u/bem [:page])}
    (dom/div
-    #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
-    ":(")
-   (dom/div
-    #js {:className (u/bem [:box :margin-medium])})
-   (dom/div
-    #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
-    "You're lost!")))
+    #js {:className (u/bem [:page__content])}
+    (dom/div
+     #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
+     ":(")
+    (dom/div
+     #js {:className (u/bem [:box :margin-medium])})
+    (dom/div
+     #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
+     "You're lost!"))))
 
 
 (defrouter Pages :pages

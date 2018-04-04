@@ -14,13 +14,15 @@
      (u/make-modifiers c/colour :fill)]]])
 
 
+(defstyles button
+  [:.button
+   {:width (-> c/filling :xx-huge px)
+    :height (-> c/filling :large px)}])
+
+
 (defstyles notification
   [:.notification
-   {:position :absolute
-    :left 0
-    :right 0
-    :z-index 1
-    :display :flex
+   {:display :flex
     :flex-direction :row
     :justify-content :center
     :padding [[(-> c/spacing :x-large px)
@@ -68,10 +70,7 @@
 
 (defstyles page
   [:.page
-   {:display :flex
-    :flex-direction :column
-    :align-items :center
-    :min-width (-> c/breakpoint :small :start px)
+   {:min-width (-> c/breakpoint :small :start px)
     :margin :auto}
 
    (u/tiny-width
@@ -98,7 +97,13 @@
    (u/huge-width
     {:max-width (-> c/breakpoint :huge :start px)
      :padding [[(-> c/spacing :huge px)
-                 (-> c/spacing :large px)]]})])
+                (-> c/spacing :large px)]]})
+
+   [:&__content
+    {:width (percent 100)
+     :display :flex
+     :flex-direction :column
+     :align-items :center}]])
 
 
 (defstyles user
