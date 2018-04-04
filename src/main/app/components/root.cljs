@@ -1,5 +1,6 @@
 (ns app.components.root
   (:require [app.components.logo :refer [ui-logo]]
+            [app.components.notification :refer [ui-notification]]
             [app.components.user :refer [ui-user User]]
             [app.navigation :as navigation]
             [app.operations :as operations]
@@ -69,15 +70,13 @@
         nil
         (ui-logo)
 
-        (dom/button
-         #js {:onClick #(initialise-auth-attempt this)
-              :disabled (or (invitation-code-invalid?) (some? auth-attempt))}
-         "auth")
-
-        (when (invitation-code-invalid?)
-          (dom/div
-           nil
-           "no invite, no entry")))))))
+        (if (invitation-code-invalid?)
+          (ui-notification {:title "Warning"
+                            :paragraph "You need an invitation code to proceed."})
+          (dom/button
+           #js {:onClick #(initialise-auth-attempt this)
+                :disabled (some? auth-attempt)}
+           "auth")))))))
 
 
 (defn finalise-auth-attempt [this]

@@ -26,11 +26,6 @@
     :padding [[(-> c/spacing :x-large px)
                (-> c/spacing :small px)]]}
 
-   [:&--only-visible-on-tiny-width
-    {:display :none}
-    (u/tiny-width
-     {:display :flex})]
-
    [:&__body
     {:display :flex
      :flex-direction :row
@@ -49,7 +44,7 @@
       :border-bottom-left-radius (-> c/radius :medium px)
       :border-top-right-radius 0
       :border-bottom-right-radius 0
-      :background-color (:red-dark c/colour)}]
+      :background-color (:yellow-dark c/colour)}]
 
     [:&__content
      {:flex-grow 1
@@ -57,12 +52,12 @@
       :padding (-> c/spacing :x-small px)
       :border-width (-> c/filling :xxx-tiny px)
       :border-style :solid
-      :border-color (:red-dark c/colour)
+      :border-color (:yellow-dark c/colour)
       :border-top-right-radius (-> c/radius :medium px)
       :border-bottom-right-radius (-> c/radius :medium px)
       :border-top-left-radius 0
       :border-bottom-left-radius 0
-      :background-color (:red-light c/colour)}
+      :background-color (:yellow-light c/colour)}
 
      [:&__title
       {:padding [[(-> c/spacing :xxx-tiny px)
@@ -77,11 +72,11 @@
     :flex-direction :column
     :align-items :center
     :min-width (-> c/breakpoint :small :start px)
-    :margin :auto
-    :background-color (-> c/colour :white-light)}
+    :margin :auto}
 
    (u/tiny-width
     {:max-width (-> c/breakpoint :small :start px)
+     :display :none
      :padding [[(-> c/spacing :xx-large px)
                 0]]})
 

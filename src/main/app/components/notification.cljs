@@ -17,10 +17,10 @@
      (dom/div
       #js {:className (u/bem [:notification__body__content__title])}
       (dom/div
-       #js {:className (u/bem [:text :heading-small :font-weight-bold :colour-red-dark])}
+       #js {:className (u/bem [:text :heading-small :font-weight-bold :colour-yellow-dark])}
        title))
      (dom/div
       #js {:className (u/bem [:text :paragraph-small])}
-      paragraph))))
+      paragraph)))))
 
-  (def ui-notification (factory Notification)))
+(def ui-notification (factory Notification))
