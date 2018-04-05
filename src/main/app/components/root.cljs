@@ -81,7 +81,11 @@
            #js {:className (u/bem [:button])
                 :onClick #(initialise-auth-attempt this)
                 :disabled (some? auth-attempt)}
-           "continue with Facebook")))))))
+           (dom/div
+            #js {:className (u/bem [:text :colour-blue-dark])}
+            "Sign in with Facebook")
+           (dom/div
+            #js {:className (u/bem [:icon :facebook :colour-blue-dark])}))))))))
 
 
 (defn finalise-auth-attempt [this]

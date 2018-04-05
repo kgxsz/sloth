@@ -8,7 +8,7 @@
 
 (defstyles logo
   [:.logo
-   {:width (-> c/filling :xx-large px)}
+   {:width (-> c/filling :xxx-large px)}
    [:&__square
     [:&--colour
      (u/make-modifiers c/colour :fill)]]])
@@ -16,16 +16,19 @@
 
 (defstyles button
   [:.button
-   {:width (px 200)
-    :height (px 40)
+   {:width (-> c/filling :xx-huge px)
+    :height (-> c/filling :xx-large px)
+    :padding-left (px 12)
+    :padding-right (px 12)
+    :display :flex
+    :align-items :center
+    :justify-content :space-between
     :text-decoration :none
-    :border-width (px 2)
-    :border-radius (px 4)
-    :border-color "#333"
-    :background-color "#FAFAFA"
+    :border :none
+    :border-radius (-> c/radius :large px)
+    :background-color (:blue-medium c/colour)
     :margin-top (px 30)
-    :cursor :pointer
-    :font-size (px 14)}])
+    :cursor :pointer}])
 
 
 (defstyles notification
@@ -47,7 +50,7 @@
      {:display :flex
       :flex-direction :column
       :align-items :center
-      :width (-> c/filling :x-large px)
+      :width (-> c/filling :xx-large px)
       :height (-> c/proportion :100 percent)
       :padding (-> c/spacing :x-small px)
       :border-top-left-radius (-> c/radius :medium px)

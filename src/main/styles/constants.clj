@@ -2,6 +2,7 @@
 
 (def colour
   {:white-light "#FFFFFF"
+   :white-medium "#FAFAFA"
    :black-light "#333333"
    :grey-light "#F2F2F2"
    :grey-medium "#EAEAEA"
@@ -12,6 +13,7 @@
    :yellow-dark "#FADA6E"
    :purple-dark "#D4A3E3"
    :blue-light "#F9FBFF"
+   :blue-medium "#F2F6FF"
    :blue-dark "#58A1F5"
    :red-light "#FFFAFB"
    :red-dark "#EB5468"})
@@ -46,8 +48,9 @@
    :small 18
    :medium 24
    :large 30
-   :x-large 50
-   :xx-large 70
+   :x-large 40
+   :xx-large 50
+   :xxx-large 70
    :huge 90
    :x-huge 150
    :xx-huge 210
@@ -65,7 +68,7 @@
    :small 2
    :medium 3
    :large 4
-   :huge 5})
+   :huge 8})
 
 (def proportion
   {:0 0
