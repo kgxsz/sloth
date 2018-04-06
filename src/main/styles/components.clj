@@ -16,10 +16,10 @@
 
 (defstyles button
   [:.button
-   {:width (-> c/filling :xx-huge px)
+   {:min-width (-> c/filling :x-huge px)
     :height (-> c/filling :xx-large px)
-    :padding-left (px 12)
-    :padding-right (px 12)
+    :padding-left (-> c/spacing :medium px)
+    :padding-right (-> c/spacing :medium px)
     :display :flex
     :align-items :center
     :justify-content :space-between
@@ -27,8 +27,15 @@
     :border :none
     :border-radius (-> c/radius :large px)
     :background-color (:blue-medium c/colour)
-    :margin-top (px 30)
-    :cursor :pointer}])
+    :margin-top (-> c/spacing :xx-large px)
+    :cursor :pointer}
+
+   [:&:focus
+    {:outline :none}]
+
+   [:&--disabled
+    {:opacity 0.4
+     :cursor :default}]])
 
 
 (defstyles notification
@@ -233,6 +240,12 @@
            :-webkit-font-smoothing :antialiased
            :-moz-osx-font-smoothing :grayscale
            :text-decoration :none}
+
+   [:&--padding-left
+    (u/make-modifiers c/spacing :padding-left px)]
+
+   [:&--padding-right
+    (u/make-modifiers c/spacing :padding-right px)]
 
    [:&--heading
     (u/make-modifiers c/heading :font-size px)]

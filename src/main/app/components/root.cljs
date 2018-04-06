@@ -78,11 +78,11 @@
           (ui-notification {:title "Warning"
                             :paragraph "You need an invitation code to proceed."})
           (dom/button
-           #js {:className (u/bem [:button])
+           #js {:className (u/bem [:button (when (some? auth-attempt) :disabled)])
                 :onClick #(initialise-auth-attempt this)
                 :disabled (some? auth-attempt)}
            (dom/div
-            #js {:className (u/bem [:text :colour-blue-dark])}
+            #js {:className (u/bem [:text :colour-blue-dark :padding-right-x-large])}
             "Sign in with Facebook")
            (dom/div
             #js {:className (u/bem [:icon :facebook :colour-blue-dark])}))))))))
