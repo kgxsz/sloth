@@ -247,6 +247,12 @@
    [:&--padding-right
     (u/make-modifiers c/spacing :padding-right px)]
 
+   [:&--margin-top
+    (u/make-modifiers c/spacing :margin-top px)]
+
+   [:&--margin-bottom
+    (u/make-modifiers c/spacing :margin-bottom px)]
+
    [:&--heading
     (u/make-modifiers c/heading :font-size px)]
 
@@ -264,14 +270,6 @@
    [:&--align-center {:text-align :center}]
 
    [:&--font-weight-bold {:font-weight 800}]])
-
-
-(defstyles box
-  [:.box {}
-   [:&--margin
-    (u/make-modifiers c/spacing :margin px)]
-   [:&--padding
-    (u/make-modifiers c/spacing :margin px)]])
 
 
 (defstyles icon
