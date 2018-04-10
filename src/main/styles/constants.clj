@@ -107,6 +107,20 @@
    :large 16
    :huge 18})
 
+(def font-size
+  {:tiny 10
+   :xxx-small 11
+   :xx-small 12
+   :x-small 13
+   :medium 14
+   :large 15
+   :x-large 16
+   :xx-large 17
+   :xxx-large 18
+   :huge 24
+   :x-huge 28
+   :xx-huge 32
+   :xxx-huge 40})
 
 (def user-details
   {:height (-> filling :medium)})
