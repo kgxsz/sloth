@@ -94,7 +94,7 @@
    :100 100})
 
 (def heading
-  {:tiny 10
+  {:tiny 12
    :small 14
    :medium 20
    :large 28
@@ -106,6 +106,7 @@
    :medium 14
    :large 16
    :huge 18})
+
 
 (def user-details
   {:height (-> filling :medium)})

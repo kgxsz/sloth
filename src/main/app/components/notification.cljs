@@ -7,20 +7,16 @@
   (dom/div
    #js {:className (u/bem [:notification])}
    (dom/div
-    #js {:className (u/bem [:notification__body])}
+    #js {:className (u/bem [:notification__title])}
     (dom/div
-     #js {:className (u/bem [:notification__body__lip])}
-     (dom/div
-      #js {:className (u/bem [:icon :warning :heading-medium :colour-white-light])}))
+     #js {:className (u/bem [:icon :warning :paragraph-huge :colour-yellow-dark])})
     (dom/div
-     #js {:className (u/bem [:notification__body__content])}
-     (dom/div
-      #js {:className (u/bem [:notification__body__content__title])}
-      (dom/div
-       #js {:className (u/bem [:text :heading-small :font-weight-bold :colour-yellow-dark])}
-       title))
-     (dom/div
-      #js {:className (u/bem [:text :paragraph-small])}
-      paragraph)))))
+     #js {:className (u/bem [:text :paragraph-large :font-weight-bold :colour-yellow-dark :padding-left-xxx-small])}
+     title))
+   (dom/div
+    #js {:className (u/bem [:notification__paragraph])}
+    (dom/div
+     #js {:className (u/bem [:text :heading-small :colour-yellow-dark])}
+     paragraph))))
 
 (def ui-notification (factory Notification))

@@ -1,6 +1,7 @@
 (ns app.components.root
   (:require [app.components.logo :refer [ui-logo]]
             [app.components.notification :refer [ui-notification]]
+            [app.components.sad-message :refer [ui-sad-message]]
             [app.components.user :refer [ui-user User]]
             [app.navigation :as navigation]
             [app.operations :as operations]
@@ -38,54 +39,73 @@
 
 (defn invitation-code-invalid? []
   (let [{:keys [invitation-code]} (navigation/query-params)]
-    (not= "188923" invitation-code)))
+    (not= "04031986" invitation-code)))
 
 
-(defn page-ready? [data-fetch-dispatched session-user]
-  (and (true? data-fetch-dispatched)
+(defn page-ready? [page-initialisation session-user]
+  (and (true? (:session-user-fetched page-initialisation))
        (nil? (:ui/fetch-state session-user))))
 
 
-(defsc HomePage [this {:keys [data-fetch-dispatched auth-attempt session-user]}]
+(defsc HomePage [this {:keys [page-initialisation auth-attempt session-user]}]
   {:initial-state (fn [_] {:page :home-page
-                           :data-fetch-dispatched false
-                           :page-initialised false})
+                           :page-initialisation {:session-user-fetched false}})
    :query [:page
-           :data-fetch-dispatched
-           {:auth-attempt (get-query AuthAttempt)}
-           {:session-user (get-query User)}]
+           {:page-initialisation [:session-user-fetched]}
+           {:session-user (get-query User)}
+           {:auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(fetch-session-user this)}
 
-  (if-not (page-ready? data-fetch-dispatched session-user)
+  (let [page-ready (page-ready? page-initialisation session-user)
+        signed-in (some? session-user)]
+
     (dom/div
      #js {:className (u/bem [:page])}
+
      (dom/div
-      #js {:className (u/bem [:page__content])}
-      (ui-logo)))
+      #js {:className (u/bem [:page__header])}
+      (when true #_(invitation-code-invalid?)
+        (ui-notification {:title "Warning"
+                          :paragraph "You need an invitation code to proceed."})))
 
-    (dom/div
-     #js {:className (u/bem [:page])}
-     (if (some? session-user)
+     (cond
+
+       (false? page-ready)
        (dom/div
-        #js {:className (u/bem [:page__content])}
-        (ui-user session-user))
+        #js {:className (u/bem [:page__body])}
+        (ui-logo))
 
-       (dom/div
-        #js {:className (u/bem [:page__content])}
-        (ui-logo)
-
-        (if (invitation-code-invalid?)
-          (ui-notification {:title "Warning"
-                            :paragraph "You need an invitation code to proceed."})
+       (false? signed-in)
+       (let [button-disabled (or (some? auth-attempt) (invitation-code-invalid?))]
+         (dom/div
+          #js {:className (u/bem [:page__body])}
+          (ui-logo)
           (dom/button
-           #js {:className (u/bem [:button (when (some? auth-attempt) :disabled)])
+           #js {:className (u/bem [:button
+                                   :background-color-blue-medium
+                                   :border-color-blue-dark
+                                   :margin-top-xx-large
+                                   (when button-disabled :disabled)])
                 :onClick #(initialise-auth-attempt this)
-                :disabled (some? auth-attempt)}
+                :disabled button-disabled}
            (dom/div
-            #js {:className (u/bem [:text :colour-blue-dark :padding-right-x-large])}
+            #js {:className (u/bem [:text :colour-blue-dark])}
             "Sign in with Facebook")
            (dom/div
-            #js {:className (u/bem [:icon :facebook :colour-blue-dark])}))))))))
+            #js {:className (u/bem [:icon :facebook :colour-blue-dark])}))))
+
+       (true? signed-in)
+       (dom/div
+        #js {:className (u/bem [:page__body])}
+        (ui-user session-user))
+
+       :else
+       (dom/div
+        #js {:className (u/bem [:page__body])}
+        (ui-sad-message {:message "Something isn't right!"})))
+
+     (dom/div
+      #js {:className (u/bem [:page__footer])}))))
 
 
 (defn finalise-auth-attempt [this]
@@ -107,44 +127,33 @@
   {:initial-state (fn [_] {:page :auth-page})
    :query [:page {:auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(finalise-auth-attempt this)}
-
-  (if (auth-attempt-failed? auth-attempt)
-
-    (dom/div
-     #js {:className (u/bem [:page])}
+  (dom/div
+   #js {:className (u/bem [:page])}
+   (dom/div
+    #js {:className (u/bem [:page__header])})
+   (if (auth-attempt-failed? auth-attempt)
      (dom/div
-      #js {:className (u/bem [:page__content])}
-      (dom/div
-       #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
-       ":(")
-      (dom/div
-       #js {:className (u/bem [:box :margin-medium])})
-      (dom/div
-       #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
-       "Something went wrong!")))
-
-    (dom/div
-     #js {:className (u/bem [:page])}
+      #js {:className (u/bem [:page__body])}
+      (ui-sad-message {:message "Sign in failed!"}))
      (dom/div
-      #js {:className (u/bem [:page__content])}
-      (ui-logo)))))
+      #js {:className (u/bem [:page__body])}
+      (ui-logo)))
+   (dom/div
+    #js {:className (u/bem [:page__footer])})))
 
 
-(defsc UnknownPage [this {:keys []}]
+(defsc UnknownPage [this _]
   {:initial-state (fn [_] {:page :unknown-page})
    :query [:page]}
   (dom/div
    #js {:className (u/bem [:page])}
    (dom/div
-    #js {:className (u/bem [:page__content])}
-    (dom/div
-     #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-grey-medium :align-center])}
-     ":(")
-    (dom/div
-     #js {:className (u/bem [:box :margin-medium])})
-    (dom/div
-     #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
-     "You're lost!"))))
+    #js {:className (u/bem [:page__header])})
+   (dom/div
+    #js {:className (u/bem [:page__body])}
+    (ui-sad-message {:message "You're lost!"}))
+   (dom/div
+    #js {:className (u/bem [:page__footer])})))
 
 
 (defrouter Pages :pages

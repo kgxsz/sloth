@@ -6,17 +6,9 @@
             [normalize.core :refer [normalize]]))
 
 
-(defstyles logo
-  [:.logo
-   {:width (-> c/filling :xxx-large px)}
-   [:&__square
-    [:&--colour
-     (u/make-modifiers c/colour :fill)]]])
-
-
 (defstyles button
   [:.button
-   {:min-width (-> c/filling :x-huge px)
+   {:width (-> c/filling :xx-huge px)
     :height (-> c/filling :xx-large px)
     :padding-left (-> c/spacing :medium px)
     :padding-right (-> c/spacing :medium px)
@@ -24,10 +16,13 @@
     :align-items :center
     :justify-content :space-between
     :text-decoration :none
-    :border :none
-    :border-radius (-> c/radius :large px)
-    :background-color (:blue-medium c/colour)
-    :margin-top (-> c/spacing :xx-large px)
+    :border-top :none
+    :border-left :none
+    :border-right :none
+    :border-bottom :solid
+    :border-width (-> c/filling :xx-tiny px)
+    :border-top-left-radius (-> c/radius :large px)
+    :border-top-right-radius (-> c/radius :large px)
     :cursor :pointer}
 
    [:&:focus
@@ -35,135 +30,19 @@
 
    [:&--disabled
     {:opacity 0.4
-     :cursor :default}]])
+     :cursor :default}]
 
+   [:&--border-color
+    (u/make-modifiers c/colour :border-color)]
 
-(defstyles notification
-  [:.notification
-   {:display :flex
-    :flex-direction :row
-    :justify-content :center
-    :padding [[(-> c/spacing :x-large px)
-               (-> c/spacing :small px)]]}
+   [:&--background-color
+    (u/make-modifiers c/colour :background-color)]
 
-   [:&__body
-    {:display :flex
-     :flex-direction :row
-     :overflow :hidden
-     :width (-> c/filling :xxx-huge px)
-     :min-height (-> c/filling :huge px)}
+   [:&--margin-top
+    (u/make-modifiers c/spacing :margin-top px)]
 
-    [:&__lip
-     {:display :flex
-      :flex-direction :column
-      :align-items :center
-      :width (-> c/filling :xx-large px)
-      :height (-> c/proportion :100 percent)
-      :padding (-> c/spacing :x-small px)
-      :border-top-left-radius (-> c/radius :medium px)
-      :border-bottom-left-radius (-> c/radius :medium px)
-      :border-top-right-radius 0
-      :border-bottom-right-radius 0
-      :background-color (:yellow-dark c/colour)}]
-
-    [:&__content
-     {:flex-grow 1
-      :height (-> c/proportion :100 percent)
-      :padding (-> c/spacing :x-small px)
-      :border-width (-> c/filling :xxx-tiny px)
-      :border-style :solid
-      :border-color (:yellow-dark c/colour)
-      :border-top-right-radius (-> c/radius :medium px)
-      :border-bottom-right-radius (-> c/radius :medium px)
-      :border-top-left-radius 0
-      :border-bottom-left-radius 0
-      :background-color (:yellow-light c/colour)}
-
-     [:&__title
-      {:padding [[(-> c/spacing :xxx-tiny px)
-                  0
-                  (-> c/spacing :xxx-small px)
-                  0]]}]]]])
-
-
-(defstyles page
-  [:.page
-   {:min-width (-> c/breakpoint :small :start px)
-    :margin :auto}
-
-   (u/tiny-width
-    {:max-width (-> c/breakpoint :small :start px)
-     :display :none
-     :padding [[(-> c/spacing :xx-large px)
-                0]]})
-
-   (u/small-width
-    {:max-width (-> c/breakpoint :small :start px)
-     :padding [[(-> c/spacing :xx-large px)
-                0]]})
-
-   (u/medium-width
-    {:max-width (-> c/breakpoint :medium :start px)
-     :padding [[(-> c/spacing :xx-large px)
-                (-> c/spacing :large px)]]})
-
-   (u/large-width
-    {:max-width (-> c/breakpoint :large :start px)
-     :padding [[(-> c/spacing :huge px)
-                (-> c/spacing :large px)]]})
-
-   (u/huge-width
-    {:max-width (-> c/breakpoint :huge :start px)
-     :padding [[(-> c/spacing :huge px)
-                (-> c/spacing :large px)]]})
-
-   [:&__content
-    {:width (percent 100)
-     :display :flex
-     :flex-direction :column
-     :align-items :center}]])
-
-
-(defstyles user
-  [:.user
-   (u/tiny-width
-    {:width (-> c/calendar :width :small px)})
-
-   (u/small-width
-    {:width (-> c/calendar :width :small px)})
-
-   (u/medium-width
-    {:width (-> c/calendar :width :medium px)})
-
-   (u/large-width
-    {:width (-> c/calendar :width :large px)})
-
-   (u/huge-width
-    {:width (-> c/calendar :width :huge px)})])
-
-
-(defstyles user-details
-  [:.user-details
-   {:display :flex
-    :flex-direction :row
-    :align-items :center
-    :height (-> c/user-details :height px)}
-
-   [:&__avatar
-    {:height (-> c/user-details :height px)
-     :width (-> c/user-details :height px)
-     :border-radius (-> c/proportion :50 percent)
-     :background-color (-> c/colour :grey-light)}]
-
-   [:&__first-name
-    {:margin-left (-> c/spacing :x-small px)
-     :max-width (-> c/proportion :40 percent)}]
-
-   [:&__divider
-    {:flex-grow 1
-     :height (-> c/filling :xx-tiny px)
-     :margin-left (-> c/spacing :x-small px)
-     :background-color (-> c/colour :grey-light)}]])
+   [:&--margin-bottom
+    (u/make-modifiers c/spacing :margin-bottom px)]])
 
 
 (defstyles calendar
@@ -227,49 +106,6 @@
      :border-bottom-style :solid
      :border-bottom-width (-> c/filling :xx-tiny px)
      :border-bottom-color (-> c/colour :grey-light)}]])
-
-
-(defstyles text
-  [:.text {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
-           :color (-> c/colour :black-light)
-           :font-size (-> c/paragraph :medium px)
-           :font-weight 400
-           :line-height 1.3
-           :font-variant :normal
-           :text-transform :none
-           :-webkit-font-smoothing :antialiased
-           :-moz-osx-font-smoothing :grayscale
-           :text-decoration :none}
-
-   [:&--padding-left
-    (u/make-modifiers c/spacing :padding-left px)]
-
-   [:&--padding-right
-    (u/make-modifiers c/spacing :padding-right px)]
-
-   [:&--margin-top
-    (u/make-modifiers c/spacing :margin-top px)]
-
-   [:&--margin-bottom
-    (u/make-modifiers c/spacing :margin-bottom px)]
-
-   [:&--heading
-    (u/make-modifiers c/heading :font-size px)]
-
-   [:&--paragraph
-    (u/make-modifiers c/paragraph :font-size px)]
-
-   [:&--colour
-    (u/make-modifiers c/colour :color)]
-
-   [:&--ellipsis {:display :block
-                  :white-space :nowrap
-                  :overflow :hidden
-                  :text-overflow :ellipsis}]
-
-   [:&--align-center {:text-align :center}]
-
-   [:&--font-weight-bold {:font-weight 800}]])
 
 
 (defstyles icon
@@ -474,3 +310,174 @@
    [:&--select:before {:content "'\\e852'"}]
    [:&--users:before {:content "'\\e82b'"}]
    [:&--sort-amount-asc:before {:content "'\\e8a4'"}]])
+
+
+(defstyles logo
+  [:.logo
+   {:width (-> c/filling :xxx-large px)}
+   [:&__square
+    [:&--colour
+     (u/make-modifiers c/colour :fill)]]])
+
+
+(defstyles notification
+  [:.notification
+   {:display :flex
+    :flex-direction :column
+    :align-items :center
+    :justify-content :center
+    :height (-> c/filling :xxx-large px)
+    :background-color (:yellow-light c/colour)
+    :border-bottom :solid
+    :border-color (:yellow-dark c/colour)
+    :border-width (-> c/filling :xx-tiny px)
+    :margin-bottom (-> c/spacing :xx-large px)}
+
+   [:&__title
+    {:display :flex
+     :flex-direction :row
+     :align-items :baseline
+     :text-align :center}]
+
+   [:&__paragraph
+    {:display :flex
+     :flex-direction :row
+     :align-items :center
+     :margin-top (-> c/spacing :xx-tiny px)}]])
+
+
+(defstyles page
+  [:.page
+
+   (u/tiny-width
+    {:display :none})
+
+   [:&__header
+    {:min-height (-> c/spacing :xxx-large px)}]
+
+   [:&__body
+    {:display :flex
+     :flex-direction :column
+     :align-items :center
+     :min-width (-> c/breakpoint :small :start px)
+     :overflow :auto
+     :margin :auto}
+
+    (u/small-width
+     {:max-width (-> c/breakpoint :small :start px)})
+
+    (u/medium-width
+     {:max-width (-> c/breakpoint :medium :start px)})
+
+    (u/large-width
+     {:max-width (-> c/breakpoint :large :start px)})
+
+    (u/huge-width
+     {:max-width (-> c/breakpoint :huge :start px)})]
+
+   [:&__footer
+    {:min-height (-> c/spacing :xxx-large px)}]])
+
+
+(defstyles sad-message
+  [:.sad-message
+   {:width (-> c/proportion :100 percent)
+    :display :flex
+    :flex-direction :column
+    :align-items :center}])
+
+
+(defstyles text
+  [:.text {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
+           :color (-> c/colour :black-light)
+           :font-size (-> c/paragraph :medium px)
+           :font-weight 400
+           :line-height 1.3
+           :font-variant :normal
+           :text-transform :none
+           :-webkit-font-smoothing :antialiased
+           :-moz-osx-font-smoothing :grayscale
+           :text-decoration :none}
+
+   [:&--padding-left
+    (u/make-modifiers c/spacing :padding-left px)]
+
+   [:&--padding-right
+    (u/make-modifiers c/spacing :padding-right px)]
+
+   [:&--margin-top
+    (u/make-modifiers c/spacing :margin-top px)]
+
+   [:&--margin-bottom
+    (u/make-modifiers c/spacing :margin-bottom px)]
+
+   [:&--heading
+    (u/make-modifiers c/heading :font-size px)]
+
+   [:&--paragraph
+    (u/make-modifiers c/paragraph :font-size px)]
+
+   [:&--colour
+    (u/make-modifiers c/colour :color)]
+
+   [:&--ellipsis {:display :block
+                  :white-space :nowrap
+                  :overflow :hidden
+                  :text-overflow :ellipsis}]
+
+   [:&--align-center {:text-align :center}]
+
+   [:&--font-weight-bold {:font-weight 800}]])
+
+
+(defstyles user
+  [:.user
+   (u/tiny-width
+    {:width (-> c/calendar :width :small px)})
+
+   (u/small-width
+    {:width (-> c/calendar :width :small px)})
+
+   (u/medium-width
+    {:width (-> c/calendar :width :medium px)})
+
+   (u/large-width
+    {:width (-> c/calendar :width :large px)})
+
+   (u/huge-width
+    {:width (-> c/calendar :width :huge px)})])
+
+
+(defstyles user-details
+  [:.user-details
+   {:display :flex
+    :flex-direction :row
+    :align-items :center
+    :height (-> c/user-details :height px)}
+
+   [:&__avatar
+    {:height (-> c/user-details :height px)
+     :width (-> c/user-details :height px)
+     :border-radius (-> c/proportion :50 percent)
+     :background-color (-> c/colour :grey-light)}]
+
+   [:&__first-name
+    {:margin-left (-> c/spacing :x-small px)
+     :max-width (-> c/proportion :40 percent)}]
+
+   [:&__divider
+    {:flex-grow 1
+     :height (-> c/filling :xx-tiny px)
+     :margin-left (-> c/spacing :x-small px)
+     :background-color (-> c/colour :grey-light)}]])
+
+
+
+
+
+
+
+
+
+
+

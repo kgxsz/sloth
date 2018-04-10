@@ -21,13 +21,15 @@
   ;; fonts
   fonts/icomoon
 
+
   ;; components
-  components/icon
-  components/text
-  components/logo
   components/button
+  components/calendar
+  components/icon
+  components/logo
   components/notification
   components/page
+  components/sad-message
+  components/text
   components/user
-  components/user-details
-  components/calendar)
+  components/user-details)
