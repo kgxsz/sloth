@@ -68,15 +68,15 @@
    (dom/div
     #js {:className (u/bem [:calendar__header])}
     (dom/span
-     #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-black-light])}
+     #js {:className (u/bem [:text :font-size-huge :font-weight-bold :colour-black-light])}
      title)
     (dom/span
      #js {:className (u/bem [:calendar__header__separator])}
      (dom/span
-      #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
+      #js {:className (u/bem [:text :font-size-huge :colour-grey-dark])}
       "—"))
     (dom/span
-     #js {:className (u/bem [:text :heading-medium :colour-grey-dark])}
+     #js {:className (u/bem [:text :font-size-huge :colour-grey-dark])}
      subtitle))
 
    (dom/div
@@ -107,7 +107,7 @@
               :className (u/bem [:calendar__label :vertical])}
          (when visible?
            (dom/span
-            #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
+            #js {:className (u/bem [:text :font-size-xx-small :font-weight-bold])}
             label))))))
 
     (dom/div
@@ -119,7 +119,7 @@
               :className (u/bem [:calendar__label :horizontal])}
          (when visible?
            (dom/span
-            #js {:className (u/bem [:text :paragraph-small :font-weight-bold])}
+            #js {:className (u/bem [:text :font-size-xx-small :font-weight-bold])}
             label)))))))
 
    (dom/div

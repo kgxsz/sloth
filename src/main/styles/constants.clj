@@ -93,20 +93,6 @@
    :95 95
    :100 100})
 
-(def heading
-  {:tiny 12
-   :small 14
-   :medium 20
-   :large 28
-   :huge 40})
-
-(def paragraph
-  {:tiny 10
-   :small 12
-   :medium 14
-   :large 16
-   :huge 18})
-
 (def font-size
   {:tiny 10
    :xxx-small 11
@@ -117,7 +103,7 @@
    :x-large 16
    :xx-large 17
    :xxx-large 18
-   :huge 24
+   :huge 20
    :x-huge 28
    :xx-huge 32
    :xxx-huge 40})

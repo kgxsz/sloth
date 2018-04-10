@@ -118,11 +118,8 @@
            :-moz-osx-font-smoothing :grayscale
            :text-decoration :none}
 
-   [:&--heading
-    (u/make-modifiers c/heading :font-size px)]
-
-   [:&--paragraph
-    (u/make-modifiers c/paragraph :font-size px)]
+   [:&--font-size
+    (u/make-modifiers c/font-size :font-size px)]
 
    [:&--colour
     (u/make-modifiers c/colour :color)]
@@ -390,7 +387,7 @@
 (defstyles text
   [:.text {:font-family "Arial, \"Helvetica Neue\", Helvetica, sans-serif"
            :color (-> c/colour :black-light)
-           :font-size (-> c/paragraph :medium px)
+           :font-size (-> c/font-size :medium px)
            :font-weight 400
            :line-height 1.3
            :font-variant :normal
@@ -411,11 +408,8 @@
    [:&--margin-bottom
     (u/make-modifiers c/spacing :margin-bottom px)]
 
-   [:&--heading
-    (u/make-modifiers c/heading :font-size px)]
-
-   [:&--paragraph
-    (u/make-modifiers c/paragraph :font-size px)]
+   [:&--font-size
+    (u/make-modifiers c/font-size :font-size px)]
 
    [:&--colour
     (u/make-modifiers c/colour :color)]

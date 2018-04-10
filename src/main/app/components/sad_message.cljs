@@ -8,10 +8,10 @@
   (dom/div
    #js {:className (u/bem [:sad-message])}
    (dom/div
-    #js {:className (u/bem [:text :heading-huge :font-weight-bold :colour-black-light])}
+    #js {:className (u/bem [:text :font-size-xxx-huge :font-weight-bold :colour-black-light])}
     ":(")
    (dom/div
-    #js {:className (u/bem [:text :heading-medium :font-weight-bold :colour-grey-dark :margin-top-medium])}
+    #js {:className (u/bem [:text :font-size-huge :font-weight-bold :colour-grey-dark :margin-top-medium])}
     message)))
 
 (def ui-sad-message (factory SadMessage))
