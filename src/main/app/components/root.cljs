@@ -13,6 +13,20 @@
             [fulcro.client.primitives :as fulcro]))
 
 
+(defsc LoadingPage [this _]
+  {:initial-state (fn [_] {:page :loading-page})
+   :query [:page]}
+  (dom/div
+   #js {:className (u/bem [:page])}
+   (dom/div
+    #js {:className (u/bem [:page__header])})
+   (dom/div
+    #js {:className (u/bem [:page__body])}
+    (ui-logo))
+   (dom/div
+    #js {:className (u/bem [:page__footer])})))
+
+
 (defsc AuthAttempt [this _]
   {:ident [:auth-attempt/by-id :db/id]
    :query [:db/id
@@ -43,7 +57,7 @@
 
 
 (defn page-ready? [page-initialisation session-user]
-  (and (true? (:session-user-fetched page-initialisation))
+  (and (:session-user-fetched page-initialisation)
        (nil? (:ui/fetch-state session-user))))
 
 
@@ -57,44 +71,45 @@
    :componentDidMount #(fetch-session-user this)}
 
   (let [page-ready (page-ready? page-initialisation session-user)
-        signed-in (some? session-user)]
+        signed-in (and page-ready (some? session-user))
+        show-notification (and page-ready (not signed-in) (invitation-code-invalid?))
+        button-disabled (or (some? auth-attempt) (invitation-code-invalid?))]
 
     (dom/div
      #js {:className (u/bem [:page])}
 
      (dom/div
       #js {:className (u/bem [:page__header])}
-      (when true #_(invitation-code-invalid?)
+      (when show-notification
         (ui-notification {:title "Warning"
                           :paragraph "You need an invitation code to proceed."})))
 
      (cond
 
-       (false? page-ready)
+       (not page-ready)
        (dom/div
         #js {:className (u/bem [:page__body])}
         (ui-logo))
 
-       (false? signed-in)
-       (let [button-disabled (or (some? auth-attempt) (invitation-code-invalid?))]
+       (not signed-in)
+       (dom/div
+        #js {:className (u/bem [:page__body])}
+        (ui-logo)
+        (dom/button
+         #js {:className (u/bem [:button
+                                 :background-color-blue-medium
+                                 :border-color-blue-dark
+                                 :margin-top-xx-large
+                                 (when button-disabled :disabled)])
+              :onClick #(initialise-auth-attempt this)
+              :disabled button-disabled}
          (dom/div
-          #js {:className (u/bem [:page__body])}
-          (ui-logo)
-          (dom/button
-           #js {:className (u/bem [:button
-                                   :background-color-blue-medium
-                                   :border-color-blue-dark
-                                   :margin-top-xx-large
-                                   (when button-disabled :disabled)])
-                :onClick #(initialise-auth-attempt this)
-                :disabled button-disabled}
-           (dom/div
-            #js {:className (u/bem [:text :colour-blue-dark])}
-            "Sign in with Facebook")
-           (dom/div
-            #js {:className (u/bem [:icon :facebook :colour-blue-dark])}))))
+          #js {:className (u/bem [:text :colour-blue-dark])}
+          "Sign in with Facebook")
+         (dom/div
+          #js {:className (u/bem [:icon :facebook :colour-blue-dark])})))
 
-       (true? signed-in)
+       signed-in
        (dom/div
         #js {:className (u/bem [:page__body])}
         (ui-user session-user))
@@ -110,7 +125,7 @@
 
 (defn finalise-auth-attempt [this]
   (let [{:keys [code state error]} (navigation/query-params)]
-    (when-not error
+    (when (and (nil? error) (some? code) (some? state))
       (data.fetch/load this :finalised-auth-attempt AuthAttempt
                        {:params {:auth-attempt-id (js/parseInt state)
                                  :code code}
@@ -119,13 +134,15 @@
 
 
 (defn auth-attempt-failed? [auth-attempt]
-  (or (:error (navigation/query-params))
-      (:auth-attempt/failed-at auth-attempt)))
+  (let [{:keys [code state error]} (navigation/query-params)]
+    (or (some? error) (nil? state) (nil? code)
+        (:auth-attempt/failed-at auth-attempt))))
 
 
 (defsc AuthPage [this {:keys [auth-attempt]}]
   {:initial-state (fn [_] {:page :auth-page})
-   :query [:page {:auth-attempt (get-query AuthAttempt)}]
+   :query [:page
+           {:auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(finalise-auth-attempt this)}
   (dom/div
    #js {:className (u/bem [:page])}
@@ -158,12 +175,17 @@
 
 (defrouter Pages :pages
   (ident [this props] [(:page props) :page])
+  :loading-page LoadingPage
   :home-page HomePage
   :auth-page AuthPage
   :unknown-page UnknownPage)
 
 
 (def ui-pages (factory Pages))
+
+
+(defn navigation-ready? []
+  (some? @navigation/navigation))
 
 
 (defsc Root [this {:keys [ui/react-key pages]}]
@@ -173,4 +195,5 @@
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
-   (ui-pages pages)))
+   (when (navigation-ready?)
+     (ui-pages pages))))

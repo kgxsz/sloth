@@ -18,6 +18,7 @@
 
 (def routing-tree
   (routing/routing-tree
+   (routing/make-route :loading-page [(routing/router-instruction :pages [:loading-page :page])])
    (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
    (routing/make-route :auth-page [(routing/router-instruction :pages [:auth-page :page])])
    (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
