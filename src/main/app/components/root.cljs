@@ -3,13 +3,12 @@
             [app.components.notification :refer [ui-notification]]
             [app.components.sad-message :refer [ui-sad-message]]
             [app.components.user :refer [ui-user User]]
-            [app.navigation :as navigation]
             [app.operations :as operations]
             [app.utils :as u]
             [fulcro.client.data-fetch :as data.fetch]
             [fulcro.client.dom :as dom]
             [fulcro.client.primitives :refer [defsc get-query get-initial-state factory]]
-            [fulcro.client.routing :refer-macros [defrouter]]
+            [fulcro.client.routing :as routing :refer-macros [defrouter]]
             [fulcro.client.primitives :as fulcro]))
 
 
@@ -51,9 +50,8 @@
                     :post-mutation `operations/process-fetched-session-user!}))
 
 
-(defn invitation-code-invalid? []
-  (let [{:keys [invitation-code]} (navigation/query-params)]
-    (not= "04031986" invitation-code)))
+(defn invitation-code-invalid? [{:keys [invitation-code]}]
+  (not= "04031986" invitation-code))
 
 
 (defn page-ready? [page-initialisation session-user]
@@ -61,19 +59,22 @@
        (nil? (:ui/fetch-state session-user))))
 
 
-(defsc HomePage [this {:keys [page-initialisation auth-attempt session-user]}]
+(defsc HomePage [this {:keys [page-initialisation navigation auth-attempt session-user]}]
   {:initial-state (fn [_] {:page :home-page
                            :page-initialisation {:session-user-fetched false}})
    :query [:page
            {:page-initialisation [:session-user-fetched]}
+           [:navigation '_]
            {:session-user (get-query User)}
            {:auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(fetch-session-user this)}
 
-  (let [page-ready (page-ready? page-initialisation session-user)
+  (let [{:keys [query-params]} navigation
+        page-ready (page-ready? page-initialisation session-user)
         signed-in (and page-ready (some? session-user))
-        show-notification (and page-ready (not signed-in) (invitation-code-invalid?))
-        button-disabled (or (some? auth-attempt) (invitation-code-invalid?))]
+        invitation-code-invalid (invitation-code-invalid? query-params)
+        show-notification (and page-ready invitation-code-invalid (not signed-in))
+        button-disabled (or (some? auth-attempt) invitation-code-invalid)]
 
     (dom/div
      #js {:className (u/bem [:page])}
@@ -124,7 +125,7 @@
 
 
 (defn finalise-auth-attempt [this]
-  (let [{:keys [code state error]} (navigation/query-params)]
+  (let [{:keys [code state error]} (get-in (fulcro/props this) [:navigation :query-params])]
     (when (and (nil? error) (some? code) (some? state))
       (data.fetch/load this :finalised-auth-attempt AuthAttempt
                        {:params {:auth-attempt-id (js/parseInt state)
@@ -133,22 +134,22 @@
                         :post-mutation `operations/process-finalised-auth-attempt!}))))
 
 
-(defn auth-attempt-failed? [auth-attempt]
-  (let [{:keys [code state error]} (navigation/query-params)]
-    (or (some? error) (nil? state) (nil? code)
-        (:auth-attempt/failed-at auth-attempt))))
+(defn auth-attempt-failed? [auth-attempt {:keys [code state error]}]
+  (or (some? error) (nil? state) (nil? code)
+      (:auth-attempt/failed-at auth-attempt)))
 
 
-(defsc AuthPage [this {:keys [auth-attempt]}]
+(defsc AuthPage [this {:keys [navigation auth-attempt]}]
   {:initial-state (fn [_] {:page :auth-page})
    :query [:page
+           [:navigation '_]
            {:auth-attempt (get-query AuthAttempt)}]
    :componentDidMount #(finalise-auth-attempt this)}
   (dom/div
    #js {:className (u/bem [:page])}
    (dom/div
     #js {:className (u/bem [:page__header])})
-   (if (auth-attempt-failed? auth-attempt)
+   (if (auth-attempt-failed? auth-attempt (:query-params navigation))
      (dom/div
       #js {:className (u/bem [:page__body])}
       (ui-sad-message {:message "Sign in failed!"}))
@@ -184,16 +185,21 @@
 (def ui-pages (factory Pages))
 
 
-(defn navigation-ready? []
-  (some? @navigation/navigation))
+(def routing-tree
+  (routing/routing-tree
+   (routing/make-route :loading-page [(routing/router-instruction :pages [:loading-page :page])])
+   (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
+   (routing/make-route :auth-page [(routing/router-instruction :pages [:auth-page :page])])
+   (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
-(defsc Root [this {:keys [ui/react-key pages]}]
-  {:initial-state (fn [_] (merge navigation/routing-tree {:pages (get-initial-state Pages {})}))
+(defsc Root [this {:keys [ui/react-key navigation pages]}]
+  {:initial-state (fn [_] (merge routing-tree {:pages (get-initial-state Pages {})}))
    :query [:ui/react-key
+           :navigation
            {:pages (get-query Pages)}]}
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
-   (when (navigation-ready?)
+   (when (some? navigation)
      (ui-pages pages))))

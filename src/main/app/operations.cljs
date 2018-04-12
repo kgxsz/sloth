@@ -38,6 +38,14 @@
                  true)))
 
 
+(defmutation update-navigation!
+  [{:keys [handler route-params query-params]}]
+  (action [{:keys [state]}]
+          (swap! state assoc :navigation {:handler handler
+                                          :route-params route-params
+                                          :query-params query-params})))
+
+
 (defmutation add-checked-date!
   [{:keys [calendar-id date]}]
   (action [{:keys [state]}]

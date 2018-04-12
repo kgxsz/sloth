@@ -5,7 +5,8 @@
             [clojure.string :as string]
             [fulcro.client.routing :as routing]
             [pushy.core :as pushy]
-            [fulcro.client.primitives :as fulcro]))
+            [fulcro.client.primitives :as fulcro]
+            [fulcro.client.impl.application :as app]))
 
 
 (defonce navigation (atom nil))
@@ -14,14 +15,6 @@
 (def routes ["/" [["" :home-page]
                   ["auth" :auth-page]
                   [true :unknown-page]]])
-
-
-(def routing-tree
-  (routing/routing-tree
-   (routing/make-route :loading-page [(routing/router-instruction :pages [:loading-page :page])])
-   (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
-   (routing/make-route :auth-page [(routing/router-instruction :pages [:auth-page :page])])
-   (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
 (defn navigate-externally [{:keys [url query-params]}]
@@ -53,6 +46,10 @@
 (defn start-navigation [reconciler]
   (reset! navigation (pushy/pushy
                       (fn [location]
-                        (fulcro/transact! reconciler `[(routing/route-to ~location) :ui/react-key]))
+                        (fulcro/transact! reconciler `[(routing/route-to ~location)
+                                                       (app.operations/update-navigation! {:handler ~(:handler location)
+                                                                                           :route-params ~(:route-params location)
+                                                                                           :query-params ~(query-params)})
+                                                       :ui/react-key]))
                       (partial bidi/match-route routes)))
   (pushy/start! @navigation))
