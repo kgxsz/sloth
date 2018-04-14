@@ -12,20 +12,6 @@
             [fulcro.client.primitives :as fulcro]))
 
 
-(defsc LoadingPage [this _]
-  {:initial-state (fn [_] {:page :loading-page})
-   :query [:page]}
-  (dom/div
-   #js {:className (u/bem [:page])}
-   (dom/div
-    #js {:className (u/bem [:page__header])})
-   (dom/div
-    #js {:className (u/bem [:page__body])}
-    (ui-logo))
-   (dom/div
-    #js {:className (u/bem [:page__footer])})))
-
-
 (defsc AuthAttempt [this _]
   {:ident [:auth-attempt/by-id :db/id]
    :query [:db/id
