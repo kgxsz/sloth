@@ -26,16 +26,8 @@
                 auth-attempt (get-in state auth-attempt-ident)]
             (when-not (:auth-attempt/failed-at auth-attempt)
               (navigation/navigate-internally
-               {:handler :home-page})))))
-
-
-(defmutation process-fetched-session-user!
-  [_]
-  (action [{:keys [state]}]
-          (swap! state
-                 assoc-in
-                 [:home-page :page :page-initialisation :session-user-fetched]
-                 true)))
+               {:handler :user-page
+                :route-params {:user-id "me"}})))))
 
 
 (defmutation update-navigation!

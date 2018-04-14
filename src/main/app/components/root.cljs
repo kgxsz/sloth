@@ -30,36 +30,21 @@
                     :post-mutation `operations/process-initialised-auth-attempt!}))
 
 
-(defn fetch-session-user [this]
-  (data.fetch/load this :session-user User
-                   {:target [:home-page :page :session-user]
-                    :post-mutation `operations/process-fetched-session-user!}))
-
-
 (defn invitation-code-invalid? [{:keys [invitation-code]}]
-  (not= "04031986" invitation-code))
+  (not= "04031985" invitation-code))
 
 
-(defn page-ready? [page-initialisation session-user]
-  (and (:session-user-fetched page-initialisation)
-       (nil? (:ui/fetch-state session-user))))
-
-
-(defsc HomePage [this {:keys [page-initialisation navigation auth-attempt session-user]}]
-  {:initial-state (fn [_] {:page :home-page
-                           :page-initialisation {:session-user-fetched false}})
+(defsc HomePage [this {:keys [navigation session-user auth-attempt]}]
+  {:initial-state (fn [_] {:page :home-page})
    :query [:page
-           {:page-initialisation [:session-user-fetched]}
-           [:navigation '_]
-           {:session-user (get-query User)}
-           {:auth-attempt (get-query AuthAttempt)}]
-   :componentDidMount #(fetch-session-user this)}
+           {[:navigation '_] [:query-params]}
+           {[:session-user '_] (get-query User)}
+           {:auth-attempt (get-query AuthAttempt)}]}
 
   (let [{:keys [query-params]} navigation
-        page-ready (page-ready? page-initialisation session-user)
-        signed-in (and page-ready (some? session-user))
+        signed-in (seq session-user)
         invitation-code-invalid (invitation-code-invalid? query-params)
-        show-notification (and page-ready invitation-code-invalid (not signed-in))
+        show-notification (and invitation-code-invalid (not signed-in))
         button-disabled (or (some? auth-attempt) invitation-code-invalid)]
 
     (dom/div
@@ -72,11 +57,6 @@
                           :paragraph "You need an invitation code to proceed."})))
 
      (cond
-
-       (not page-ready)
-       (dom/div
-        #js {:className (u/bem [:page__body])}
-        (ui-logo))
 
        (not signed-in)
        (dom/div
@@ -146,6 +126,22 @@
     #js {:className (u/bem [:page__footer])})))
 
 
+(defsc UserPage [this {:keys [navigation]}]
+  {:initial-state (fn [_] {:page :user-page})
+   :query [:page
+           {[:navigation '_] [:route-params]}]
+   #_:componentDidMount #_(fetch-auth-attempt this)}
+  (dom/div
+   #js {:className (u/bem [:page])}
+   (dom/div
+    #js {:className (u/bem [:page__header])})
+   (dom/div
+    #js {:className (u/bem [:page__body])}
+    "user page for:" (get-in navigation [:route-params :user-id]))
+   (dom/div
+    #js {:className (u/bem [:page__footer])})))
+
+
 (defsc UnknownPage [this _]
   {:initial-state (fn [_] {:page :unknown-page})
    :query [:page]}
@@ -162,9 +158,9 @@
 
 (defrouter Pages :pages
   (ident [this props] [(:page props) :page])
-  :loading-page LoadingPage
   :home-page HomePage
   :auth-page AuthPage
+  :user-page UserPage
   :unknown-page UnknownPage)
 
 
@@ -173,19 +169,33 @@
 
 (def routing-tree
   (routing/routing-tree
-   (routing/make-route :loading-page [(routing/router-instruction :pages [:loading-page :page])])
    (routing/make-route :home-page [(routing/router-instruction :pages [:home-page :page])])
    (routing/make-route :auth-page [(routing/router-instruction :pages [:auth-page :page])])
+   (routing/make-route :user-page [(routing/router-instruction :pages [:user-page :page])])
    (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
-(defsc Root [this {:keys [ui/react-key navigation pages]}]
-  {:initial-state (fn [_] (merge routing-tree {:pages (get-initial-state Pages {})}))
+(defsc Root [this {:keys [ui/react-key navigation session-user pages]}]
+  {:initial-state (fn [_] (merge routing-tree {:pages (get-initial-state Pages {})
+                                               :session-user {:uninitialised true}}))
    :query [:ui/react-key
            :navigation
+           :session-user
            {:pages (get-query Pages)}]}
+
+  (js/console.warn session-user)
+
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
-   (when (some? navigation)
+   (if (or (nil? navigation) (:uninitialised session-user))
+     (dom/div
+      #js {:className (u/bem [:page])}
+      (dom/div
+       #js {:className (u/bem [:page__header])})
+      (dom/div
+       #js {:className (u/bem [:page__body])}
+       (ui-logo))
+      (dom/div
+       #js {:className (u/bem [:page__footer])}))
      (ui-pages pages))))

@@ -6,5 +6,7 @@
 
 (defonce app (atom (fulcro.client/new-fulcro-client
                     :started-callback (fn [{:keys [reconciler] :as app}]
-                                        (data.fetch/load app :session-user app.components.user/User)
+                                        (data.fetch/load app :session-user
+                                                         app.components.user/User
+                                                         {:marker false})
                                         (navigation/start-navigation reconciler)))))

@@ -14,6 +14,7 @@
 
 (def routes ["/" [["" :home-page]
                   ["auth" :auth-page]
+                  [["users/" :user-id] :user-page]
                   [true :unknown-page]]])
 
 
@@ -48,7 +49,7 @@
                       (fn [location]
                         (fulcro/transact! reconciler `[(routing/route-to ~location)
                                                        (app.operations/update-navigation! {:handler ~(:handler location)
-                                                                                           :route-params ~(:route-params location)
+                                                                                           :route-params ~(route-params)
                                                                                            :query-params ~(query-params)})
                                                        :ui/react-key]))
                       (partial bidi/match-route routes)))

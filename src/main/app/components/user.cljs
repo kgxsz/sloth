@@ -14,7 +14,6 @@
            :user/facebook-id
            :user/roles
            :user/avatar-url
-           :user/auth-attempts
            {:user/calendars (get-query Calendar)}
            :ui/fetch-state]}
   (dom/div
