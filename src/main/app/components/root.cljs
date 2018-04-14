@@ -145,11 +145,6 @@
 
   (js/console.warn "***** user-page")
   (js/console.warn user)
-  ;; TODO - case 1) logged in own user
-  ;; TODO - case 2) logged in not own user
-  ;; TODO - case 3) not logged in own user
-  ;; TODO - case 4) not logged in not own user
-  ;; TODO - case 5) no user
 
   (dom/div
    #js {:className (u/bem [:page])}
@@ -157,7 +152,10 @@
     #js {:className (u/bem [:page__header])})
    (dom/div
     #js {:className (u/bem [:page__body])}
-    (ui-user user))
+    (if (seq user)
+      ;; TODO -  deal with no user scenario
+      (ui-user user)
+      (ui-logo)))
    (dom/div
     #js {:className (u/bem [:page__footer])})))
 

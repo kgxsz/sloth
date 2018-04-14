@@ -41,3 +41,22 @@
   []
   (stop)
   (refresh :after 'user/go))
+
+
+(comment
+
+  (require 'datomic.api)
+
+  (def db-uri "datomic:dev://localhost:4334/core")
+
+  (def conn (datomic.api/connect db-uri))
+
+  (datomic.api/q `[:find ?e :where [?e :user/first-name "Keigo"]] (datomic.api/db conn))
+
+  (datomic.api/q `[:find ?e :in $ ?e :where [?e]] (datomic.api/db conn) 17592186045426)
+
+  (datomic.api/entity (datomic.api/db conn) 17592186045426)
+
+  (datomic.api/pull (datomic.api/db conn) [:db/id :user/first-name] 17592186045426)
+
+  )

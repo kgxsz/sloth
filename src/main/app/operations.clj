@@ -18,8 +18,9 @@
 (defquery-root :user
   (value [{:keys [config db query session] :as env} {:keys [user-id]}]
          (let [user-id (if (= "me" user-id) (:user-id session) (Long/parseLong user-id))
-               {:keys [db/id] :as user} (datomic/pull (datomic/db (:conn db)) query user-id)]
-           (when (some? id) user))))
+               user (datomic/pull (datomic/db (:conn db)) query user-id)]
+           ;; TODO - fix this stopgap
+           (when (= (count (keys user)) (count query)) user))))
 
 
 (defquery-root :initialised-auth-attempt
@@ -37,7 +38,6 @@
   (value [{:keys [config db query]} {:keys [code auth-attempt-id]}]
          (let [{:keys [conn]} db
                current-db (datomic/db conn)
-               ;; {:keys [sessions]} state
                auth-attempt (datomic/pull current-db query auth-attempt-id)
                {:auth-attempt/keys [initialised-at succeeded-at failed-at]} auth-attempt]
 
