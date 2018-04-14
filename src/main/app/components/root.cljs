@@ -79,7 +79,9 @@
        signed-in
        (dom/div
         #js {:className (u/bem [:page__body])}
-        (ui-user session-user))
+        ;;TODO - do something smart here
+        "already signed in"
+        )
 
        :else
        (dom/div
@@ -126,18 +128,36 @@
     #js {:className (u/bem [:page__footer])})))
 
 
-(defsc UserPage [this {:keys [navigation]}]
+(defn fetch-user [this]
+  (let [{:keys [navigation]} (fulcro/props this)]
+    (data.fetch/load this :user User
+                     {:params (:route-params navigation)
+                      :target [:user-page :page :user]
+                      :marker false})))
+
+
+(defsc UserPage [this {:keys [navigation user]}]
   {:initial-state (fn [_] {:page :user-page})
    :query [:page
-           {[:navigation '_] [:route-params]}]
-   #_:componentDidMount #_(fetch-auth-attempt this)}
+           {[:navigation '_] [:route-params]}
+           {:user (get-query User)}]
+   :componentDidMount #(fetch-user this)}
+
+  (js/console.warn "***** user-page")
+  (js/console.warn user)
+  ;; TODO - case 1) logged in own user
+  ;; TODO - case 2) logged in not own user
+  ;; TODO - case 3) not logged in own user
+  ;; TODO - case 4) not logged in not own user
+  ;; TODO - case 5) no user
+
   (dom/div
    #js {:className (u/bem [:page])}
    (dom/div
     #js {:className (u/bem [:page__header])})
    (dom/div
     #js {:className (u/bem [:page__body])}
-    "user page for:" (get-in navigation [:route-params :user-id]))
+    (ui-user user))
    (dom/div
     #js {:className (u/bem [:page__footer])})))
 
@@ -182,9 +202,6 @@
            :navigation
            :session-user
            {:pages (get-query Pages)}]}
-
-  (js/console.warn session-user)
-
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}

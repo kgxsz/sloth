@@ -10,9 +10,16 @@
 
 
 (defquery-root :session-user
-  (value [{:keys [config db query session] :as env} {:keys [user-id]}]
+  (value [{:keys [config db query session] :as env} _]
          (let [{:keys [db/id] :as session-user} (datomic/pull (datomic/db (:conn db)) query (:user-id session))]
            (when (some? id) session-user))))
+
+
+(defquery-root :user
+  (value [{:keys [config db query session] :as env} {:keys [user-id]}]
+         (let [user-id (if (= "me" user-id) (:user-id session) (Long/parseLong user-id))
+               {:keys [db/id] :as user} (datomic/pull (datomic/db (:conn db)) query user-id)]
+           (when (some? id) user))))
 
 
 (defquery-root :initialised-auth-attempt
