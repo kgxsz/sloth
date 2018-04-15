@@ -30,6 +30,12 @@
                 :route-params {:user-id "me"}})))))
 
 
+(defmutation process-fetched-session-user!
+  [_]
+  (action [{:keys [state]}]
+          (swap! state assoc :session-user-fetched true)))
+
+
 (defmutation process-fetched-user!
   [_]
   (action [{:keys [state]}]

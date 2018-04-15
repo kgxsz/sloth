@@ -8,5 +8,6 @@
                     :started-callback (fn [{:keys [reconciler] :as app}]
                                         (data.fetch/load app :session-user
                                                          app.components.user/User
-                                                         {:marker false})
+                                                         {:marker false
+                                                          :post-mutation `app.operations/process-fetched-session-user!})
                                         (navigation/start-navigation reconciler)))))

@@ -14,8 +14,7 @@
            :user/facebook-id
            :user/roles
            :user/avatar-url
-           {:user/calendars (get-query Calendar)}
-           :ui/fetch-state]}
+           {:user/calendars (get-query Calendar)}]}
   (dom/div
    #js {:className (u/bem [:user])}
    (ui-user-details {:first-name first-name :last-name last-name :avatar-url avatar-url})

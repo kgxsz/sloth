@@ -177,17 +177,18 @@
    (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
-(defsc Root [this {:keys [ui/react-key navigation session-user pages]}]
+(defsc Root [this {:keys [ui/react-key navigation session-user-fetched pages]}]
   {:initial-state (fn [_] (merge routing-tree {:pages (get-initial-state Pages {})
-                                               :session-user {:uninitialised true}}))
+                                               :session-user-fetched false}))
    :query [:ui/react-key
            :navigation
            :session-user
+           :session-user-fetched
            {:pages (get-query Pages)}]}
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
-   (if (or (nil? navigation) (:uninitialised session-user))
+   (if (or (nil? navigation) (not session-user-fetched))
      (dom/div
       #js {:className (u/bem [:page])}
       (dom/div
