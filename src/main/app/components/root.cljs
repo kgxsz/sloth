@@ -133,29 +133,28 @@
     (data.fetch/load this :user User
                      {:params (:route-params navigation)
                       :target [:user-page :page :user]
-                      :marker false})))
+                      :marker false
+                      :post-mutation `operations/process-fetched-user!})))
 
 
-(defsc UserPage [this {:keys [navigation user]}]
-  {:initial-state (fn [_] {:page :user-page})
+(defsc UserPage [this {:keys [navigation user user-fetched]}]
+  {:initial-state (fn [_] {:page :user-page
+                           :user-fetched false})
    :query [:page
+           :user-fetched
            {[:navigation '_] [:route-params]}
            {:user (get-query User)}]
    :componentDidMount #(fetch-user this)}
-
-  (js/console.warn "***** user-page")
-  (js/console.warn user)
-
   (dom/div
    #js {:className (u/bem [:page])}
    (dom/div
     #js {:className (u/bem [:page__header])})
    (dom/div
     #js {:className (u/bem [:page__body])}
-    (if (seq user)
-      ;; TODO -  deal with no user scenario
-      (ui-user user)
-      (ui-logo)))
+    (cond
+      (not user-fetched) (ui-logo)
+      (nil? user) (ui-sad-message {:message "This user doesn't exist!"})
+      :else (ui-user user)))
    (dom/div
     #js {:className (u/bem [:page__footer])})))
 

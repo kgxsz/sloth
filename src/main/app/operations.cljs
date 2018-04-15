@@ -30,6 +30,12 @@
                 :route-params {:user-id "me"}})))))
 
 
+(defmutation process-fetched-user!
+  [_]
+  (action [{:keys [state]}]
+          (swap! state assoc-in [:user-page :page :user-fetched] true)))
+
+
 (defmutation update-navigation!
   [{:keys [handler route-params query-params]}]
   (action [{:keys [state]}]

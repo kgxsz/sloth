@@ -19,8 +19,8 @@
   (value [{:keys [config db query session] :as env} {:keys [user-id]}]
          (let [user-id (if (= "me" user-id) (:user-id session) (Long/parseLong user-id))
                user (datomic/pull (datomic/db (:conn db)) query user-id)]
-           ;; TODO - fix this stopgap
-           (when (= (count (keys user)) (count query)) user))))
+           (when-not (empty? (dissoc user :db/id))
+             user))))
 
 
 (defquery-root :initialised-auth-attempt
