@@ -59,5 +59,4 @@
 
   (datomic.api/pull (datomic.api/db conn) [:db/id :user/first-name :user/created-at] 17592186045426)
 
-
   )
