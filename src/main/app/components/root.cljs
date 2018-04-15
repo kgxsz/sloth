@@ -45,7 +45,7 @@
         signed-in (seq session-user)
         invitation-code-invalid (invitation-code-invalid? query-params)
         show-notification (and invitation-code-invalid (not signed-in))
-        button-disabled (or (some? auth-attempt) invitation-code-invalid)]
+        button-disabled (or (some? auth-attempt) (and invitation-code-invalid (not signed-in)))]
 
     (dom/div
      #js {:className (u/bem [:page])}
@@ -56,37 +56,22 @@
         (ui-notification {:title "Warning"
                           :paragraph "You need an invitation code to proceed."})))
 
-     (cond
-
-       (not signed-in)
+     (dom/div
+      #js {:className (u/bem [:page__body])}
+      (ui-logo)
+      (dom/button
+       #js {:className (u/bem [:button
+                               :background-color-blue-medium
+                               :border-color-blue-dark
+                               :margin-top-xx-large
+                               (when button-disabled :disabled)])
+            :onClick #(initialise-auth-attempt this)
+            :disabled button-disabled}
        (dom/div
-        #js {:className (u/bem [:page__body])}
-        (ui-logo)
-        (dom/button
-         #js {:className (u/bem [:button
-                                 :background-color-blue-medium
-                                 :border-color-blue-dark
-                                 :margin-top-xx-large
-                                 (when button-disabled :disabled)])
-              :onClick #(initialise-auth-attempt this)
-              :disabled button-disabled}
-         (dom/div
-          #js {:className (u/bem [:text :colour-blue-dark])}
-          "Sign in with Facebook")
-         (dom/div
-          #js {:className (u/bem [:icon :facebook :colour-blue-dark])})))
-
-       signed-in
+        #js {:className (u/bem [:text :colour-blue-dark])}
+        "Sign in with Facebook")
        (dom/div
-        #js {:className (u/bem [:page__body])}
-        ;;TODO - do something smart here
-        "already signed in"
-        )
-
-       :else
-       (dom/div
-        #js {:className (u/bem [:page__body])}
-        (ui-sad-message {:message "Something isn't right!"})))
+        #js {:className (u/bem [:icon :facebook :colour-blue-dark])})))
 
      (dom/div
       #js {:className (u/bem [:page__footer])}))))
