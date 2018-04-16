@@ -30,15 +30,11 @@
                     :post-mutation `operations/process-initialised-auth-attempt!}))
 
 
-(defn invitation-code-invalid? [{:keys [invitation-code]}]
-  (not= "04031985" invitation-code))
-
-
 (defsc HomePage [this {:keys [navigation session-user auth-attempt]}]
   {:initial-state (fn [_] {:page :home-page})
    :query [:page
            {[:navigation '_] [:query-params]}
-           {[:session-user '_] (get-query User)}
+           {[:sdession-user '_] (get-query User)}
            {:auth-attempt (get-query AuthAttempt)}]}
 
   (let [{:keys [query-params]} navigation
