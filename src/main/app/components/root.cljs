@@ -117,18 +117,27 @@
            {[:navigation '_] [:route-params]}
            {:user (get-query User)}]
    :componentDidMount #(fetch-user this)}
-  (dom/div
-   #js {:className (u/bem [:page])}
-   (dom/div
-    #js {:className (u/bem [:page__header])})
-   (dom/div
-    #js {:className (u/bem [:page__body])}
-    (cond
-      (not user-fetched) (ui-logo)
-      (nil? user) (ui-sad-message {:message "This user doesn't exist!"})
-      :else (ui-user user)))
-   (dom/div
-    #js {:className (u/bem [:page__footer])})))
+  (let [me (= "me" (get-in navigation [:route-params :user-id]))]
+    (dom/div
+     #js {:className (u/bem [:page])}
+     (dom/div
+      #js {:className (u/bem [:page__header])})
+     (dom/div
+      #js {:className (u/bem [:page__body])}
+      (cond
+        (not user-fetched)
+        (ui-logo)
+
+        (and (not me) (nil? user))
+        (ui-sad-message {:message "This user doesn't exist!"})
+
+        (and me (nil? user))
+        (ui-sad-message {:message "You need to sign in!"})
+
+        :else
+        (ui-user user)))
+     (dom/div
+      #js {:className (u/bem [:page__footer])}))))
 
 
 (defsc UnknownPage [this _]
