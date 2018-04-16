@@ -39,18 +39,13 @@
 
   (let [{:keys [query-params]} navigation
         signed-in (seq session-user)
-        invitation-code-invalid (invitation-code-invalid? query-params)
-        show-notification (and invitation-code-invalid (not signed-in))
-        button-disabled (or (some? auth-attempt) (and invitation-code-invalid (not signed-in)))]
+        button-disabled (or (some? auth-attempt) (not signed-in))]
 
     (dom/div
      #js {:className (u/bem [:page])}
 
      (dom/div
-      #js {:className (u/bem [:page__header])}
-      (when show-notification
-        (ui-notification {:title "Warning"
-                          :paragraph "You need an invitation code to proceed."})))
+      #js {:className (u/bem [:page__header])})
 
      (dom/div
       #js {:className (u/bem [:page__body])}
