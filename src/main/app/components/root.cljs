@@ -30,16 +30,12 @@
                     :post-mutation `operations/process-initialised-auth-attempt!}))
 
 
-(defsc HomePage [this {:keys [navigation session-user auth-attempt]}]
+(defsc HomePage [this {:keys [auth-attempt]}]
   {:initial-state (fn [_] {:page :home-page})
    :query [:page
-           {[:navigation '_] [:query-params]}
-           {[:sdession-user '_] (get-query User)}
            {:auth-attempt (get-query AuthAttempt)}]}
 
-  (let [{:keys [query-params]} navigation
-        signed-in (seq session-user)
-        button-disabled (or (some? auth-attempt) (not signed-in))]
+  (let [button-disabled (some? auth-attempt)]
 
     (dom/div
      #js {:className (u/bem [:page])}
