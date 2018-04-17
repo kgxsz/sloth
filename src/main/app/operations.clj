@@ -70,20 +70,7 @@
 
                        (log/infof "auth attempt %s succeeded for facebook-id %s" auth-attempt-id facebook-id)
 
-                       (when-let [user-id (ffirst (datomic/q `[:find ?e :where [?e :user/facebook-id ~facebook-id]] current-db))]
-                         (log/infof "updating existing user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
-                         (let [data [[:db/add user-id :user/first-name first-name]
-                                     [:db/add user-id :user/last-name last-name]
-                                     [:db/add user-id :user/avatar-url (get-in picture [:data :url])]
-                                     [:db/add user-id :user/auth-attempts auth-attempt-id]
-                                     [:db/add auth-attempt-id :auth-attempt/succeeded-at (time.coerce/to-date (time/now))]]
-                               {:keys [db-after]} @(datomic/transact conn data)]
-                           (augment-response
-                            (datomic/pull db-after query auth-attempt-id)
-                            #(assoc-in % [:session :user-id] user-id))))
-
-                       ;; HACK - remove new user flow for now
-                       #_(if-let [user-id (ffirst (datomic/q `[:find ?e :where [?e :user/facebook-id ~facebook-id]] current-db))]
+                       (if-let [user-id (ffirst (datomic/q `[:find ?e :where [?e :user/facebook-id ~facebook-id]] current-db))]
                          (do
                            (log/infof "updating existing user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
                            (let [data [[:db/add user-id :user/first-name first-name]
@@ -96,8 +83,15 @@
                                  (datomic/pull db-after query auth-attempt-id)
                                  #(assoc-in % [:session :user-id] user-id))))
                          (do
-                           (log/infof "creating new user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
-                           (let [data [[:db/add "user-id" :user/created-at (time.coerce/to-date (time/now))]
+
+                           ;; HACK - don't allow new users for now
+                           (log/infof "blocking creation of new user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
+                           (let [data [[:db/add auth-attempt-id :auth-attempt/failed-at (time.coerce/to-date (time/now))]]
+                                 {:keys [db-after]} @(datomic/transact conn data)]
+                             (datomic/pull db-after query auth-attempt-id))
+
+                           #_(log/infof "creating new user for auth attempt %s, with facebook-id %s" auth-attempt-id facebook-id)
+                           #_(let [data [[:db/add "user-id" :user/created-at (time.coerce/to-date (time/now))]
                                        [:db/add "user-id" :user/facebook-id facebook-id]
                                        [:db/add "user-id" :user/first-name first-name]
                                        [:db/add "user-id" :user/last-name last-name]
