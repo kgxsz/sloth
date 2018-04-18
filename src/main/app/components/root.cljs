@@ -109,14 +109,15 @@
                       :post-mutation `operations/process-fetched-user!})))
 
 
-(defsc UserPage [this {:keys [navigation user user-fetched]}]
+(defsc UserPage [this {:keys [initialisation navigation user]}]
   {:initial-state (fn [_] {:page :user-page
-                           :user-fetched false})
+                           :initialisation {:user-fetched false}})
    :query [:page
-           :user-fetched
-           {[:navigation '_] [:route-params]}
+           :initialisation
+           [:navigation '_]
            {:user (get-query User)}]
    :componentDidMount #(fetch-user this)}
+
   (let [me (= "me" (get-in navigation [:route-params :user-id]))]
     (dom/div
      #js {:className (u/bem [:page])}
@@ -125,7 +126,7 @@
      (dom/div
       #js {:className (u/bem [:page__body])}
       (cond
-        (not user-fetched)
+        (not (:user-fetched initialisation))
         (ui-logo)
 
         (and (not me) (nil? user))
@@ -173,18 +174,22 @@
    (routing/make-route :unknown-page [(routing/router-instruction :pages [:unknown-page :page])])))
 
 
-(defsc Root [this {:keys [ui/react-key navigation session-user-fetched pages]}]
+(defsc Root [this {:keys [ui/react-key initialisation pages]}]
   {:initial-state (fn [_] (merge routing-tree {:pages (get-initial-state Pages {})
-                                               :session-user-fetched false}))
+                                               :initialisation {:navigation-started false
+                                                                :session-user-fetched false}}))
    :query [:ui/react-key
+           :initialisation
            :navigation
            :session-user
-           :session-user-fetched
            {:pages (get-query Pages)}]}
+
   (dom/div
    #js {:key react-key
         :className (u/bem [:app])}
-   (if (or (nil? navigation) (not session-user-fetched))
+   (if (and (:navigation-started initialisation)
+            (:session-user-fetched initialisation))
+     (ui-pages pages)
      (dom/div
       #js {:className (u/bem [:page])}
       (dom/div
@@ -193,5 +198,4 @@
        #js {:className (u/bem [:page__body])}
        (ui-logo))
       (dom/div
-       #js {:className (u/bem [:page__footer])}))
-     (ui-pages pages))))
+       #js {:className (u/bem [:page__footer])})))))

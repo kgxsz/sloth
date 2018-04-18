@@ -33,21 +33,23 @@
 (defmutation process-fetched-session-user!
   [_]
   (action [{:keys [state]}]
-          (swap! state assoc :session-user-fetched true)))
+          (swap! state assoc-in [:initialisation :session-user-fetched] true)))
 
 
 (defmutation process-fetched-user!
   [_]
   (action [{:keys [state]}]
-          (swap! state assoc-in [:user-page :page :user-fetched] true)))
+          (swap! state assoc-in [:user-page :page :initialisation :user-fetched] true)))
 
 
 (defmutation update-navigation!
   [{:keys [handler route-params query-params]}]
   (action [{:keys [state]}]
-          (swap! state assoc :navigation {:handler handler
-                                          :route-params route-params
-                                          :query-params query-params})))
+          (swap! state #(-> %
+                            (assoc-in [:navigation] {:handler handler
+                                                     :route-params route-params
+                                                     :query-params query-params})
+                            (assoc-in [:initialisation :navigation-started] true)))))
 
 
 (defmutation add-checked-date!
