@@ -11,7 +11,7 @@
 
  :session-cookie {:name #or [#env :SESSION_COOKIE_NAME "session"]
                   :encryption-key #or [#env ENCRYPTION_KEY #ref [:secrets :encryption-key]]
-                  :max-age #or [#env :SESSION_COOKIE_MAX_AGE "604800"]
+                  :max-age #or [#env :SESSION_COOKIE_MAX_AGE "2419200"]
                   :secure #or [#env :SESSION_COOKIE_SECURE "false"]
                   :http-only #or [#env :SESSION_COOKIE_HTTP_ONLY "true"]
                   :same-site #or [#env :SESSION_COOKIE_SAME_SITE ":strict"]}}
