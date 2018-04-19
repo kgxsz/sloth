@@ -6,6 +6,7 @@
         :redirect-url #or [#env AUTH_REDIRECT_URL "https://tolocalhost.com/auth"]
         :scope #or [#env :AUTH_SCOPE ""]}
  :session-cookie {:name #or [#env :SESSION_COOKIE_NAME "session"]
+                  :encryption-key #or [#env ENCRYPTION_KEY #ref [:secrets :encryption-key]]
                   :max-age #or [#env :SESSION_COOKIE_MAX_AGE "604800"]
                   :secure #or [#env :SESSION_COOKIE_SECURE "false"]
                   :http-only #or [#env :SESSION_COOKIE_HTTP_ONLY "true"]

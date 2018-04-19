@@ -12,6 +12,7 @@
             [ring.middleware.not-modified :as middleware.not-modified]
             [ring.middleware.resource :as middleware.resource]
             [ring.middleware.session :as middleware.session]
+            [ring.middleware.session.cookie :as middleware.session.cookie]
             [taoensso.timbre :as log]))
 
 
@@ -37,7 +38,9 @@
   (start [{:keys [db config] :as component}]
     (try
       (log/info "starting http-server")
-      (let [session-config {:cookie-name (get-in config [:session-cookie :name])
+      (let [store-config {:key (get-in config [:session-cookie :encryption-key])}
+            session-config {:store (middleware.session.cookie/cookie-store store-config)
+                            :cookie-name (get-in config [:session-cookie :name])
                             :cookie-attrs {:max-age (edn/read-string (get-in config [:session-cookie :max-age]))
                                            :secure (edn/read-string (get-in config [:session-cookie :secure]))
                                            :http-only (edn/read-string (get-in config [:session-cookie :http-only]))
