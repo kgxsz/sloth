@@ -5,6 +5,7 @@
             [fulcro.client.dom :as dom]
             [fulcro.client.primitives :as fuclro :refer [defsc get-query factory]]))
 
+
 (defsc User [this {:keys [db/id] :user/keys [first-name last-name avatar-url calendars]}]
   {:ident [:user/by-id :db/id]
    :query [:db/id
