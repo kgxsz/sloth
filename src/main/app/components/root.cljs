@@ -12,6 +12,7 @@
             [fulcro.client.primitives :as fulcro]))
 
 
+;; TODO - see if this can be incorporated into the auth button and also the response
 (defsc AuthAttempt [this _]
   {:ident [:auth-attempt/by-id :db/id]
    :query [:db/id
@@ -46,6 +47,8 @@
      (dom/div
       #js {:className (u/bem [:page__body])}
       (ui-logo)
+
+      ;; TODO - only the button cares about the auth attempt, query doesn't have to equal the component name
       (dom/button
        #js {:className (u/bem [:button
                                :background-color-blue-medium
@@ -89,6 +92,7 @@
    #js {:className (u/bem [:page])}
    (dom/div
     #js {:className (u/bem [:page__header])})
+   ;; TODO - maybe this should be the button's responsibility too, or auth page should just be home page
    (if (auth-attempt-failed? auth-attempt (:query-params navigation))
      (dom/div
       #js {:className (u/bem [:page__body])}
