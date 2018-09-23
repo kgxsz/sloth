@@ -1,6 +1,6 @@
 # Sloth
 
-##### The repository backing [gridr.io](https://www.gridr.io)
+##### A repository to play around with Datomic and Fulcro.
 
 ## Local development setup
 - Get a local transactor running from the `datomic` directory: `bin/transactor config/sloth-dev-transactor.properties`.
